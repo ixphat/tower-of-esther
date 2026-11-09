@@ -76,6 +76,7 @@ The shared language of the project. One line per term, plus the doc that owns it
 | Fusion | Consuming 2–3 skills (+ optional catalyst) into a new one | 04 |
 | Hidden traits | Element, motion, mind of every skill; drive fusion odds; never shown directly | 04 |
 | Known recipe | A discovered fusion; always works; recorded in the fusion journal | 04 |
+| Cooldown | Turns a skill must wait before reuse; the only limit on using skills | 04 |
 | Class skill book | Gives a random first skill of another class (class-locked, fusion-only) | 04 |
 
 ## Items and crafting

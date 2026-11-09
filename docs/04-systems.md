@@ -198,11 +198,12 @@ All numbers are drafts.
 | Part | Design |
 | --- | --- |
 | Stage and level | Every skill has a stage (Novice, Intermediate, Advanced, Master, Grandmaster) and a level from 1 to 10 within the stage, for example "Sword Proficiency, Intermediate, Lv 3". Using the skill raises its level |
-| Leveling | A skill gains proficiency in fights. In a fight where the skill was used at least once, it gains points equal to the total value of the enemies in that fight, using the same monster points as EXP (normal 1, tough 2, elite 8, mini-boss 20, floor master 40). Using the skill many times in one fight does not give more. Enemies more than 10 levels below the climber give nothing, the same threshold as EXP. The same rule applies to weapon proficiency using the weapon. Skills used outside fights (gathering, dialogue and the like) are not designed yet |
+| Leveling | A skill gains proficiency in fights. In a fight where the skill was used at least once, it gains points equal to the total value of the enemies in that fight, using the same monster points as EXP (normal 1, tough 2, elite 8, mini-boss 20, floor master 40). Using the skill many times in one fight does not give more. Enemies more than 10 levels below the climber give nothing, the same threshold as EXP. The same rule applies to weapon proficiency using the weapon. A skill with no direct use in a fight counts as used when its effect triggers during or right after the fight (for example Scrounge), and then follows the same rule |
 | Cost per level | The proficiency needed to go from level n to n+1 is 10 × n × a stage multiplier (Novice ×1, Intermediate ×2, Advanced ×4, Master ×8, Grandmaster ×16). A full Novice stage (Lv 1 to Lv 10) takes 450 points and a full Intermediate stage takes 900. Arc 1 enemies give about 1,100 points in total up to floor 9 |
 | Moving up a stage | At Lv 10 the skill can move up to the next stage and start again at Lv 1. How depends on where the skill comes from. Weapon proficiency skills and class skills need a stage-up trial from the matching master (weapon master or class master). All other skills (drops, fusion results, scrap skills, skills from wandering masters, skills that exist only in one world) need a stage catalyst item, one per stage |
 | Stage-up trial | A special fight with a condition tied to that skill (for example, defeat an elite while using Counter Strike at least 3 times). It can be retried without limit, and a failure costs nothing. The content of each skill's trial is TBD. A master can only test up to the stage their floor allows (draft: Arc 1 masters up to Intermediate, Arc 2 up to Advanced, Arcs 3 and 4 up to Master, Arc 5 up to Grandmaster), so the climber returns to higher-floor masters as they climb |
-| Stage catalyst | An item that drops from elites and mini-bosses of the current arc and can be farmed. One is used per stage. Exact drop rates are TBD |
+| Stage catalyst | An item that drops from elites and mini-bosses of the current arc and can be farmed. One is used per stage. Draft rates: elite 5%, mini-boss 20%, so about 0.35 per sweep on a floor with 3 elites and 1 mini-boss, or about 3 sweeps per catalyst |
+| Cooldowns | Skill use is limited only by cooldowns counted in turns; there is no resource pool. Weapon attacks, Stances and Auras have none. A Charge has none on starting, and its release skill has one. A Form has a 5-turn cooldown from use, so it runs 3 turns on and at best 2 off. Every other skill has its own cooldown of 1 to 5 turns. At Mind 30 or higher every cooldown except a Form's is 1 turn shorter, down to a minimum of 1 |
 | Using skills | There is no slot limit. The climber can use every skill they have learned, as long as it is compatible. A skill is compatible when it is not class-locked to another class, the climber has equipped the weapon type or item it needs, and no other active skill carries the same tag (see Skill tags) |
 | Weapon and item needs | Weapon proficiency skills and the weapon skills they teach need a weapon of that type equipped. Class skills need no particular weapon type unless stated (for example Shield Bash needs a shield) |
 | Class lock | Some skills are class-locked: only that class can use them (class skills from class masters are the main case). A skill the climber cannot use is kept in the skill list, does not count toward the skill score, and can still be used as a fusion ingredient. Skills that are not class-locked are open to every class. There is no trading in the game, so a class-locked skill found on a drop is simply kept |
@@ -233,8 +234,8 @@ A tag marks a skill that cannot be in effect together with another skill of the 
 | --- | --- | --- | --- |
 | Stance | A posture held until changed (for example Brace, Iron Wall) | From the moment it is taken until another Stance replaces it or the fight ends | Taking a different Stance costs the turn, so it cannot be switched in the same turn as an attack. The climber picks one Stance for free before the fight starts |
 | Charge | A preparation that is released later (for example Flame Lance, Chant, Hold Breath) | The climber holds one stored charge at a time. It is released by the matching skill | Starting a different Charge discards the one being held, so the climber must commit. A Charge held when the fight ends is lost |
-| Form | A mode of movement or body that lasts for a few turns (for example Blood-Shadow Step, Smoke Step) | For 3 turns after use (draft) | Using another Form ends the current one at once, with no extra turn cost |
-| Aura | A continuing effect that costs something each turn (for example Demon's Mantra, Bark Skin) | While it is switched on. Each Aura has its own small upkeep (HP, or a bit of the climber's skill resource) | Switching on or off costs no turn, but the new Aura starts working at the start of the next turn |
+| Form | A mode of movement or body that lasts for a few turns (for example Blood-Shadow Step, Smoke Step) | For 3 turns after use, for every Form in Arc 1 (draft) | Using another Form ends the current one at once, with no extra turn cost |
+| Aura | A continuing effect that costs something each turn (for example Demon's Mantra, Bark Skin) | While it is switched on. Each Aura costs a percentage of max HP per turn (draft: Bark Skin 1%, Demon's Mantra 4%). If the upkeep would bring the climber to 0 HP, the Aura switches off at the start of the turn instead | Switching on or off costs no turn, but the new Aura starts working at the start of the next turn |
 
 Rules that apply to every tag:
 
@@ -263,11 +264,27 @@ Weapon mastery is a skill like any other, one per weapon type. All numbers are d
 | Per weapon type | Each weapon type has its own proficiency skill, for example Sword Proficiency or Bow Proficiency. Every class can learn every type |
 | Stage and level | Same as other skills: stages from Novice to Grandmaster, each with Lv 1–10. Using a weapon of that type in fights raises the level with the same leveling rule as other skills (see Skills) |
 | Starting point | A climber starts at Novice, Lv 1 in every type |
-| Moving up a stage | At Lv 10, a weapon master's stage-up trial is needed (see Skills): a fight with a condition tied to that weapon type, repeatable without limit, with no catalyst item needed. The master's floor sets the highest stage they can test (draft: Arc 1 masters up to Intermediate). The trial content for each weapon type is TBD |
+| Moving up a stage | At Lv 10, a weapon master's stage-up trial is needed (see Skills): a fight with a condition tied to that weapon type, repeatable without limit, with no catalyst item needed. The master's floor sets the highest stage they can test (draft: Arc 1 masters up to Intermediate). The trial for each weapon type is in Weapon stage-up trials below |
 | Unlocks | Each stage teaches a new weapon skill and allows a higher grade of weapon of that type |
 | Weapon grades by stage | Novice: F–E. Intermediate: D–C. Advanced: B–A. Master: S–SS. Grandmaster: SSS (draft) |
 | Teachers | Weapon masters. In Arc 1: the elders on floor 4, the elf scouts on floor 8 (bows) and the arena master on floor 9 (arena weapons). Higher floors have better weapon masters |
 | Score | The proficiency skills are not counted in the Hero power score. The weapon skills they teach are ordinary skills and do count if they are among the strongest (see Hero power grade) |
+
+### Weapon stage-up trials (draft)
+
+The climber fights the weapon master's practice elite using only that weapon's skills, while meeting one condition. World-specific weapons get a condition when they are designed.
+
+| Weapon | Condition |
+| --- | --- |
+| Sword | Win with 3 critical hits |
+| Sword and shield | Block 3 attacks, then win |
+| Axe | Deal half the elite's HP in one hit |
+| Short sword | Act twice before the elite's second turn |
+| Staff | Inflict 2 different statuses, then win |
+| Tome | Win using no weapon attack, only skills |
+| Bow | Win without being hit in the first 3 turns |
+| Mace | Stun the elite twice |
+| Cards | Win with 3 different card skills |
 
 ## Skill fusion
 
@@ -554,7 +571,7 @@ Every class uses the same stats. Classes differ by how their stats grow and by t
 | Vitality | HP and the base of Guard |
 | Power | Strength of every attack, physical or magical. The damage type comes from the skill and weapon, not from the stat |
 | Agility | Speed (turn order), crit chance, and the base of Evasion |
-| Mind | Resistance to statuses, skill charge speed and skill resource, and the base of Ward |
+| Mind | Resistance to statuses, cooldowns (see Skills), and the base of Ward |
 
 ### Secondary ratings (3)
 
@@ -564,7 +581,7 @@ Every class uses the same stats. Classes differ by how their stats grow and by t
 | Guard | Reduces physical damage | Vitality |
 | Ward | Reduces magical and special damage | Mind |
 
-The ratings rise from skills, class and advancement branches (for example Bulwark raises Guard, Shadow raises Evasion), equipment, and items that exist only in one world (for example a talisman that resists spirits). For now they are not trained by repeated exposure (see Open questions).
+The ratings rise from skills, class and advancement branches (for example Bulwark raises Guard, Shadow raises Evasion), equipment, and items that exist only in one world (for example a talisman that resists spirits). They are not trained by repeated exposure, which would reward standing still and taking hits.
 
 Floor rules tie to the stats: status resets use Mind, crit damage ×2 uses Agility, and no healing makes Vitality matter more.
 
@@ -708,15 +725,13 @@ The first advancement for every class opens after floor 10 (First Wall; clearing
 ## Open questions
 
 - The thresholds for grade A and above, and the caps for the secondary ratings. The Arc 1 skill and gear totals are rechecked drafts and should be tested again once real skills and items exist.
-- Skill tags: the four tags and their switching rules are drafted; still open are the exact upkeep of each Aura, how long a Form lasts for different skills, tags on the many scrap skills not yet named, and which skills need a weapon type or an item other than those already named.
-- The number of skills that count toward the power score (draft 12, 16, 20, 24) should be rechecked once later arcs are designed.
-- Now that farming is accepted, should Evasion, Guard and Ward be trainable by exposure to attacks? It was ruled out earlier to avoid grinding.
+- Skill tags: the four tags and their switching rules are drafted; still open are tags on the many scrap skills not yet named, and which skills need a weapon type or an item other than those already named.
+- The number of skills that count toward the power score after the first advancement (draft 16, 20, 24) should be rechecked once later arcs are designed. Arc 1 keeps 12.
 - EXP: the level formula and caps after the first advancement, whether the main-path share stays at 70% in later arcs, whether banking at the cap should stay limited to one level in later arcs, and the real monster counts per floor (the counts are drafts used to turn the budget into numbers).
 - Defeat: the safe points of each floor, and whether 10% of EXP progress and one bond level are the right amounts.
 - Bonds: whether bonds appear in Arc 2 and later in the same way, and the real values of the small bond skills and rare items listed in 03 Arc 1.
 - Wandering masters: the exact errands and quests (the legendary master's quest is a draft in 03 Arc 1), the strength of the legendary skills, and how many wandering masters appear in later arcs.
-- How skills that are not used in fights level (gathering, dialogue, crafting and the like), and whether the stage multipliers for skill leveling (×1, ×2, ×4, ×8, ×16) still work in later arcs.
-- Stage-up details: the trial content for weapon proficiency, the drop rates of stage catalysts, and which arc's masters can test which stage.
+- Whether the stage multipliers for skill leveling (×1, ×2, ×4, ×8, ×16) still work in later arcs.
 - Class skill books: the real drop rates, the market price in coins, whether books exist for branch and add-on class skills in later arcs, and whether the floor-class mapping for drops should be shown to the player or left to discovery.
 - Fusion: hidden trait values for add-on class skills, branch skills, weapon skills and the roughly 40 scrap skills (the main skills are assigned), the numbers inside the effects of the five known recipes' results (the effects are drafted, the numbers are not balanced), more known recipes and the secret recipes, how the fusion journal is shown, and whether the odds change for higher stages or for fusing three skills.
 - Enhancement: whether the assumed fight lengths behind the sweep times hold in real play (about 50 hours for six pieces at +6 is a deliberate target but a guess), the final names of the floor materials, the stone recipes and main floors for the +7 to +10 grades of Arcs 2 to 5, whether the success rates change for higher-grade gear, and whether an item's grade limits how high it can be enhanced.
