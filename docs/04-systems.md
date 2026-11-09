@@ -117,12 +117,30 @@ A defeated climber loses a little, not everything. In the story the Tower takes 
 
 | Part | Design |
 | --- | --- |
-| Where the climber returns | The last safe point: the floor's entrance, or a resting place such as an inn or camp that the floor defines. Each floor lists its own safe points |
+| Where the climber returns | The last safe point: the floor's entrance, or a resting place such as an inn or camp that the floor defines. See Safe points in Arc 1 below |
 | What is lost | 10% of the EXP progress toward the next level (the level itself never drops), and 1 bond level with the NPC whose bond was raised most recently (never below Stranger, see Bonds). Bonds can be rebuilt by talking, helping and gifts |
 | What is kept | Items, equipment, skills, recipes, the fusion journal, coins, clear grades, quest progress and hidden event discoveries. A defeat never makes the climber redo story steps |
+| Falling below a bond level | One-time rewards and skills already taught are kept. Shop discounts follow the current level. Rewards not yet claimed need the level again |
 | Memories lost counter | The game counts how many times the climber has been defeated. It has no effect on stats. The story uses it, for example the Innkeeper on floor 2 greets a defeated climber with a detail they no longer remember, the Order's recruiters speak to climbers with many defeats, and Arc 3 reveals where the memories go |
 | Floor rules | A floor's own defeat condition applies on that floor (for example, on floor 6 reputation at zero is a fall from grace, and on floor 9 a lost round returns the climber to the barracks and the round can be retried). The loss above applies in every case |
 | Online | The counter is not shown to other players |
+
+### Safe points in Arc 1 (draft)
+
+Every floor has its entrance and one resting place, unlocked when found. A defeat returns the climber to whichever was reached last.
+
+| Floor | Resting place |
+| --- | --- |
+| 1 | The Keeper's house |
+| 2 | The inn |
+| 3 | The clock tower |
+| 4 | The town below the sect |
+| 5 | The half-sunken temple |
+| 6 | The servants' quarters |
+| 7 | Behind the ration counter |
+| 8 | The scouts' hidden camp |
+| 9 | The gladiator barracks |
+| 10 | The refugee quarter behind the wall |
 
 ## Bonds
 
@@ -137,6 +155,8 @@ Bonds are the relationship between the climber and named NPCs (floor masters, to
 | Nothing is required | No floor needs a bond to be cleared. Bonds add depth, rewards and access to some teachers (see Wandering masters) |
 | Defeat | Lowers the bond with the NPC raised most recently by 1 level, to the start of the previous level's points (never below Stranger) |
 | Clear grade | The Content factor counts the bond levels reached with the floor's named NPCs (each floor's list is in 03 Arc 1) |
+| Bond skill strength | Novice, scrap level, with an effect of at most about 5% or 1 turn and a cooldown of 3 to 5 turns (draft) |
+| Rare bond items | Crafting only, with no stats of their own. Any one fills the bond-item slot of the protection charm recipe |
 | Who can be bonded | Named NPCs on each floor, listed with their gift likes and Trusted and Close rewards in 03 Arc 1 (Bondable NPCs). The Watchers, the Order's members, hidden masters and enemies cannot be bonded |
 | Online | Bonds stay in the climber's own save and are not shown to others |
 
@@ -768,8 +788,7 @@ The first advancement for every class opens after floor 10 (First Wall; clearing
 - Skill tags: the four tags and their switching rules are drafted; still open are tags on the many scrap skills not yet named (draft: 8 of about 40). No skills need a weapon type or item beyond those already named.
 - The number of skills that count toward the power score after the first advancement (draft 16, 20, 24) should be rechecked once later arcs are designed. Arc 1 keeps 12.
 - EXP: the level formula and caps after the first advancement, whether the main-path share stays at 70% in later arcs, whether banking at the cap should stay limited to one level in later arcs, and the real monster counts per floor (the counts are drafts used to turn the budget into numbers).
-- Defeat: the safe points of each floor, and whether 10% of EXP progress and one bond level are the right amounts.
-- Bonds: whether bonds appear in Arc 2 and later in the same way, and the real values of the small bond skills and rare items listed in 03 Arc 1.
+- Bonds: whether bonds appear in Arc 2 and later in the same way.
 - Wandering masters: how many wandering masters appear in later arcs.
 - Whether the stage multipliers for skill leveling (×1, ×2, ×4, ×8, ×16) still work in later arcs.
 - Class skill books: whether books exist for branch and add-on class skills in later arcs.
