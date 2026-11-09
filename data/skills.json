@@ -1,0 +1,6 @@
+[
+  { "id": "whistle", "name": "Whistle", "type": "status", "cooldown": 3, "description": "Enemy accuracy -5% for 1 turn", "enemyStatus": { "id": "accuracyDown", "turns": 1, "value": 0.05 } },
+  { "id": "stubborn-lean", "name": "Stubborn Lean", "type": "defense", "tag": "Stance", "cooldown": 0, "description": "Guard +5%, damage -5%", "guardBonus": 0.05, "damageBonus": -0.05 },
+  { "id": "straw-toss", "name": "Straw Toss", "type": "attack", "cooldown": 2, "description": "70% damage, enemy accuracy -5% for 1 turn", "damage": 0.7, "enemyStatus": { "id": "accuracyDown", "turns": 1, "value": 0.05 } },
+  { "id": "sweep-up", "name": "Sweep Up", "type": "recovery", "cooldown": 4, "description": "Remove one weak status from yourself", "cleanse": true }
+]

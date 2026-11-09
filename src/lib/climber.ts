@@ -1,7 +1,15 @@
 import balance from '../../data/balance.json';
 import climberData from '../../data/climber.json';
-import { climberCombatant, type ClimberStats } from './combat';
-import { itemById, type Slot } from './data';
+import { climberCombatant, skillScale, type ClimberStats, type Loadout } from './combat';
+import { itemById, skillById, type Slot } from './data';
+
+export interface OwnedSkill {
+  stage: number;
+  level: number;
+  proficiency: number; // toward the next skill level
+}
+
+export type OwnedSkills = Record<string, OwnedSkill>;
 
 export type Worn = Partial<Record<Slot, string>>;
 
@@ -47,13 +55,26 @@ export interface HeroParts {
   gear: number;
 }
 
-export function heroParts(level: number, worn: Worn): HeroParts {
+export function skillScore(owned: OwnedSkills): number {
+  const scores = Object.values(owned)
+    .map(({ stage, level }) => balance.skillStageScore[stage] * (balance.skillScoreBase + balance.skillScorePerLevel * (level - 1)))
+    .sort((a, b) => b - a)
+    .slice(0, balance.countedSkills);
+  return Math.round(scores.reduce((a, b) => a + b, 0) * 10) / 10;
+}
+
+export function fightLoadout(owned: OwnedSkills, stance: string | null): Loadout {
+  const skills = Object.entries(owned).map(([id, { stage, level }]) => ({ ...skillById(id)!, scale: skillScale(stage, level) }));
+  return { skills, stance };
+}
+
+export function heroParts(level: number, worn: Worn, owned: OwnedSkills): HeroParts {
   const { vitality, power, agility, mind } = statsAt(level, worn);
   const gear = wornItems(worn).reduce(
     (sum, item) => sum + balance.gearGradePoints[item.grade as keyof typeof balance.gearGradePoints],
     0,
   );
-  return { stats: vitality + power + agility + mind, skills: 0, gear }; // skills arrive with the Skills ticket
+  return { stats: vitality + power + agility + mind, skills: skillScore(owned), gear };
 }
 
 export function heroPower(parts: HeroParts) {

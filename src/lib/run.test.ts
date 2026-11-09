@@ -17,8 +17,8 @@ const floor: Floor = {
 const full = newRun(floor).hp;
 const run = (over: Partial<RunState> = {}): RunState => ({ ...newRun(floor), ...over });
 const lose = { type: 'fightEnd', outcome: 'lost' } as const;
-const rewards = (exp = 0, drops = {}) => ({ exp, drops });
-const win = (exp: number, hp = 40) => ({ type: 'fightEnd', outcome: 'won', hp, rewards: rewards(exp) }) as const;
+const rewards = (exp = 0, drops = {}) => ({ exp, monsterPoints: 0, drops });
+const win = (exp: number, hp = 40) => ({ type: 'fightEnd', outcome: 'won', hp, rewards: rewards(exp), used: [] as string[] }) as const;
 
 describe('HP between fights', () => {
   it('starts full at the floor start, with the start as safe point', () => {
@@ -26,7 +26,7 @@ describe('HP between fights', () => {
   });
 
   it('keeps the HP a won fight ended on, through moves', () => {
-    let state = applyAction(run(), floor, { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards() });
+    let state = applyAction(run(), floor, { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards(), used: [] as string[] });
     state = applyAction(state, floor, { type: 'move', to: 'field' });
     expect(state.hp).toBe(40);
   });
@@ -73,7 +73,7 @@ describe('EXP from wins', () => {
 });
 
 describe('rewards and respawn', () => {
-  const won = { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards(1, { 'straw-thread': 2 }) } as const;
+  const won = { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards(1, { 'straw-thread': 2 }), used: [] as string[] } as const;
 
   it('puts drops in the run and pays no coins', () => {
     const state = applyAction(run({ coins: 1, items: { 'straw-thread': 3 } }), floor, won);
@@ -81,8 +81,8 @@ describe('rewards and respawn', () => {
   });
 
   it('adds up the rewards of every foe', () => {
-    const foe = { id: 'a', name: 'A', hp: 1, attack: 1, def: 0, agility: 0, exp: 1, drops: { 'straw-thread': 1 } };
-    expect(fightRewards([foe, foe])).toEqual({ exp: 2, drops: { 'straw-thread': 2 } });
+    const foe = { id: 'a', name: 'A', hp: 1, attack: 1, def: 0, agility: 0, exp: 1, monsterPoints: 2, mind: 2, drops: { 'straw-thread': 1 } };
+    expect(fightRewards([foe, foe])).toEqual({ exp: 2, monsterPoints: 4, drops: { 'straw-thread': 2 } });
   });
 
   it('clears the location on a win and respawns on re-entry', () => {
@@ -136,6 +136,59 @@ describe('items', () => {
   });
 });
 
+describe('skills', () => {
+  const after = (points: number, used: string[]) => ({ type: 'fightEnd', outcome: 'won', hp: 40, rewards: { exp: 0, monsterPoints: points, drops: {} }, used }) as const;
+  const skill = (stage: number, level: number, skillPoints: number) => ({ whistle: { stage, level, proficiency: skillPoints } });
+
+  it('starts with the four scrap skills at Novice Lv 1, pinned', () => {
+    const start = newRun(floor);
+    expect(start.skills.whistle).toEqual({ stage: 0, level: 1, proficiency: 0 });
+    expect(start.pins).toEqual(['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up', null, null]);
+  });
+
+  it('gains the fight total once per used skill, not per use', () => {
+    const state = applyAction(run(), floor, after(3, ['whistle']));
+    expect(state.skills.whistle.proficiency).toBe(3);
+    expect(state.skills['sweep-up'].proficiency).toBe(0);
+  });
+
+  it('levels at 10 x level x stage multiplier', () => {
+    expect(applyAction(run({ skills: skill(0, 1, 9) }), floor, after(1, ['whistle'])).skills.whistle).toEqual({ stage: 0, level: 2, proficiency: 0 });
+    expect(applyAction(run({ skills: skill(1, 1, 19) }), floor, after(1, ['whistle'])).skills.whistle).toEqual({ stage: 1, level: 2, proficiency: 0 });
+    expect(applyAction(run({ skills: skill(1, 1, 18) }), floor, after(1, ['whistle'])).skills.whistle).toEqual({ stage: 1, level: 1, proficiency: 19 });
+  });
+
+  it('stops at Lv 10 until a stage-up', () => {
+    expect(applyAction(run({ skills: skill(0, 10, 0) }), floor, after(999, ['whistle'])).skills.whistle).toEqual({ stage: 0, level: 10, proficiency: 0 });
+  });
+
+  it('gains nothing from a defeat', () => {
+    expect(applyAction(run(), floor, lose).skills.whistle.proficiency).toBe(0);
+  });
+
+  it('pins and unpins into the first free slot', () => {
+    let state = applyAction(run(), floor, { type: 'togglePin', skill: 'whistle' });
+    expect(state.pins).toEqual([null, 'stubborn-lean', 'straw-toss', 'sweep-up', null, null]);
+    state = applyAction(state, floor, { type: 'togglePin', skill: 'whistle' });
+    expect(state.pins[0]).toBe('whistle');
+  });
+
+  it('refuses to pin a skill not learned', () => {
+    expect(() => applyAction(run({ skills: {} }), floor, { type: 'togglePin', skill: 'whistle' })).toThrow('not learned');
+  });
+
+  it('refuses a pin when all 6 slots are full', () => {
+    const full = run({ pins: ['a', 'b', 'c', 'd', 'e', 'f'] });
+    expect(() => applyAction(full, floor, { type: 'togglePin', skill: 'whistle' })).toThrow('Pins full');
+  });
+
+  it('sets a free pre-fight Stance, only from Stance skills', () => {
+    expect(applyAction(run(), floor, { type: 'setStance', skill: 'stubborn-lean' }).stance).toBe('stubborn-lean');
+    expect(() => applyAction(run(), floor, { type: 'setStance', skill: 'whistle' })).toThrow();
+    expect(applyAction(run({ stance: 'stubborn-lean' }), floor, { type: 'setStance', skill: null }).stance).toBeNull();
+  });
+});
+
 describe('leaving a fight unfinished', () => {
   it('counts as a defeat when the run resumes', () => {
     const started = applyAction(run({ locationId: 'field', exp: 200 }), floor, { type: 'fightStart' });
@@ -144,7 +197,7 @@ describe('leaving a fight unfinished', () => {
 
   it('costs nothing once the fight has ended', () => {
     const started = applyAction(run({ hp: 90 }), floor, { type: 'fightStart' });
-    const ended = applyAction(started, floor, { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards() });
+    const ended = applyAction(started, floor, { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards(), used: [] as string[] });
     expect(resumeRun(ended, floor)).toEqual({ ...run(), hp: 40, cleared: ['gate'] });
   });
 });

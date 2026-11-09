@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compareGear, expToNext, heroParts, heroPower, maxHp, statsAt } from './climber';
+import { compareGear, expToNext, fightLoadout, heroParts, heroPower, maxHp, skillScore, statsAt } from './climber';
 
 const core = (level: number) => {
   const { vitality, power, agility, mind } = statsAt(level, {});
@@ -58,7 +58,7 @@ describe('worn gear', () => {
   it('feeds weapon attack, armor and gear points', () => {
     const worn = { weapon: 'worn-sword', body: 'plain-coat', head: 'plain-cap' };
     expect(statsAt(1, worn)).toMatchObject({ weaponAttack: 8, armorGuard: 4, armorWard: 4 });
-    expect(heroParts(1, worn).gear).toBe(3);
+    expect(heroParts(1, worn, {}).gear).toBe(3);
   });
 
   it('compares a piece with what is worn in that slot', () => {
@@ -75,5 +75,24 @@ describe('worn gear', () => {
       { stat: 'Guard', delta: 2 },
       { stat: 'Ward', delta: 2 },
     ]);
+  });
+});
+
+describe('owned skills', () => {
+  const owned = (stage: number, level: number) => ({ stage, level, proficiency: 0 });
+
+  it('scores Novice Lv 1 at 55% of 2 points', () => {
+    expect(skillScore({ whistle: owned(0, 1), 'sweep-up': owned(0, 1) })).toBeCloseTo(2.2);
+  });
+
+  it('scores a full level at the whole stage value', () => {
+    expect(skillScore({ whistle: owned(1, 10) })).toBeCloseTo(5);
+  });
+
+  it('builds fight skills scaled by level and stage', () => {
+    const { skills, stance } = fightLoadout({ 'straw-toss': owned(0, 10) }, null);
+    expect(skills[0]).toMatchObject({ id: 'straw-toss', cooldown: 2, damage: 0.7 });
+    expect(skills[0].scale).toBeCloseTo(1.09);
+    expect(stance).toBeNull();
   });
 });

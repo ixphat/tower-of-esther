@@ -1,6 +1,8 @@
 import climberData from '../../data/climber.json';
 import enemyData from '../../data/enemies.json';
 import itemData from '../../data/items.json';
+import skillData from '../../data/skills.json';
+import type { FightSkill } from './combat';
 
 export const SLOTS = ['weapon', 'head', 'body', 'gloves', 'boots', 'accessory'] as const;
 export type Slot = (typeof SLOTS)[number];
@@ -28,8 +30,12 @@ export interface Enemy {
   def: number;
   agility: number;
   exp: number;
+  monsterPoints: number; // earns skill proficiency
+  mind: number;
   drops: Record<string, number>;
 }
+
+export type SkillData = Omit<FightSkill, 'scale'> & { type: string; description: string };
 
 export interface Location {
   id: string;
@@ -54,6 +60,8 @@ const modules = import.meta.glob<Floor>('/data/floors/*.json', { eager: true, im
 export const floors: Floor[] = Object.values(modules);
 export const enemies: Enemy[] = enemyData;
 export const items = itemData as Item[];
+export const skills = skillData as SkillData[];
+export const skillById = (id: string): SkillData | undefined => skills.find((skill) => skill.id === id);
 
 export const itemById = (id: string): Item | undefined => items.find((item) => item.id === id);
 
@@ -86,5 +94,11 @@ export function validateGameData(): string[] {
     ...Object.keys(climberData.startingItems).map((id) => ['starting item', id]),
     ['starting weapon', climberData.startingWeapon],
   ];
-  return refs.filter(([, id]) => !itemById(id)).map(([owner, id]) => `${owner}: "${id}" does not exist`);
+  const missingSkills = climberData.startingSkills
+    .filter((id) => !skillById(id))
+    .map((id) => `starting skill: "${id}" does not exist`);
+  return [
+    ...refs.filter(([, id]) => !itemById(id)).map(([owner, id]) => `${owner}: "${id}" does not exist`),
+    ...missingSkills,
+  ];
 }

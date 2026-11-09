@@ -1,9 +1,10 @@
-import { itemById, SLOTS, type Floor, type Slot } from './data';
+import { itemById, skillById, SLOTS, type Floor, type Slot } from './data';
+import balance from '../../data/balance.json';
 import { maxHp } from './climber';
 import type { RunState } from './run';
 
 const KEY = 'tower-of-esther.save';
-const VERSION = 5;
+const VERSION = 6;
 
 type Reader = Pick<Storage, 'getItem'>;
 type Writer = Pick<Storage, 'setItem'>;
@@ -16,6 +17,18 @@ const isCount = (value: unknown): value is number => Number.isInteger(value) && 
 
 const isPlainObject = (value: unknown): value is object =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
+
+function isOwnedSkill(value: unknown): boolean {
+  const skill = value as { stage?: unknown; level?: unknown; proficiency?: unknown } | null;
+  return (
+    isCount(skill?.stage) &&
+    skill.stage < balance.skillStages.length &&
+    isCount(skill.level) &&
+    skill.level >= 1 &&
+    skill.level <= balance.skillMaxLevel &&
+    isCount(skill.proficiency)
+  );
+}
 
 function isRun(value: unknown, floor: Floor): value is RunState {
   const run = value as Partial<RunState> | null | undefined;
@@ -38,6 +51,12 @@ function isRun(value: unknown, floor: Floor): value is RunState {
     Object.entries(run.worn).every(([slot, id]) => SLOTS.includes(slot as Slot) && itemById(id as string)?.slot === slot) &&
     Array.isArray(run.cleared) &&
     run.cleared.every(isPlace) &&
+    isPlainObject(run.skills) &&
+    Object.entries(run.skills).every(([id, skill]) => skillById(id) && isOwnedSkill(skill)) &&
+    Array.isArray(run.pins) &&
+    run.pins.length === balance.pinnedSlots &&
+    run.pins.every((pin) => pin === null || (typeof pin === 'string' && pin in run.skills!)) &&
+    (run.stance === null || (typeof run.stance === 'string' && run.stance in run.skills && skillById(run.stance)?.tag === 'Stance')) &&
     isPlainObject(run.bonds) &&
     Object.values(run.bonds).every(isCount) &&
     (run.lastBond === null || (typeof run.lastBond === 'string' && isCount(run.bonds[run.lastBond])))

@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { act, climberCombatant, createRng, startFight, type Combatant } from './combat';
+import {
+  act,
+  applyStatus,
+  climberCombatant,
+  createRng,
+  skillBlock,
+  skillScale,
+  startFight,
+  type Combatant,
+  type FightSkill,
+} from './combat';
 
 const fighter = (over: Partial<Combatant> = {}): Combatant => ({
   id: 'x',
@@ -9,6 +19,8 @@ const fighter = (over: Partial<Combatant> = {}): Combatant => ({
   attack: 18,
   guard: 3,
   agility: 0,
+  mind: 0,
+  statuses: [],
   ...over,
 });
 const climber = (over: Partial<Combatant> = {}) => fighter({ id: 'climber', name: 'Climber', ...over });
@@ -139,5 +151,146 @@ describe('fight flow', () => {
     };
     expect(play(42)).toEqual(play(42));
     expect(play(42)).not.toEqual(play(43));
+  });
+});
+
+describe('skills', () => {
+  const miss = () => 0.99;
+  const skill = (over: Partial<FightSkill> = {}): FightSkill => ({ id: 's', name: 'S', cooldown: 2, scale: 1, ...over });
+  const start = (skills: FightSkill[], c = climber(), e = enemy(), stance: string | null = null) =>
+    startFight(c, [e], miss, { skills, stance }).state;
+  const use = (id = 's') => ({ type: 'skill', skill: id, target: 0 }) as const;
+  const attack = { type: 'attack', target: 0 } as const;
+
+  it('scales by 1% per level and 10% per stage', () => {
+    expect(skillScale(0, 1)).toBeCloseTo(1);
+    expect(skillScale(0, 10)).toBeCloseTo(1.09);
+    expect(skillScale(1, 3)).toBeCloseTo(1.02 * 1.1);
+  });
+
+  it('deals skill % of attack, raised by the skill scale', () => {
+    const hit = (scale: number) =>
+      act(start([skill({ damage: 0.7, scale })]), use(), script(0.99, 0.99, 0.5)).events.find((e) => e.type === 'hit');
+    expect(hit(1)).toMatchObject({ damage: 12 }); // 18 * 0.7 * 100 / 103 = 12.23
+    expect(hit(2)).toMatchObject({ damage: 24 }); // 24.47
+  });
+
+  it('cooldown N is usable again after N turns', () => {
+    let state = act(start([skill({ cooldown: 2 })]), use(), miss).state;
+    expect(skillBlock(state, 's')).toBe('Cooldown 1');
+    expect(() => act(state, use(), miss)).toThrow('Cooldown 1');
+    state = act(state, attack, miss).state;
+    expect(skillBlock(state, 's')).toBeNull();
+  });
+
+  it('cooldown 1 is every turn', () => {
+    const state = act(start([skill({ cooldown: 1 })]), use(), miss).state;
+    expect(skillBlock(state, 's')).toBeNull();
+  });
+
+  it('shortens cooldowns by 1 at Mind 30, down to 1', () => {
+    const at = (cooldown: number) => act(start([skill({ cooldown })], climber({ mind: 30 })), use(), miss).state;
+    expect(skillBlock(at(3), 's')).toBe('Cooldown 1');
+    expect(skillBlock(at(1), 's')).toBeNull();
+  });
+
+  it('applies a guaranteed enemy status that lasts through the enemy turn', () => {
+    const lowered = skill({ enemyStatus: { id: 'accuracyDown', turns: 1, value: 0.05 }, cooldown: 1 });
+    const after = act(start([lowered]), use(), miss);
+    expect(after.state.enemies[0].statuses).toEqual([]);
+    // the enemy swung under the penalty: 0.04 is below 5%, so it misses
+    const missed = act(start([lowered]), use(), script(0.04));
+    expect(missed.events.find((e) => e.type === 'miss')).toMatchObject({ attacker: 'E' });
+  });
+
+  it('stance changes Guard and damage, and taking it costs the turn', () => {
+    const lean = skill({ tag: 'Stance', cooldown: 0, guardBonus: 0.5, damageBonus: -0.5 });
+    const { state, events } = act(start([lean]), use(), script(0.99, 0.99, 0.9999));
+    expect(state.stance).toBe('s');
+    // 18 * 100 / (100 + 3 * 1.5) = 17.22, enemy replied in the same step
+    expect(events.find((e) => e.type === 'hit')).toMatchObject({ attacker: 'E', damage: 19 }); // 17.22 x 1.1 roll
+    const hit = act(state, attack, script(0.99, 0.99, 0.5)).events.find((e) => e.type === 'hit');
+    expect(hit).toMatchObject({ attacker: 'Climber', damage: 9 }); // 17.48 x 0.5
+  });
+
+  it('refuses the Stance already active', () => {
+    const lean = skill({ tag: 'Stance', cooldown: 0 });
+    expect(skillBlock(start([lean], climber(), enemy(), 's'), 's')).toBe('Stance active');
+  });
+
+  it('removes one status, and is dimmed with nothing to remove', () => {
+    const sweep = skill({ cleanse: true });
+    expect(skillBlock(start([sweep]), 's')).toBe('No status to remove');
+    const poisoned = climber({ statuses: [{ id: 'poison', turns: 3 }] });
+    expect(act(start([sweep], poisoned), use(), miss).state.climber.statuses).toEqual([]);
+  });
+
+  it('tracks skills used once, plus the stance held from the start', () => {
+    const lean = skill({ id: 'lean', tag: 'Stance', cooldown: 0 });
+    let state = start([skill({ cooldown: 1 }), lean], climber(), enemy(), 'lean');
+    expect(state.used).toEqual(['lean']);
+    state = act(state, use(), miss).state;
+    state = act(state, use(), miss).state;
+    expect(state.used).toEqual(['lean', 's']);
+  });
+});
+
+describe('statuses (04 Systems)', () => {
+  const miss = () => 0.99;
+  const attack = { type: 'attack', target: 0 } as const;
+  const startWith = (c: Combatant, e = enemy()) => startFight(c, [e], miss).state;
+
+  it('poison costs 3% of max HP per turn and ends after 3 turns', () => {
+    let state = startWith(climber({ statuses: [{ id: 'poison', turns: 3 }] }));
+    expect(state.climber.hp).toBe(970);
+    state = act(state, attack, miss).state;
+    expect(state.climber.hp).toBeLessThan(960);
+    state = act(state, attack, miss).state;
+    state = act(state, attack, miss).state;
+    expect(state.climber.statuses).toEqual([]);
+  });
+
+  it('burn costs 4% of max HP', () => {
+    expect(startWith(climber({ statuses: [{ id: 'burn', turns: 2 }] })).climber.hp).toBe(960);
+  });
+
+  it('a stunned enemy loses its turn, then is immune for 1 turn', () => {
+    const stunned = enemy({ statuses: [{ id: 'stun', turns: 1 }] });
+    const step = act(startWith(climber(), stunned), attack, miss);
+    expect(step.events.map((e) => e.type)).toEqual(['hit', 'stunned']);
+    expect(applyStatus(step.state.enemies[0], 'stun')).toBeNull();
+  });
+
+  it('confuse makes a move fail 30% of the time', () => {
+    const c = climber({ statuses: [{ id: 'confuse', turns: 2 }] });
+    expect(act(startWith(c), attack, script(0.29)).events[0]).toEqual({ type: 'fail', actor: 'Climber' });
+    expect(act(startWith(c), attack, script(0.31, 0.99, 0.99, 0.5)).events[0]).toMatchObject({ type: 'hit' });
+  });
+
+  it('restrain drops Evasion to 0', () => {
+    const e = enemy({ agility: 100, statuses: [{ id: 'restrain', turns: 1 }] });
+    expect(act(startWith(climber({ agility: 100 }), e), attack, script(0.01, 0.99, 0.5)).events[0]).toMatchObject({ type: 'hit' });
+  });
+
+  it('fear cuts damage by 15%', () => {
+    const c = climber({ statuses: [{ id: 'fear', turns: 2 }] });
+    expect(act(startWith(c), attack, script(0.99, 0.99, 0.5)).events[0]).toMatchObject({ damage: 15 }); // 14.85
+  });
+
+  it('slow cuts Agility by 30% for turn order', () => {
+    const state = startWith(climber({ agility: 10, statuses: [{ id: 'slow', turns: 2 }] }), enemy({ agility: 8 }));
+    expect(state.turnOrder).toEqual(['e', 'climber']);
+  });
+
+  it('reapplying refreshes the duration and does not stack', () => {
+    const target = enemy({ statuses: [{ id: 'poison', turns: 1 }] });
+    applyStatus(target, 'poison');
+    expect(target.statuses).toEqual([{ id: 'poison', turns: 3 }]);
+  });
+
+  it('reduces status chance by 0.5 points per Mind', () => {
+    const target = enemy({ mind: 20 }); // 30% becomes 20%
+    expect(applyStatus(target, 'fear', { attempt: { chance: 0.3, roll: 0.21 } })).toBeNull();
+    expect(applyStatus(target, 'fear', { attempt: { chance: 0.3, roll: 0.19 } })).toMatchObject({ type: 'status' });
   });
 });
