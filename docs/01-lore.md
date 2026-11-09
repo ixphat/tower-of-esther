@@ -37,12 +37,14 @@ The tower's top holds an Empty Throne. Its creator, Esther, chose to die and lef
 | What he does not face | He believes the one who returns will be the true creator. In fact it is assembled from the lives of other people. He also refuses to accept that the creator left by choice |
 | Tragedy | He waits and works for a god who chose to leave, and spends the lives of the people he guards to do it |
 
-### The Order of the Descent (his cult, working name)
+### The Order of the Descent (his cult)
 
 | Element | Setting |
 | --- | --- |
 | Who | Followers of the creator who wait for the god's descent. Members include climbers who lost memories and found purpose, survivors of absorbed worlds, and a few who joined freely. Most do not know what the Order's work costs |
 | Belief | The god will come down. The Order tells those who lost memories that the descent will give back what they lost |
+| Structure | No ranks in Arc 1. Visitor, emissary, recruiter and scribe are flat roles, and Ezra alone leads |
+| Who knows the cost | Only the emissaries and Ezra. Recruiters, scribes and visitors sincerely believe |
 | Sign | A white empty chair, the Empty Throne drawn simply. Phrase: "He will come down" |
 | Manner | Small, polite and helpful. They look benign. They pray for the fallen, offer comfort and give small gifts |
 | Work | Place marks on floors, feed or steer the tampering, quietly make climbers more likely to fail, and gather the memories the Tower takes. Ezra leads them from floor 50 |
@@ -135,5 +137,3 @@ Draft. A single Tower that every climber, and every real player, climbs together
 - What do Esther's will and clues say, and where on the floors are they found? Three clues are placed in Arc 1 (floors 1, 8 and 10). They must not point the player toward a single ending.
 - What is the assembled creator like if the revival finishes (personality, how it decides)? Needed for the "Let the revival finish" ending.
 - Is there any way out of the Tower other than the Throne?
-- How many members of the Order know what its work costs, and does the Order have its own ranks and leaders besides Ezra?
-- Does the Order's official name stay "Order of the Descent", or change?

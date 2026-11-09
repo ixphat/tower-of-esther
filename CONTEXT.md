@@ -13,7 +13,7 @@ The shared language of the project. One line per term, plus the doc that owns it
 | Esther / the Creator | Built the Tower, chose to die, left the Throne empty. The system only ever says "the Creator" | 01 |
 | Empty Throne | The authority to decide the fate of every world, on floor 50 | 01 |
 | Ezra / Tower Master | Master of floor 50, Esther's devoted servant, secretly rebuilding her from lost memories | 01 |
-| Order of the Descent | Ezra's polite cult (working name). Sign: white empty chair. Phrase: "He will come down" | 01 |
+| Order of the Descent | Ezra's polite cult. Sign: white empty chair. Phrase: "He will come down" | 01 |
 | Cult hint | The small sign of the Order placed on every floor | 02 |
 | Watchers | Five sealed beings on floors 47–49 (Brio, Nalin, Voss, Nameless/The Mirror, Varek) who want the Throne | 01 |
 | Floor master | The last survivor who guards a floor; also its boss fight. Not a teacher | 02 |
