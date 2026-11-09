@@ -225,7 +225,7 @@ All numbers are drafts.
 | Stage catalyst | An item that drops from elites and mini-bosses of the current arc and can be farmed. One is used per stage. Draft rates: elite 5%, mini-boss 20%, so about 0.35 per sweep on a floor with 3 elites and 1 mini-boss, or about 3 sweeps per catalyst |
 | Cooldowns | Skill use is limited only by cooldowns counted in turns; there is no resource pool. Weapon attacks, Stances and Auras have none. A Charge has none on starting, and its release skill has one. A Form has a 5-turn cooldown from use, so it runs 3 turns on and at best 2 off. Every other skill has its own cooldown of 1 to 5 turns. At Mind 30 or higher every cooldown except a Form's is 1 turn shorter, down to a minimum of 1 |
 | Using skills | There is no slot limit. The climber can use every skill they have learned, as long as it is compatible. A skill is compatible when it is not class-locked to another class, the climber has equipped the weapon type or item it needs, and no other active skill carries the same tag (see Skill tags) |
-| Weapon and item needs | Weapon proficiency skills and the weapon skills they teach need a weapon of that type equipped. Class skills need no particular weapon type unless stated (for example Shield Bash needs a shield) |
+| Weapon and item needs | Weapon proficiency skills and the weapon skills they teach need a weapon of that type equipped. Class skills need no particular weapon type unless stated (for example Shield Bash needs a shield). No other skills need a weapon or item in Arc 1 |
 | Class lock | Some skills are class-locked: only that class can use them (class skills from class masters are the main case). A skill the climber cannot use is kept in the skill list, does not count toward the skill score, and can still be used as a fusion ingredient. Skills that are not class-locked are open to every class. There is no trading in the game, so a class-locked skill found on a drop is simply kept |
 | Skill tags | Some skills carry one of four tags (Stance, Charge, Form, Aura), and only one active skill of each tag can be in effect at a time. Tags are what makes choosing skills matter when there is no slot limit. The full rules, the list of tagged skills and the switching rules are in Skill tags below |
 | Skills in the power score | Only the strongest skills add to the Hero power score (see Hero power grade). The rest stay fully usable and can be fusion ingredients |
@@ -299,13 +299,13 @@ The climber fights the weapon master's practice elite using only that weapon's s
 | --- | --- |
 | Sword | Win with 3 critical hits |
 | Sword and shield | Block 3 attacks, then win |
-| Axe | Deal half the elite's HP in one hit |
+| Axe | Win after landing Cleave 3 times |
 | Short sword | Act twice before the elite's second turn |
-| Staff | Inflict 2 different statuses, then win |
+| Staff | Burn the elite twice, then win |
 | Tome | Win using no weapon attack, only skills |
 | Bow | Win without being hit in the first 3 turns |
 | Mace | Stun the elite twice |
-| Cards | Win with 3 different card skills |
+| Cards | Inflict 3 different weak statuses with Deal, then win |
 
 ## Skill fusion
 
@@ -346,7 +346,7 @@ Each trait has six values. The lists are only the draft vocabulary; the player s
 | Motion | Thrust, Slash, Strike, Shot, Guard, Flow |
 | Mind | Calm, Fury, Cunning, Mercy, Resolve, Whimsy |
 
-Values of the main skills named so far (draft). Skills from wandering masters have two values per trait, written with a slash. Add-on class skills, branch skills and the many scrap skills are not assigned yet.
+Values of the main skills named so far (draft). Skills from wandering masters have two values per trait, written with a slash. Branch skills are not assigned yet. Arc 1's other skills are in Arc 1 skill list below.
 
 | Skill | Source | Element | Motion | Mind |
 | --- | --- | --- | --- | --- |
@@ -389,6 +389,138 @@ Five recipes the climber can learn from clues (a hidden manual on floor 4, a bon
 | Brace + Bark Skin | Element Earth, Motion Guard | Stoneskin | Earth, Guard, Resolve | Open to every class (Bark Skin is open) | For 3 turns, Guard +20% and the first hit taken deals 20% less damage. No tag, so it stacks with a Stance and an Aura. Cooldown 5 |
 | Poison Dart + Pickpocket | Element Shadow | Venom Fingers | Shadow, Flow, Cunning | Trickster | Steals an item from the target and poisons it for 3% of max HP for 3 turns. If there is nothing to steal, the poison is 6%. Cooldown 4 |
 | Feint + Pratfall | Element Wind, Motion Flow | Stumble Feint | Wind, Flow, Cunning | Open to every class (Pratfall is open) | The enemy's next attack misses and it has a 30% chance to lose its next move. Cooldown 4 |
+
+### Arc 1 skill list (draft, Claude's choices)
+
+First-learned skills are at scrap level. A dash means no cooldown or no tag. Stances, Charges, Forms and Auras follow Skill tags above.
+
+#### Scrap skills (40; floor = where it is first given)
+
+| Skill | Effect | Element | Motion | Mind | Tag | Cooldown | Floor |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Whistle | Enemy accuracy −5% for 1 turn | Wind | Flow | Whimsy | - | 3 | 1 |
+| Stubborn Lean | Guard +5%, damage −5% | Earth | Guard | Resolve | Stance | - | 1 |
+| Straw Toss | 70% damage, enemy accuracy −5% for 1 turn | Earth | Shot | Whimsy | - | 2 | 1 |
+| Sweep Up | Remove one weak status from yourself | Water | Flow | Calm | - | 4 | 1 |
+| Road Song | Status resistance +5% for 2 turns | Light | Flow | Calm | - | 4 | 2 |
+| Blister Kick | 70% damage, enemy Agility −5% for 1 turn | Earth | Strike | Fury | - | 2 | 2 |
+| Haggle | Enemy Guard −5% for 1 turn | Shadow | Flow | Cunning | - | 3 | 2 |
+| Long Stare | Enemy deals 3% less damage for 1 turn | Shadow | Shot | Calm | - | 3 | 2 |
+| Deep Breath | Your next skill deals 10% more damage | Wind | Guard | Calm | Charge | - | 3 |
+| Fever Touch | 60% damage, 10% chance to poison for 2 turns | Water | Strike | Fury | - | 3 | 3 |
+| Yawn | 5% chance the enemy loses its next move | Water | Flow | Whimsy | - | 5 | 3 |
+| Dusk Glance | Crit chance +5% for 1 turn | Shadow | Thrust | Calm | - | 4 | 3 |
+| Wind-Up | Your next weapon attack deals 15% more damage | Fire | Strike | Fury | Charge | - | 4 |
+| Elbow | 70% damage, cannot be dodged | Earth | Strike | Cunning | - | 3 | 4 |
+| Tea Splash | 60% damage, 10% chance to burn for 2 turns | Fire | Shot | Whimsy | - | 3 | 4 |
+| Bow Politely | Next hit taken deals 5% less damage | Light | Guard | Mercy | - | 4 | 4 |
+| Candle Flick | 60% damage, ignores 5% of Ward | Fire | Shot | Calm | - | 3 | 5 |
+| Low Crouch | Evasion +5%, damage −5% | Shadow | Guard | Cunning | Stance | - | 5 |
+| Murmur | Remove one good status from an enemy | Water | Flow | Mercy | - | 4 | 5 |
+| Damp Slap | 70% damage, enemy Agility −5% for 1 turn | Water | Slash | Whimsy | - | 2 | 5 |
+| Fan Snap | 70% damage, enemy accuracy −5% for 1 turn | Wind | Slash | Cunning | - | 2 | 6 |
+| Curtsy Step | Evasion +5% for 1 turn | Wind | Flow | Mercy | - | 3 | 6 |
+| Rumor | Enemy deals 3% less damage for 2 turns | Shadow | Flow | Whimsy | - | 4 | 6 |
+| Humming | Status resistance +5%, upkeep 1% max HP | Light | Guard | Calm | Aura | - | 6 |
+| Pipe Swing | 80% damage | Earth | Slash | Fury | - | 2 | 7 |
+| Sulking | Damage taken −3%, upkeep 1% max HP | Shadow | Guard | Resolve | Aura | - | 7 |
+| Bandage Wrap | Heal 3% max HP (blocked on floor 7) | Water | Guard | Mercy | - | 5 | 7 |
+| Thrown Brick | 80% damage at range | Earth | Shot | Fury | - | 3 | 7 |
+| Twig Jab | 70% damage, +5% crit | Earth | Thrust | Whimsy | - | 2 | 8 |
+| Frog Hop | Evasion +10% for the Form's 3 turns | Water | Thrust | Whimsy | Form | - | 8 |
+| Pollen Puff | Enemy accuracy −5% for 2 turns | Wind | Shot | Mercy | - | 4 | 8 |
+| Moss Press | Guard +5% for 1 turn | Water | Guard | Resolve | - | 3 | 8 |
+| Drunken Sway | Evasion +10% for the Form's 3 turns, accuracy −5% | Fire | Flow | Whimsy | Form | - | 9 |
+| Crowd Wave | Attention +1 on a win (used once per fight) | Light | Flow | Whimsy | - | 5 | 9 |
+| Sand Kick | Enemy accuracy −5% for 1 turn | Fire | Slash | Cunning | - | 3 | 9 |
+| Taunt | Enemy targets you and deals 3% less for 1 turn | Fire | Strike | Resolve | - | 3 | 9 |
+| Brick Stance Tap | 70% damage, Guard +3% for 1 turn | Light | Strike | Resolve | - | 3 | 10 |
+| Soot Smear | Enemy accuracy −5% for 1 turn | Fire | Flow | Cunning | - | 3 | 10 |
+| Name Recall | Status resistance +5% for 1 turn | Light | Thrust | Mercy | - | 3 | 10 |
+| Last Nail | 80% damage against enemies below half HP | Light | Slash | Resolve | - | 3 | 10 |
+
+#### Weapon skills
+
+| Weapon | Stage | Skill | Effect | Cooldown | Element | Motion | Mind |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Sword | Novice | Clean Cut | 120% damage | 2 | Wind | Slash | Calm |
+| Sword | Intermediate | Riposte Line | 150% damage, +15% crit | 4 | Light | Slash | Resolve |
+| Sword and shield | Novice | Shield Step | 100% damage, Guard +10% for 2 turns | 3 | Earth | Guard | Resolve |
+| Sword and shield | Intermediate | Wall Push | 130% damage, 25% chance to stun | 4 | Earth | Strike | Resolve |
+| Axe | Novice | Cleave | 90% damage to all enemies | 3 | Fire | Slash | Fury |
+| Axe | Intermediate | Heavy Chop | 180% damage | 5 | Earth | Slash | Fury |
+| Short sword | Novice | Quick Stab | 90% damage, acts first this round | 2 | Wind | Thrust | Cunning |
+| Short sword | Intermediate | Backstep Cut | 130% damage, Evasion +10% for 1 turn | 4 | Shadow | Thrust | Cunning |
+| Staff | Novice | Ember Tap | 110% damage, 20% chance to burn for 3% max HP | 2 | Fire | Strike | Calm |
+| Staff | Intermediate | Focus Burst | 160% damage | 4 | Light | Shot | Calm |
+| Tome | Novice | Page Bolt | 120% damage | 2 | Light | Shot | Cunning |
+| Tome | Intermediate | Bound Word | 110% damage, one enemy skill gets +1 cooldown | 4 | Shadow | Flow | Resolve |
+| Bow | Novice | Quick Nock | 100% damage | 2 | Wind | Shot | Calm |
+| Bow | Intermediate | Long Draw | 170% damage, cannot miss | 5 | Wind | Shot | Resolve |
+| Mace | Novice | Crack | 110% damage, 20% chance to stun | 3 | Earth | Strike | Fury |
+| Mace | Intermediate | Skull Ring | 140% damage, 35% chance to stun | 5 | Light | Strike | Resolve |
+| Cards | Novice | Deal | 100% damage, one random weak status for 1 turn | 2 | Shadow | Shot | Whimsy |
+| Cards | Intermediate | Full House | Three hits of 60% damage | 4 | Wind | Shot | Whimsy |
+
+#### Add-on class skill traits
+
+| Skill | Class | Element | Motion | Mind |
+| --- | --- | --- | --- | --- |
+| Record | Chronicler | Water | Flow | Calm |
+| Recall | Chronicler | Light | Flow | Cunning |
+| Keepsake | Chronicler | Light | Guard | Resolve |
+| Offer | Merit-Walker | Water | Flow | Mercy |
+| Merit Chant | Merit-Walker | Light | Guard | Mercy |
+| Call Spirit | Merit-Walker | Shadow | Shot | Mercy |
+| Wager | Defier | Fire | Flow | Whimsy |
+| Stubborn Stand | Defier | Earth | Guard | Fury |
+| Spite | Defier | Shadow | Strike | Fury |
+
+#### Bond skill values and traits
+
+| Skill | Effect | Cooldown | Element | Motion | Mind |
+| --- | --- | --- | --- | --- | --- |
+| Tidy Up | Clears one weak status | 4 | Water | Flow | Calm |
+| Hearth Rest | Heal 2% max HP after a fight | - | Fire | Guard | Mercy |
+| Appraise | See an enemy's level | 3 | Light | Shot | Calm |
+| Keen Eye | See a chest's contents | - | Light | Flow | Cunning |
+| Lullaby | Enemy deals 5% less damage for 1 turn | 4 | Water | Flow | Mercy |
+| Green Thumb | Herbs heal 5% more | - | Earth | Flow | Calm |
+| Brave Smile | Guard +5% below half HP | - | Light | Guard | Resolve |
+| Steady Breath | Crit damage taken −5% for 1 turn | 3 | Wind | Guard | Calm |
+| Salute | First hit in a duel +5% damage | - | Light | Thrust | Resolve |
+| Second Wind | Heal 2% max HP after a fight | - | Wind | Flow | Resolve |
+| Teahouse Calm | Remove one debuff, once per fight | 5 | Water | Guard | Calm |
+| Gentle Hand | Calm one weak spirit for 1 turn | 4 | Light | Flow | Mercy |
+| Margin Note | See an enemy's element | 3 | Shadow | Shot | Cunning |
+| Hide and Seek | 5% less likely to be targeted for 1 turn | 3 | Shadow | Flow | Whimsy |
+| Poise | Ward +5% | - | Light | Guard | Calm |
+| Pocket Lock | Open simple locks | - | Shadow | Flow | Cunning |
+| Steady Post | Guard +5% for the first 3 turns | - | Earth | Guard | Resolve |
+| Roaring Laughter | 5% chance to stun | 4 | Wind | Strike | Whimsy |
+| Rally Cry | Guard +5% for 1 turn | 3 | Fire | Guard | Resolve |
+| Hold Steady | Resist knockback for 1 turn | 3 | Earth | Guard | Calm |
+| Field Dressing | Healing items heal 5% more | - | Water | Guard | Mercy |
+| Spark Plug | 5% max HP shock, once per fight | 5 | Fire | Shot | Whimsy |
+| Root Step | Evasion +5% | - | Earth | Flow | Calm |
+| Wind Reading | Accuracy +5% | - | Wind | Shot | Calm |
+| Tree Sit | Heal 3% max HP when you skip a turn | - | Earth | Guard | Calm |
+| Last Bow | Damage +5% for 1 turn after being hit | - | Fire | Strike | Fury |
+| Showboat | Attention +1 on a risky win | - | Fire | Flow | Whimsy |
+| Quick Strap | Swap weapon type free, once per fight | 5 | Wind | Flow | Cunning |
+| Stand Fast | Guard +5% for 1 turn | 3 | Earth | Guard | Resolve |
+| Reinforce | Shield of 3% max HP at fight start | - | Earth | Guard | Cunning |
+| Steady Heart | Resist fear for 1 turn | 3 | Light | Guard | Resolve |
+
+#### Secret recipes
+
+Each result is one stage above the highest ingredient and open to every class.
+
+| Ingredients | Result | Traits | Effect | Cooldown |
+| --- | --- | --- | --- | --- |
+| Teahouse Calm (floor 4), Gentle Hand (5), Tree Sit (8) | Stillness of the Kept | Water, Guard, Mercy | Removes all debuffs and heals 15% of max HP | 5 |
+| Salute (4), Last Bow (9), Stand Fast (10) | Wall-Breaker's Salute | Light, Strike, Resolve | 250% damage, ignores Guard | 5 |
+| Appraise (2), Margin Note (5), Wind Reading (8) | Reader of Weight | Shadow, Shot, Cunning | Reveals the enemy's weakness and next move for this fight, and your next hit deals 50% more | 4 |
 
 ## Crafting
 
