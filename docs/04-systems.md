@@ -912,11 +912,11 @@ The First Wall master stays at Attack ×1.2 for now. With 2 Draughts every class
 | Part | Rule |
 | --- | --- |
 | Turn | One action per turn. Using an item or swapping a weapon costs the turn (Quick Strap excepted). Enemies only target the climber |
-| HP between fights | No regeneration. Rest at a resting place is free and restores all HP. A defeat returns the climber at full HP, except on floor 7 (50%) |
+| HP between fights | No regeneration. Rest at a resting place is free and restores all HP, and so does a level-up. A defeat returns the climber at full HP, except on floor 7 (50%) |
 | Fight size | A field fight holds 1 to 3 enemies, drawn from the floor's monster counts. Each enemy's Attack is ×0.8 in a pair and ×0.6 in a group of three |
 | Enemy moves | Each enemy has a weighted move list with cooldowns. Move types are attack, guard, status and charge. Elites and bosses add scripted moves at HP thresholds. An enemy's next move is hidden unless a skill or blessing reveals it |
 | Weakness | Each enemy has one weak Element and takes 25% more from skills of that Element. Skills do not show their Element |
-| Level-up | Stats rise automatically, in proportion to the class's starting stats, in whole points (leftovers go to the largest remainders). There are no free points. Claude's choice: a level-up does not restore HP |
+| Level-up | Stats rise automatically, in proportion to the class's starting stats, in whole points (leftovers go to the largest remainders). There are no free points. A level-up restores full HP (decided with Phat, Nov 10, 2026), except on floor 7 |
 | Start | Enter a name and pick one of 4 preset portraits. Class comes from floor 1's gift. The climber starts with a class-style F weapon, no armor and 3 Basic Salves |
 | Save | One slot on the device, saved after each fight and location change, and when a fight starts. A fight left unfinished (reload, closed tab, crash) counts as a defeat (decided with Phat, Nov 10, 2026) |
 | Flee | 40% + 1% per Agility, up to 90% |

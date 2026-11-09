@@ -47,14 +47,14 @@ function lowerLastBond({ bonds, lastBond }: RunState): Record<string, number> {
   return bondLevel === 0 ? bonds : { ...bonds, [lastBond]: balance.bondThresholds[bondLevel - 1] };
 }
 
-function gainExp(state: RunState, gained: number): Pick<RunState, 'level' | 'exp'> {
+function winFight(state: RunState, hp: number, gained: number): RunState {
   let { level } = state;
   let exp = state.exp + gained;
   while (exp >= expToNext(level)) {
     exp -= expToNext(level);
     level += 1;
   }
-  return { level, exp };
+  return { ...state, level, exp, hp: level > state.level ? maxHp(level) : hp, inFight: false };
 }
 
 function defeat(state: RunState): RunState {
@@ -84,7 +84,7 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
     case 'fightEnd':
       return action.outcome === 'lost'
         ? defeat(state)
-        : { ...state, ...gainExp(state, action.exp), hp: action.hp, inFight: false };
+        : winFight(state, action.hp, action.exp);
   }
 }
 

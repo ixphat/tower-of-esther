@@ -54,8 +54,12 @@ describe('EXP from wins', () => {
     expect(applyAction(run(), floor, win(350))).toMatchObject({ level: 3, exp: 50 });
   });
 
-  it('does not heal on level-up', () => {
-    expect(applyAction(run({ exp: 99 }), floor, win(1, 40)).hp).toBe(40);
+  it('restores full HP at the new level on level-up', () => {
+    expect(applyAction(run({ exp: 99 }), floor, win(1, 40)).hp).toBe(168);
+  });
+
+  it('keeps fight-end HP when no level is gained', () => {
+    expect(applyAction(run({ exp: 98 }), floor, win(1, 40)).hp).toBe(40);
   });
 
   it('never drops the level on defeat', () => {
