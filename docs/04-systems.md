@@ -571,7 +571,7 @@ The Watchers first appear on floor 9. The roster, their styles and their endings
 | Part | Design |
 | --- | --- |
 | Gauge | One gauge from 0 to 100 for "how exciting the climber's play is" |
-| What raises it | Exciting play, for example: taking a handicap on floor 9 (+5), winning below 10% HP (+10), winning a hard fight such as an elite (+10), finding a secret (+5), a first clear of a floor (+15), a bold story choice (+5) |
+| What raises it | Exciting play, for example: taking a handicap on floor 9 (+3 per risk point), winning below 10% HP (+10), winning a hard fight such as an elite (+10), finding a secret (+5), a first clear of a floor (+15), a bold story choice (+5) |
 | What lowers it | Playing safe: it drains slowly (draft: 2 points per fight with no risk, never below 0, so safe farming earns no tips) |
 | Tip | When the gauge reaches 100, the Watchers tip 10 Watcher coins (draft) and the gauge falls back to 30 |
 | Who gets the share | All the coins go to the climber. Each tip also gives 10 Favor, split among the Watchers by which kind of play caused the Attention, for example a comeback goes to Brio, sparing an opponent to Nalin, a fast win to Voss, a found secret to the Mirror, a broken rule to Varek |
