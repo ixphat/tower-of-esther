@@ -75,7 +75,10 @@ test('HP carries, Rest restores it, and defeat returns to the resting place', as
 
   await go('Village Square');
   await go('Fields, monsters here');
-  while (!(await fightOnce()));
+  while (!(await fightOnce())) {
+    await go('Village Square');
+    await go('Fields, monsters here');
+  }
 
   await expect(page.getByRole('heading', { name: "Keeper's House" })).toBeFocused();
   expect(await hp()).toBe(full);
@@ -84,6 +87,58 @@ test('HP carries, Rest restores it, and defeat returns to the resting place', as
   await page.getByRole('button', { name: 'Continue' }).click();
   await expect(page.getByRole('heading', { name: "Keeper's House" })).toBeVisible();
   await expect(page.locator('body')).not.toContainText(/memor/i);
+});
+
+test('items, drops, respawn, stall and comparing gear', async ({ page }) => {
+  const status = page.getByRole('status', { name: 'Climber' });
+  const coins = async () => Number(/Coins (\d+)/.exec(await status.innerText())![1]);
+  const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
+  const fight = page.getByRole('button', { name: 'Fight Straw Remnant' });
+  const attack = page.getByRole('button', { name: 'Weapon attack' });
+  const back = page.getByRole('button', { name: 'Return' });
+
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+  await go('Fields, monsters here');
+  await fight.click();
+
+  const salve = page.getByRole('button', { name: /Basic Salve/ });
+  await salve.click();
+  await salve.click();
+  await expect(salve).toBeDisabled();
+  await expect(page.getByText('Healing items used up')).toBeVisible();
+  while (!(await back.isVisible())) await attack.click();
+  await expect(page.getByRole('log', { name: 'Combat log' })).toContainText('Straw Thread ×1');
+  await back.click();
+  await expect(fight).toHaveCount(0); // beaten until re-entry
+
+  // coins come from quests and floor clears, which do not exist yet
+  await page.evaluate(() => {
+    const key = 'tower-of-esther.save';
+    const save = JSON.parse(localStorage.getItem(key)!);
+    save.run.coins = 50;
+    localStorage.setItem(key, JSON.stringify(save));
+  });
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue' }).click();
+
+  await go('Village Square');
+  await go("Keeper's House");
+  const before = await coins();
+  await page.getByRole('button', { name: 'Stall' }).click();
+  await page.getByRole('button', { name: 'Buy Plain Coat' }).click();
+  await page.getByRole('button', { name: 'Close' }).click();
+  expect(await coins()).toBe(before - 50);
+
+  await page.getByRole('button', { name: 'Bag' }).click();
+  const bag = page.getByRole('dialog', { name: 'Bag' });
+  await expect(bag).toContainText('+2 Guard, +2 Ward');
+  await bag.getByRole('button', { name: 'Equip Plain Coat' }).click();
+  await expect(bag).toContainText('body: Plain Coat');
+  await bag.getByRole('button', { name: 'Items', exact: true }).click();
+  await expect(bag).toContainText('Basic Salve ×1');
+  await bag.getByRole('button', { name: 'Materials' }).click();
+  await expect(bag).toContainText('Straw Thread ×');
 });
 
 test('reloading mid-fight counts as a defeat', async ({ page }) => {

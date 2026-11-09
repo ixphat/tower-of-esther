@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { expToNext, heroPower, maxHp, statsAt } from './climber';
+import { compareGear, expToNext, heroParts, heroPower, maxHp, statsAt } from './climber';
 
 const core = (level: number) => {
-  const { vitality, power, agility, mind } = statsAt(level);
+  const { vitality, power, agility, mind } = statsAt(level, {});
   return [vitality, power, agility, mind];
 };
 
@@ -51,5 +51,29 @@ describe('Hero power cap rule', () => {
 
   it('stops at the top grade', () => {
     expect(heroPower({ stats: 999, skills: 999, gear: 999 })).toMatchObject({ grade: 'SSS', needed: 650, cap: 325 });
+  });
+});
+
+describe('worn gear', () => {
+  it('feeds weapon attack, armor and gear points', () => {
+    const worn = { weapon: 'worn-sword', body: 'plain-coat', head: 'plain-cap' };
+    expect(statsAt(1, worn)).toMatchObject({ weaponAttack: 8, armorGuard: 4, armorWard: 4 });
+    expect(heroParts(1, worn).gear).toBe(3);
+  });
+
+  it('compares a piece with what is worn in that slot', () => {
+    expect(compareGear('plain-coat', {})).toEqual([
+      { stat: 'Guard', delta: 2 },
+      { stat: 'Ward', delta: 2 },
+    ]);
+    expect(compareGear('plain-coat', { body: 'plain-coat' })).toEqual([]);
+  });
+
+  it('shows a minus when the worn piece is better', () => {
+    expect(compareGear('plain-cap', { head: 'worn-sword' })).toEqual([
+      { stat: 'Attack', delta: -8 },
+      { stat: 'Guard', delta: 2 },
+      { stat: 'Ward', delta: 2 },
+    ]);
   });
 });

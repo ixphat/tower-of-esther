@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { floors, validateFloor, type Floor } from './data';
+import { floors, validateFloor, validateGameData, type Floor } from './data';
 
 const floor = (over: Partial<Floor> = {}): Floor => ({
   id: 1,
@@ -29,6 +29,22 @@ describe('floor data', () => {
     const broken = floor();
     broken.locations[0].enemies = ['ghost'];
     expect(validateFloor(broken)).toEqual(['a: enemy "ghost" does not exist']);
+  });
+
+  it('reports a stall item that does not exist', () => {
+    const broken = floor();
+    broken.locations[0].shop = ['ghost'];
+    expect(validateFloor(broken)).toEqual(['a: shop item "ghost" does not exist']);
+  });
+
+  it('reports a stall item with no price', () => {
+    const broken = floor();
+    broken.locations[0].shop = ['straw-thread'];
+    expect(validateFloor(broken)).toEqual(['a: shop item "straw-thread" has no price']);
+  });
+
+  it('resolves every enemy drop, starting item and worn piece', () => {
+    expect(validateGameData()).toEqual([]);
   });
 
   it('reports a missing start location', () => {

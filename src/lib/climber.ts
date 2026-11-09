@@ -1,12 +1,18 @@
 import balance from '../../data/balance.json';
 import climberData from '../../data/climber.json';
 import { climberCombatant, type ClimberStats } from './combat';
+import { itemById, type Slot } from './data';
+
+export type Worn = Partial<Record<Slot, string>>;
+
+const wornItems = (worn: Worn) => Object.values(worn).map((id) => itemById(id)!); // save and data checks guarantee they exist
+const sumOf = (worn: Worn, stat: 'attack' | 'guard' | 'ward') => wornItems(worn).reduce((sum, item) => sum + (item[stat] ?? 0), 0);
 
 const CORE = ['vitality', 'power', 'agility', 'mind'] as const;
 
 export const expToNext = (level: number): number => balance.expPerLevel * level;
 
-export function statsAt(level: number): ClimberStats {
+export function statsAt(level: number, worn: Worn): ClimberStats {
   const total = CORE.reduce((sum, stat) => sum + climberData[stat], 0);
   const statPoints = (level - 1) * balance.statPointsPerLevel;
   const shares = CORE.map((stat) => (statPoints * climberData[stat]) / total);
@@ -21,10 +27,19 @@ export function statsAt(level: number): ClimberStats {
     .forEach(({ index }) => (gains[index] += 1));
 
   const [vitality, power, agility, mind] = CORE.map((stat, index) => climberData[stat] + gains[index]);
-  return { level, vitality, power, agility, mind, weaponAttack: climberData.weaponAttack };
+  return {
+    level,
+    vitality,
+    power,
+    agility,
+    mind,
+    weaponAttack: sumOf(worn, 'attack'),
+    armorGuard: sumOf(worn, 'guard'),
+    armorWard: sumOf(worn, 'ward'),
+  };
 }
 
-export const maxHp = (level: number): number => climberCombatant(statsAt(level)).maxHp;
+export const maxHp = (level: number): number => climberCombatant(statsAt(level, {})).maxHp;
 
 export interface HeroParts {
   stats: number;
@@ -32,9 +47,12 @@ export interface HeroParts {
   gear: number;
 }
 
-export function heroParts(level: number): HeroParts {
-  const { vitality, power, agility, mind } = statsAt(level);
-  const gear = balance.gearGradePoints[climberData.weaponGrade as keyof typeof balance.gearGradePoints];
+export function heroParts(level: number, worn: Worn): HeroParts {
+  const { vitality, power, agility, mind } = statsAt(level, worn);
+  const gear = wornItems(worn).reduce(
+    (sum, item) => sum + balance.gearGradePoints[item.grade as keyof typeof balance.gearGradePoints],
+    0,
+  );
   return { stats: vitality + power + agility + mind, skills: 0, gear }; // skills arrive with the Skills ticket
 }
 
@@ -45,4 +63,18 @@ export function heroPower(parts: HeroParts) {
   const reached = grades.findLastIndex(({ score }) => counted(score) >= score);
   const needed = grades[Math.min(reached + 1, grades.length - 1)].score;
   return { grade: grades[reached].grade, score: counted(needed), needed, cap: needed * balance.heroPartCap };
+}
+
+export function compareGear(candidate: string, worn: Worn): { stat: string; delta: number }[] {
+  const piece = itemById(candidate)!;
+  const current = piece.slot && worn[piece.slot] ? itemById(worn[piece.slot]!) : undefined;
+  return (
+    [
+      ['Attack', 'attack'],
+      ['Guard', 'guard'],
+      ['Ward', 'ward'],
+    ] as const
+  )
+    .map(([stat, key]) => ({ stat, delta: (piece[key] ?? 0) - (current?.[key] ?? 0) }))
+    .filter(({ delta }) => delta !== 0);
 }

@@ -58,8 +58,8 @@ describe('strike formulas (04 Systems)', () => {
   });
 
   it('derives the climber from core stats', () => {
-    const stats = { level: 1, vitality: 8, power: 5, agility: 3, mind: 4, weaponAttack: 8 };
-    expect(climberCombatant(stats)).toMatchObject({ maxHp: 151, hp: 151, attack: 18, guard: 8, agility: 3 });
+    const stats = { level: 1, vitality: 8, power: 5, agility: 3, mind: 4, weaponAttack: 8, armorGuard: 6, armorWard: 6 };
+    expect(climberCombatant(stats)).toMatchObject({ maxHp: 151, hp: 151, attack: 18, guard: 14, agility: 3 });
   });
 });
 
@@ -104,6 +104,26 @@ describe('fight flow', () => {
     const { state } = act(start.state, attack, miss);
     expect(start.state.enemies[0].hp).toBe(hp);
     expect(() => act(state, attack, miss)).toThrow('The fight is over');
+  });
+
+  it('heals a share of max HP, capped at max, and costs the turn', () => {
+    const start = startFight(climber({ hp: 100 }), [enemy()], miss);
+    const { state, events } = act(start.state, { type: 'heal', fraction: 0.2 }, miss);
+    expect(events[0]).toEqual({ type: 'heal', target: 'Climber', amount: 200 });
+    expect(events[1]).toMatchObject({ type: 'hit', attacker: 'E' }); // the enemy replies
+    expect(state.round).toBe(2);
+
+    const nearFull = act(startFight(climber({ hp: 950 }), [enemy()], miss).state, { type: 'heal', fraction: 0.2 }, miss);
+    expect(nearFull.events[0]).toMatchObject({ amount: 50 });
+  });
+
+  it('refuses a third healing item in one fight', () => {
+    const heal = { type: 'heal', fraction: 0.2 } as const;
+    let { state } = startFight(climber(), [enemy()], miss);
+    ({ state } = act(state, heal, miss));
+    ({ state } = act(state, heal, miss));
+    expect(state.healsUsed).toBe(2);
+    expect(() => act(state, heal, miss)).toThrow('Healing item limit reached');
   });
 
   it('plays the same fight from the same seed', () => {

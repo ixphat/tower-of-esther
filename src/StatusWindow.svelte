@@ -9,8 +9,8 @@
   const tabs = ['Overview', 'Titles', 'Bonds', 'Floor clears'];
   let tab = $state('Overview');
 
-  const stats = $derived(statsAt(run.level));
-  const parts = $derived(heroParts(run.level));
+  const stats = $derived(statsAt(run.level, run.worn));
+  const parts = $derived(heroParts(run.level, run.worn));
   const hero = $derived(heroPower(parts));
   const bars = $derived([
     ['Stats', parts.stats],
@@ -35,7 +35,7 @@
     <li>Mind {stats.mind}</li>
     <li>Evasion {(evasionChance(stats.agility) * 100).toFixed(1)}%</li>
     <li>Guard {climberCombatant(stats).guard}</li>
-    <li>Ward {stats.mind}</li>
+    <li>Ward {stats.mind + stats.armorWard}</li>
   </ul>
   <p>Hero power {hero.grade} · score {hero.score} · recommended grade {floor.recommendedGrade}</p>
   {#each bars as [label, value] (label)}
@@ -55,17 +55,6 @@
 {/if}
 
 <style>
-  .tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-  }
-
-  [aria-pressed='true'] {
-    background: var(--gold);
-    color: var(--ink);
-  }
-
   ul {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
