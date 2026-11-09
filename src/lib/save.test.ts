@@ -26,12 +26,12 @@ describe('save', () => {
 
   it('round-trips the run', () => {
     const storage = fakeStorage();
-    const run = { ...newRun(floor), hp: 40, memoriesLost: 2, bonds: { keeper: 30 }, lastBond: 'keeper' };
+    const run = { ...newRun(floor), hp: 40, coins: 7, cleared: ['a'], memoriesLost: 2, bonds: { keeper: 30 }, lastBond: 'keeper' };
     writeSave(storage, run);
     expect(readSave(storage, floor)).toEqual(run);
   });
 
-  const saved = (over: object) => JSON.stringify({ version: 4, run: { ...newRun(floor), ...over } });
+  const saved = (over: object) => JSON.stringify({ version: 5, run: { ...newRun(floor), ...over } });
 
   it.each([
     ['corrupt JSON', '{oops'],
@@ -41,6 +41,10 @@ describe('save', () => {
     ['an unknown safe point', saved({ safePoint: 'gone' })],
     ['HP of zero', saved({ hp: 0 })],
     ['HP above the maximum', saved({ hp: 99999 })],
+    ['negative coins', saved({ coins: -1 })],
+    ['an unknown item', saved({ items: { ghost: 1 } })],
+    ['a piece worn in the wrong slot', saved({ worn: { head: 'plain-coat' } })],
+    ['an unknown cleared location', saved({ cleared: ['gone'] })],
     ['a level below 1', saved({ level: 0 })],
     ['a negative counter', saved({ memoriesLost: -1 })],
     ['bonds that are a list', saved({ bonds: [] })],

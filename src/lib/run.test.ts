@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Floor } from './data';
-import { applyAction, newRun, resumeRun, type RunState } from './run';
+import { applyAction, fightRewards, newRun, resumeRun, type RunState } from './run';
 
 const floor: Floor = {
   id: 1,
@@ -9,7 +9,7 @@ const floor: Floor = {
   start: 'gate',
   locations: [
     { id: 'gate', name: 'Gate', description: '', exits: ['inn', 'field'] },
-    { id: 'inn', name: 'Inn', description: '', exits: ['gate'], rest: true },
+    { id: 'inn', name: 'Inn', description: '', exits: ['gate'], rest: true, shop: ['basic-salve', 'plain-coat', 'ration'] },
     { id: 'field', name: 'Field', description: '', exits: ['gate'] },
   ],
 };
@@ -17,7 +17,8 @@ const floor: Floor = {
 const full = newRun(floor).hp;
 const run = (over: Partial<RunState> = {}): RunState => ({ ...newRun(floor), ...over });
 const lose = { type: 'fightEnd', outcome: 'lost' } as const;
-const win = (exp: number, hp = 40) => ({ type: 'fightEnd', outcome: 'won', hp, exp }) as const;
+const rewards = (exp = 0, drops = {}) => ({ exp, drops });
+const win = (exp: number, hp = 40) => ({ type: 'fightEnd', outcome: 'won', hp, rewards: rewards(exp) }) as const;
 
 describe('HP between fights', () => {
   it('starts full at the floor start, with the start as safe point', () => {
@@ -25,7 +26,7 @@ describe('HP between fights', () => {
   });
 
   it('keeps the HP a won fight ended on, through moves', () => {
-    let state = applyAction(run(), floor, { type: 'fightEnd', outcome: 'won', hp: 40, exp: 0 });
+    let state = applyAction(run(), floor, { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards() });
     state = applyAction(state, floor, { type: 'move', to: 'field' });
     expect(state.hp).toBe(40);
   });
@@ -71,6 +72,70 @@ describe('EXP from wins', () => {
   });
 });
 
+describe('rewards and respawn', () => {
+  const won = { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards(1, { 'straw-thread': 2 }) } as const;
+
+  it('puts drops in the run and pays no coins', () => {
+    const state = applyAction(run({ coins: 1, items: { 'straw-thread': 3 } }), floor, won);
+    expect(state).toMatchObject({ coins: 1, items: { 'straw-thread': 5 } });
+  });
+
+  it('adds up the rewards of every foe', () => {
+    const foe = { id: 'a', name: 'A', hp: 1, attack: 1, def: 0, agility: 0, exp: 1, drops: { 'straw-thread': 1 } };
+    expect(fightRewards([foe, foe])).toEqual({ exp: 2, drops: { 'straw-thread': 2 } });
+  });
+
+  it('clears the location on a win and respawns on re-entry', () => {
+    let state = applyAction(run({ locationId: 'field' }), floor, won);
+    expect(state.cleared).toEqual(['field']);
+    state = applyAction(state, floor, { type: 'move', to: 'gate' });
+    expect(state.cleared).toEqual(['field']);
+    state = applyAction(state, floor, { type: 'move', to: 'field' });
+    expect(state.cleared).toEqual([]);
+  });
+});
+
+describe('items', () => {
+  const inn = { locationId: 'inn' };
+
+  it('starts with 100 coins, 3 Basic Salves and the starting weapon worn', () => {
+    expect(newRun(floor)).toMatchObject({ coins: 100, items: { 'basic-salve': 3 }, worn: { weapon: 'worn-sword' } });
+  });
+
+  it('spends one item in a fight without healing here', () => {
+    const state = applyAction(run({ hp: 10 }), floor, { type: 'spendItem', item: 'basic-salve' });
+    expect(state).toMatchObject({ hp: 10, items: { 'basic-salve': 2 } });
+  });
+
+  it('heals when used outside a fight, capped at max HP', () => {
+    expect(applyAction(run({ hp: 10 }), floor, { type: 'useItem', item: 'basic-salve' }).hp).toBe(40); // 20% of 151 = 30
+    expect(applyAction(run({ hp: full - 1 }), floor, { type: 'useItem', item: 'basic-salve' }).hp).toBe(full);
+  });
+
+  it('refuses an item the climber does not hold', () => {
+    expect(() => applyAction(run({ items: {} }), floor, { type: 'useItem', item: 'basic-salve' })).toThrow();
+  });
+
+  it('buys from the local stall and spends coins', () => {
+    const state = applyAction(run({ ...inn, coins: 35, items: {} }), floor, { type: 'buy', item: 'basic-salve' });
+    expect(state).toMatchObject({ coins: 5, items: { 'basic-salve': 1 } });
+  });
+
+  it('refuses a purchase without enough coins or away from the stall', () => {
+    expect(() => applyAction(run({ ...inn, coins: 29 }), floor, { type: 'buy', item: 'basic-salve' })).toThrow();
+    expect(() => applyAction(run({ coins: 99 }), floor, { type: 'buy', item: 'basic-salve' })).toThrow();
+    expect(() => applyAction(run({ ...inn, coins: 999 }), floor, { type: 'buy', item: 'herb-draught' })).toThrow();
+  });
+
+  it('equips a carried piece and returns the old one to the bag', () => {
+    const before = run({ items: { 'plain-coat': 1 }, worn: { weapon: 'worn-sword', body: 'plain-cap' } });
+    expect(applyAction(before, floor, { type: 'equip', item: 'plain-coat' })).toMatchObject({
+      items: { 'plain-coat': 0, 'plain-cap': 1 },
+      worn: { weapon: 'worn-sword', body: 'plain-coat' },
+    });
+  });
+});
+
 describe('leaving a fight unfinished', () => {
   it('counts as a defeat when the run resumes', () => {
     const started = applyAction(run({ locationId: 'field', exp: 200 }), floor, { type: 'fightStart' });
@@ -79,8 +144,8 @@ describe('leaving a fight unfinished', () => {
 
   it('costs nothing once the fight has ended', () => {
     const started = applyAction(run({ hp: 90 }), floor, { type: 'fightStart' });
-    const ended = applyAction(started, floor, { type: 'fightEnd', outcome: 'won', hp: 40, exp: 0 });
-    expect(resumeRun(ended, floor)).toEqual({ ...run(), hp: 40 });
+    const ended = applyAction(started, floor, { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards() });
+    expect(resumeRun(ended, floor)).toEqual({ ...run(), hp: 40, cleared: ['gate'] });
   });
 });
 

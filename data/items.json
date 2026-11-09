@@ -1,0 +1,13 @@
+[
+  { "id": "basic-salve", "name": "Basic Salve", "kind": "consumable", "heal": 0.2, "price": 30 },
+  { "id": "herb-draught", "name": "Herb Draught", "kind": "consumable", "heal": 0.4, "price": 100 },
+  { "id": "ration", "name": "Ration", "kind": "consumable", "heal": 0.3, "price": 20, "outsideFightOnly": true },
+  { "id": "straw-thread", "name": "Straw Thread", "kind": "material", "floor": 1 },
+  { "id": "worn-sword", "name": "Worn Sword", "kind": "equipment", "slot": "weapon", "grade": "F", "attack": 8 },
+  { "id": "plain-sword", "name": "Plain Sword", "kind": "equipment", "slot": "weapon", "grade": "F", "attack": 8, "price": 50 },
+  { "id": "plain-cap", "name": "Plain Cap", "kind": "equipment", "slot": "head", "grade": "F", "guard": 2, "ward": 2, "price": 50 },
+  { "id": "plain-coat", "name": "Plain Coat", "kind": "equipment", "slot": "body", "grade": "F", "guard": 2, "ward": 2, "price": 50 },
+  { "id": "plain-gloves", "name": "Plain Gloves", "kind": "equipment", "slot": "gloves", "grade": "F", "guard": 2, "ward": 2, "price": 50 },
+  { "id": "plain-boots", "name": "Plain Boots", "kind": "equipment", "slot": "boots", "grade": "F", "guard": 2, "ward": 2, "price": 50 },
+  { "id": "plain-charm", "name": "Plain Charm", "kind": "equipment", "slot": "accessory", "grade": "F", "guard": 2, "ward": 2, "price": 50 }
+]

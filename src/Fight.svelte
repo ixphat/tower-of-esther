@@ -1,31 +1,38 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { statsAt } from './lib/climber';
-  import { act, climberCombatant, createRng, enemyCombatant, startFight, type FightEvent, type FightState } from './lib/combat';
-  import type { Enemy, Floor } from './lib/data';
+  import { act, climberCombatant, createRng, enemyCombatant, startFight, type Action, type FightEvent, type FightState } from './lib/combat';
+  import { itemById, type Enemy, type Floor, type Item } from './lib/data';
+  import { fightRewards, type Rewards } from './lib/run';
+  import balance from '../data/balance.json';
+  import type { Worn } from './lib/climber';
 
   interface Props {
     floor: Floor;
     foes: Enemy[];
     hp: number;
     level: number;
-    onFinish: (outcome: 'won' | 'lost', hp: number, exp: number) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
+    worn: Worn;
+    items: Record<string, number>;
+    onSpendItem: (item: string) => void; // saved at once, a used item stays used
+    onFinish: (outcome: 'won' | 'lost', hp: number, rewards: Rewards) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
     onReturn: () => void;
   }
 
-  const { floor, foes, hp, level, onFinish, onReturn }: Props = $props();
+  const { floor, foes, hp, level, worn, items, onSpendItem, onFinish, onReturn }: Props = $props();
 
   const LOG_LINES = 5;
 
   function describe(event: FightEvent): string {
     if (event.type === 'miss') return `${event.target} evades ${event.attacker}.`;
+    if (event.type === 'heal') return `${event.target} recovers ${event.amount} HP.`;
     if (event.type === 'end') return event.outcome === 'won' ? 'Victory.' : 'Defeated.';
     return `${event.crit ? 'Critical. ' : ''}${event.attacker} hits ${event.target} for ${event.damage}.`;
   }
 
   const rng = createRng(crypto.getRandomValues(new Uint32Array(1))[0]);
   // svelte-ignore state_referenced_locally -- foes are fixed for the life of this fight
-  const start = startFight({ ...climberCombatant(statsAt(level)), hp }, foes.map(enemyCombatant), rng);
+  const start = startFight({ ...climberCombatant(statsAt(level, worn)), hp }, foes.map(enemyCombatant), rng);
 
   let fight = $state(start.state);
   let log = $state(start.events.map(describe));
@@ -36,15 +43,35 @@
 
   function reportEnd(state: FightState) {
     if (state.outcome === 'ongoing') return;
-    const exp = foes.reduce((sum, foe) => sum + foe.exp, 0);
-    if (state.outcome === 'won') log = [...log, `Gained ${exp} EXP.`];
-    onFinish(state.outcome, state.climber.hp, exp);
+    const rewards = fightRewards(foes);
+    if (state.outcome === 'won') {
+      const drops = Object.entries(rewards.drops).map(([id, amount]) => `${itemById(id)!.name} ×${amount}`);
+      log = [...log, `Gained ${[`${rewards.exp} EXP`, ...drops].join(', ')}.`];
+    }
+    onFinish(state.outcome, state.climber.hp, rewards);
   }
 
   onMount(() => reportEnd(start.state)); // a faster enemy can end the fight before the first action
 
-  async function attack() {
-    const step = act($state.snapshot(fight), { type: 'attack', target: fight.enemies.findIndex((e) => e.hp > 0) }, rng);
+  const healingItems = $derived(
+    Object.entries(items)
+      .map(([id, count]) => ({ item: itemById(id)!, count }))
+      .filter(({ item, count }) => count > 0 && item.heal && !item.outsideFightOnly),
+  );
+  const healLimitReached = $derived(fight.healsUsed >= balance.healItemsPerFight);
+
+  function attack() {
+    return perform({ type: 'attack', target: fight.enemies.findIndex((e) => e.hp > 0) });
+  }
+
+  function heal(item: Item) {
+    const done = perform({ type: 'heal', fraction: item.heal! }); // throws first if refused, so nothing is spent
+    onSpendItem(item.id);
+    return done;
+  }
+
+  async function perform(action: Action) {
+    const step = act($state.snapshot(fight), action, rng);
     fight = step.state;
     log = [...log, ...step.events.map(describe)];
     reportEnd(step.state);
@@ -82,6 +109,10 @@
   <div class="actions">
     {#if fight.outcome === 'ongoing'}
       <button onclick={attack}>Weapon attack</button>
+      {#each healingItems as { item, count } (item.id)}
+        <button disabled={healLimitReached} onclick={() => heal(item)}>{item.name} ×{count}</button>
+      {/each}
+      {#if healLimitReached}<span>Healing items used up for this fight.</span>{/if}
     {:else}
       <button bind:this={back} onclick={onReturn}>Return</button>
     {/if}
@@ -131,6 +162,13 @@
   .scene p,
   .log p {
     margin: 0;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .log {

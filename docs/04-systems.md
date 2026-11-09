@@ -940,6 +940,8 @@ Skill chance is reduced by 0.5 percentage points per target's Mind. Reapplying r
 
 Plain gear is sold up to the floor's recommended grade at 50 × grade points × floor number coins per piece. Prices below are in coins. A dash means not sold.
 
+The climber starts with 100 coins (decided with Phat, Nov 10, 2026). Claude's choices (draft): plain pieces are named Plain Sword, Cap, Coat, Gloves, Boots and Charm. Salves and Draughts can also be used outside fights.
+
 | Item | Effect | Price | Source |
 | --- | --- | --- | --- |
 | Basic Salve | Heal 20% of max HP | 30 | Shops |

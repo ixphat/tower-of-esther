@@ -1,1 +1,9 @@
-{ "vitality": 8, "power": 5, "agility": 3, "mind": 4, "weaponAttack": 8, "weaponGrade": "F" }
+{
+  "vitality": 8,
+  "power": 5,
+  "agility": 3,
+  "mind": 4,
+  "startingCoins": 100,
+  "startingWeapon": "worn-sword",
+  "startingItems": { "basic-salve": 3 }
+}

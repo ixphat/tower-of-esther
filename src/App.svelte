@@ -2,9 +2,11 @@
   import { tick } from 'svelte';
   import Fight from './Fight.svelte';
   import { enemies, floors, type Enemy } from './lib/data';
+  import BagWindow from './BagWindow.svelte';
+  import StallWindow from './StallWindow.svelte';
   import StatusWindow from './StatusWindow.svelte';
   import { expToNext, maxHp } from './lib/climber';
-  import { applyAction, newRun, resumeRun, type RunAction, type RunState } from './lib/run';
+  import { applyAction, newRun, resumeRun, type Rewards, type RunAction, type RunState } from './lib/run';
   import { readSave, writeSave } from './lib/save';
 
   const floor = floors.find((f) => f.id === 1)!; // the slice has only Floor 1
@@ -59,8 +61,8 @@
     return ids.map((id) => enemies.find((e) => e.id === id)!); // the data check guarantees it exists
   }
 
-  function finishFight(outcome: 'won' | 'lost', hp: number, exp: number) {
-    commit(outcome === 'won' ? { type: 'fightEnd', outcome, hp, exp } : { type: 'fightEnd', outcome });
+  function finishFight(outcome: 'won' | 'lost', hp: number, rewards: Rewards) {
+    commit(outcome === 'won' ? { type: 'fightEnd', outcome, hp, rewards } : { type: 'fightEnd', outcome });
   }
 
   function endFight() {
@@ -75,13 +77,14 @@
 </script>
 
 {#if foes}
-  <Fight {floor} {foes} hp={run!.hp} level={run!.level} onFinish={finishFight} onReturn={endFight} />
+  <Fight {floor} {foes} hp={run!.hp} level={run!.level} worn={run!.worn} items={run!.items} onSpendItem={(item) => commit({ type: 'spendItem', item })} onFinish={finishFight} onReturn={endFight} />
 {:else if location && run}
   <div class="screen">
     <header><h1>Floor {floor.id} · {floor.name}</h1></header>
 
     <section class="vitals" role="status" aria-label="Climber">
       <span>Lv {run.level}</span>
+      <span>Coins {run.coins}</span>
       <span>HP {run.hp} / {maxHp(run.level)}</span>
       <progress max={maxHp(run.level)} value={run.hp} aria-hidden="true"></progress>
       <span>EXP {run.exp} / {expToNext(run.level)}</span>
@@ -91,7 +94,7 @@
     <main class="scene">
       <h2 bind:this={heading} tabindex="-1">{location.name}</h2>
       <p>{location.description}</p>
-      {#if location.enemies}
+      {#if location.enemies && !run.cleared.includes(location.id)}
         {@const here = foesAt(location.enemies)}
         <button onclick={() => startFight(here)}>Fight {here.map((e) => e.name).join(', ')}</button>
       {/if}
@@ -106,8 +109,11 @@
       {/each}
     </nav>
 
-    {#if location.rest}
-      <div class="row"><button onclick={() => commit({ type: 'rest' })}>Rest</button></div>
+    {#if location.rest || location.shop}
+      <div class="row">
+        {#if location.rest}<button onclick={() => commit({ type: 'rest' })}>Rest</button>{/if}
+        {#if location.shop}<button onclick={() => openWindow('Stall')}>Stall</button>{/if}
+      </div>
     {/if}
 
     <nav aria-label="Menu" class="row menu">
@@ -121,6 +127,10 @@
     <h2 id="window-title">{windowTitle}</h2>
     {#if windowTitle === 'Status'}
       <StatusWindow {run} {floor} />
+    {:else if windowTitle === 'Bag'}
+      <BagWindow {run} onAction={commit} />
+    {:else if windowTitle === 'Stall'}
+      <StallWindow {run} {location} onAction={commit} />
     {:else}
       <p>Nothing here yet.</p>
     {/if}

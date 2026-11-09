@@ -18,6 +18,8 @@ export interface ClimberStats {
   agility: number;
   mind: number;
   weaponAttack: number;
+  armorGuard: number;
+  armorWard: number;
 }
 
 export type Outcome = 'ongoing' | 'won' | 'lost';
@@ -29,13 +31,15 @@ export interface FightState {
   turnOrder: string[];
   turn: number;
   outcome: Outcome;
+  healsUsed: number;
 }
 
-export type Action = { type: 'attack'; target: number };
+export type Action = { type: 'attack'; target: number } | { type: 'heal'; fraction: number };
 
 export type FightEvent =
   | { type: 'hit'; attacker: string; target: string; damage: number; crit: boolean }
   | { type: 'miss'; attacker: string; target: string }
+  | { type: 'heal'; target: string; amount: number }
   | { type: 'end'; outcome: 'won' | 'lost' };
 
 export type Rng = () => number;
@@ -65,7 +69,7 @@ export function climberCombatant(stats: ClimberStats): Combatant {
     hp: maxHp,
     maxHp,
     attack: stats.power * balance.attackPerPower + stats.weaponAttack,
-    guard: stats.vitality,
+    guard: stats.vitality + stats.armorGuard,
     agility: stats.agility,
   };
 }
@@ -130,6 +134,7 @@ export function startFight(climber: Combatant, enemies: Combatant[], rng: Rng): 
     turnOrder: [],
     turn: 0,
     outcome: 'ongoing',
+    healsUsed: 0,
   };
   state.turnOrder = roundOrder(state);
   const events: FightEvent[] = [];
@@ -137,13 +142,24 @@ export function startFight(climber: Combatant, enemies: Combatant[], rng: Rng): 
   return { state, events };
 }
 
+function perform(state: FightState, action: Action, rng: Rng): FightEvent {
+  if (action.type === 'heal') {
+    if (state.healsUsed >= balance.healItemsPerFight) throw new Error('Healing item limit reached');
+    state.healsUsed += 1;
+    const { climber } = state;
+    const amount = Math.min(Math.round(climber.maxHp * action.fraction), climber.maxHp - climber.hp);
+    climber.hp += amount;
+    return { type: 'heal', target: climber.name, amount };
+  }
+  const target = state.enemies[action.target];
+  if (!target || target.hp === 0) throw new Error(`Invalid target ${action.target}`);
+  return strike(state.climber, target, rng);
+}
+
 export function act(current: FightState, action: Action, rng: Rng): FightStep {
   if (current.outcome !== 'ongoing') throw new Error('The fight is over');
   const state = structuredClone(current);
-  const target = state.enemies[action.target];
-  if (!target || target.hp === 0) throw new Error(`Invalid target ${action.target}`);
-
-  const events = [strike(state.climber, target, rng)];
+  const events = [perform(state, action, rng)];
   checkEnd(state, events);
   state.turn += 1;
   runEnemies(state, rng, events);
