@@ -1,0 +1,47 @@
+:root {
+  --ink: #0b0d12;
+  --navy: #141c2e;
+  --gold: #b39a63;
+  --text: #d9d5c9;
+  --heading-font: Georgia, 'Times New Roman', serif;
+  --body-font: system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--body-font);
+  line-height: 1.5;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-family: var(--heading-font);
+  font-weight: 400;
+  color: var(--gold);
+}
+
+button {
+  min-height: 44px;
+  padding: 0 1rem;
+  background: var(--navy);
+  border: 1px solid var(--gold);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
