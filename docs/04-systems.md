@@ -434,7 +434,7 @@ First-learned skills are at scrap level. A dash means no cooldown or no tag. Sta
 | Drunken Sway | Evasion +10% for the Form's 3 turns, accuracy −5% | Fire | Flow | Whimsy | Form | - | 9 |
 | Crowd Wave | Attention +1 on a win (used once per fight) | Light | Flow | Whimsy | - | 5 | 9 |
 | Sand Kick | Enemy accuracy −5% for 1 turn | Fire | Slash | Cunning | - | 3 | 9 |
-| Taunt | Enemy targets you and deals 3% less for 1 turn | Fire | Strike | Resolve | - | 3 | 9 |
+| Taunt | Enemy deals 3% less for 1 turn | Fire | Strike | Resolve | - | 3 | 9 |
 | Brick Stance Tap | 70% damage, Guard +3% for 1 turn | Light | Strike | Resolve | - | 3 | 10 |
 | Soot Smear | Enemy accuracy −5% for 1 turn | Fire | Flow | Cunning | - | 3 | 10 |
 | Name Recall | Status resistance +5% for 1 turn | Light | Thrust | Mercy | - | 3 | 10 |
@@ -496,7 +496,7 @@ First-learned skills are at scrap level. A dash means no cooldown or no tag. Sta
 | Teahouse Calm | Remove one debuff, once per fight | 5 | Water | Guard | Calm |
 | Gentle Hand | Calm one weak spirit for 1 turn | 4 | Light | Flow | Mercy |
 | Margin Note | See an enemy's element | 3 | Shadow | Shot | Cunning |
-| Hide and Seek | 5% less likely to be targeted for 1 turn | 3 | Shadow | Flow | Whimsy |
+| Hide and Seek | Evasion +5% for 1 turn | 3 | Shadow | Flow | Whimsy |
 | Poise | Ward +5% | - | Light | Guard | Calm |
 | Pocket Lock | Open simple locks | - | Shadow | Flow | Cunning |
 | Steady Post | Guard +5% for the first 3 turns | - | Earth | Guard | Resolve |
@@ -514,6 +514,44 @@ First-learned skills are at scrap level. A dash means no cooldown or no tag. Sta
 | Stand Fast | Guard +5% for 1 turn | 3 | Earth | Guard | Resolve |
 | Reinforce | Shield of 3% max HP at fight start | - | Earth | Guard | Cunning |
 | Steady Heart | Resist fear for 1 turn | 3 | Light | Guard | Resolve |
+
+#### Class, master and add-on skill values (Claude's choices)
+
+| Skill | Effect | Cooldown |
+| --- | --- | --- |
+| Brace | Stance: first hit each round deals 20% less | - |
+| Counter Strike | If hit this round, strike back for 130% | 3 |
+| Shield Bash | 100% damage, 30% chance to stun | 4 |
+| Lunge | 130% damage, +25% crit | 2 |
+| Feint | Enemy's next attack has 40% lower hit chance | 3 |
+| Finishing Cut | 120% damage, 200% below 30% HP | 4 |
+| Aimed Shot | 140% damage | 2 |
+| Snare Trap | Slow for 2 turns | 4 |
+| Mark Prey | Target takes 20% more damage for 3 turns | 5 |
+| Spark | 120% damage | 1 |
+| Flame Lance | Charge one turn, release for 220% | 3 |
+| Chant | Charge: next spell +40% | 3 |
+| Mend | Heal 15% of max HP | 5 |
+| Cleanse | Remove up to 2 bad statuses | 4 |
+| Poultice | Heal 6% of max HP per turn for 3 turns | 5 |
+| Poison Dart | 70% damage, Poison | 3 |
+| Pickpocket | 60% damage, steal an item | 3 |
+| Fluster | 40% chance to Confuse | 4 |
+| Pratfall | Enemy's next attack has 30% lower hit chance | 3 |
+| Mockery | Enemy deals 10% less damage for 2 turns | 4 |
+| Jury-Rig | Spend 1 scrap material for a shield of 8% of max HP | 4 |
+| Scrounge | 15% chance of extra materials after a fight | - |
+| Quiet Step | Stance: Evasion +5%, ambush chance −25% | - |
+| Bark Skin | Aura: Guard +10% | - |
+| Record | Shows an enemy's move list for this fight | 4 |
+| Recall | Repeats your last skill at 70% power | 4 |
+| Keepsake | One chosen status survives a reset | 5 |
+| Offer | Spend an item or 5% of max HP to calm a spirit for 2 turns | 4 |
+| Merit Chant | Spend all merit to heal 5% of max HP per point | 5 |
+| Call Spirit | A spirit ally deals 50% damage each turn for 3 turns | 5 |
+| Wager | Take a random status for +20% damage for 3 turns | 4 |
+| Stubborn Stand | Stance: +15% damage below 30% HP | - |
+| Spite | 80% damage, +20% per status on you | 4 |
 
 #### Floor-exclusive skills
 
@@ -852,6 +890,8 @@ Fight length targets for a climber at the recommended level:
 
 Enemy base values (normal tier). One enemy can override these, and floor gimmicks come on top.
 
+The First Wall master stays at Attack ×1.2 for now. With 2 Draughts every class won in the simulator, which leaves out the two leaked rules, so recheck it once floor rules exist in the build and raise it if it is still easy.
+
 | Floor | HP | Attack | Def | Agility |
 | --- | --- | --- | --- | --- |
 | 1 | 70 | 4 | 3 | 3 |
@@ -864,6 +904,74 @@ Enemy base values (normal tier). One enemy can override these, and floor gimmick
 | 8 | 196 | 19 | 45 | 14 |
 | 9 | 197 | 21 | 51 | 16 |
 | 10 | 233 | 27 | 60 | 18 |
+
+## Combat rules (draft, Claude's choices)
+
+| Part | Rule |
+| --- | --- |
+| Turn | One action per turn. Using an item or swapping a weapon costs the turn (Quick Strap excepted). Enemies only target the climber |
+| HP between fights | No regeneration. Rest at a resting place is free and restores all HP. A defeat returns the climber at full HP, except on floor 7 (50%) |
+| Fight size | A field fight holds 1 to 3 enemies, drawn from the floor's monster counts. Each enemy's Attack is ×0.8 in a pair and ×0.6 in a group of three |
+| Enemy moves | Each enemy has a weighted move list with cooldowns. Move types are attack, guard, status and charge. Elites and bosses add scripted moves at HP thresholds. An enemy's next move is hidden unless a skill or blessing reveals it |
+| Weakness | Each enemy has one weak Element and takes 25% more from skills of that Element. Skills do not show their Element |
+| Level-up | Stats rise automatically, in proportion to the class's starting stats. There are no free points |
+| Start | Enter a name and pick one of 4 preset portraits. Class comes from floor 1's gift. The climber starts with a class-style F weapon, no armor and 3 Basic Salves |
+| Save | One slot on the device, saved after each fight and location change |
+| Flee | 40% + 1% per Agility, up to 90% |
+| Healing | Healing skills and items restore a percentage of max HP. At most 2 healing items can be used per fight |
+
+### Statuses
+
+Skill chance is reduced by 0.5% per target's Mind. Reapplying refreshes the duration and does not stack. Damage over time and stun chance are halved against elites, mini-bosses and floor masters.
+
+| Status | Effect | Default length |
+| --- | --- | --- |
+| Poison | 3% of max HP per turn | 3 turns |
+| Burn | 4% of max HP per turn | 2 turns |
+| Stun | Loses the next turn, then immune for 1 turn | 1 turn |
+| Confuse | 30% chance the move fails | 2 turns |
+| Restrain | Evasion is 0 and weapons cannot be swapped | 1 turn |
+| Fear | Damage −15% | 2 turns |
+| Slow | Agility −30% | 2 turns |
+
+### Consumables and plain gear
+
+Plain gear is sold up to the floor's recommended grade at 50 × grade points × floor number coins per piece. Prices below are in coins. A dash means not sold.
+
+| Item | Effect | Price | Source |
+| --- | --- | --- | --- |
+| Basic Salve | Heal 20% of max HP | 30 | Shops |
+| Herb Draught | Heal 40% of max HP | 100 | Shops, crafted |
+| Ration | Heal 30% of max HP, outside fights only | 20 | Shops |
+| Cure Knot | Remove one bad status | 40 | Shops, crafted |
+| Field Bandage | Heal 25% of max HP | - | Found on floor 7 only |
+| Road Balm | Heal 35% of max HP | - | Crafted |
+| Disguise | Halves the next fight's witness penalty | 60 | Floor 6, crafted |
+
+### Crafting recipes (hidden until found)
+
+| Item | Ingredients | Effect |
+| --- | --- | --- |
+| Road Balm | 3 Road Ash, 2 Straw Thread | See above |
+| Herb Draught | 2 Road Balm, 3 Hour Shard | See above |
+| Cure Knot | 2 Straw Thread, 1 Hour Shard | See above |
+| Remedy | 4 Hour Shard, 2 Road Ash | Floor 10 counter |
+| Sect Pill | 4 Inner-Energy Iron, 2 Hour Shard | Floor 10 counter |
+| Warding Talisman | 4 Spirit Wax, 2 Straw Thread | Floor 10 counter |
+| Noble Seal | 4 Court Silk, 2 Spirit Wax | Floor 10 counter |
+| Disguise | 3 Court Silk, 1 Straw Thread | See above |
+| Field Medicine | 4 Rail Scrap, 2 Court Silk | Floor 10 counter |
+| Elven Compass | 4 Elder Bark, 2 Rail Scrap | Floor 10 counter |
+| Gladiator Gear | 4 Arena Sand, 2 Elder Bark | Floor 10 counter |
+| Wall Patch | 3 Wall Stone Dust, 1 Arena Sand | Guard +20% for 3 turns |
+| Strength Tonic | 3 Inner-Energy Iron, 1 Arena Sand | Damage +10% for 3 turns |
+| Quick Tonic | 3 Elder Bark, 1 Rail Scrap | Agility +10% for 3 turns |
+| Guard Oil | 3 Rail Scrap, 1 Hour Shard | Guard +15% for 3 turns |
+| Ward Oil | 3 Spirit Wax, 1 Hour Shard | Ward +15% for 3 turns |
+| Smoke Bomb | 2 Road Ash, 2 Rail Scrap | Flee always succeeds |
+| Whetstone | 3 Inner-Energy Iron | Weapon attack +5% for the next fight |
+| Hearth Lantern | 1 Hearth Ash, 2 Straw Thread | Rest once in the field, used up |
+| Scrap Buckler | 3 Rail Scrap | Shield of 10% of max HP |
 
 ## Classes
 
@@ -960,7 +1068,7 @@ A climber who ignores wandering masters still clears every floor normally, since
 | 4 | The Retired Heavenly Demon, hiding in the town below the sect | Fierce | Heaven-Splitting Palm (300% of weapon attack damage, cooldown 5), Blood-Shadow Step (Form: 40% dodge, counter on a dodge), Demon's Mantra (Aura: +25% damage for 4% of max HP per turn), values at Novice |
 | 6 | The court jester | Ordinary | Pratfall (the enemy's next attack may miss), Mockery (the enemy deals 10% less damage for 2 turns) |
 | 7 | The Station tinkerer | Ordinary | Jury-Rig (turn a scrap material into a small shield), Scrounge (a chance of extra materials after a fight) |
-| 8 | The forest hermit | Ordinary | Quiet Step (Stance: less likely to be targeted or ambushed), Bark Skin (Aura: a small Guard boost) |
+| 8 | The forest hermit | Ordinary | Quiet Step (Stance: Evasion +5%, less likely to be ambushed), Bark Skin (Aura: a small Guard boost) |
 
 ### Class masters in Arc 1 (draft)
 
