@@ -104,7 +104,7 @@ Draft. A single Tower that every climber, and every real player, climbs together
 | --- | --- |
 | Climbers | People who wake inside the Tower with no memory of before. They are survivors of worlds that could not be saved whole, and their memories were spent when the Tower pulled them in. Floor 2 (Rest Town) becomes home |
 | System | Climbers get status windows, grades and skills. The Tower speaks through system messages and grades every clear |
-| Defeat | A defeated climber is returned to the floor's entrance and loses memories and bonds made inside the Tower. These become fuel for the worlds, and part is diverted to Ezra's revival. Arc 3 reveals it |
+| Defeat | A defeated climber is returned to the last safe point and loses memories made inside the Tower, which in play is lost EXP progress and a lost bond level (see 04 Systems). These memories become fuel for the worlds, and part is diverted to Ezra's revival. Arc 3 reveals it |
 | Floors | Each floor is a different world the Tower took in before it vanished. Genre floors (murim, palace, zombie city) are those worlds' remains; floor masters are their last survivors |
 | Tower Master | Ezra rules floor 50 and keeps the Throne empty (see above) |
 | Order of the Descent | Ezra's cult, with a small hint on every floor (see above) |

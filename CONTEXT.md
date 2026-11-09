@@ -96,6 +96,7 @@ The shared language of the project. One line per term, plus the doc that owns it
 
 | Term | Meaning | Owner |
 | --- | --- | --- |
+| Remnant | An enemy made from what is left of a floor's world (e.g. Straw Remnant, Leaked Remnant). Never an Echo | 03 |
 | Monster tiers | normal, tough, elite, mini-boss, floor master; worth 1, 2, 8, 20, 40 points (EXP and proficiency) | 04 |
 | Weapon master | Teaches one weapon type and runs its stage-up trials; every class | 04 |
 | Class master | Teaches one class, its trials and advancement; floors 3–8 in Arc 1 | 04, 03 |
@@ -129,8 +130,4 @@ The shared language of the project. One line per term, plus the doc that owns it
 - **"Grade"** means three things only: equipment grade, Hero power grade, clear grade. Skills use stage + level, never a grade.
 - **"Master"** alone is ambiguous: say floor master, Tower Master, weapon/class/hidden/wandering master.
 - **"Level"** = character level; for skills say "skill level" or "Lv n within a stage".
-- **"Charge"** with a capital C is the tag. Floor 4's Sect set says it "shortens the charge of your next skill", which needs rewording or a definition.
-- **"Echo"**: floor 10's material list mentions "echoes" among the wall's enemies, which clashes with the online echo (never fightable). Rename one of them.
-- **Path notebook vs route notebook**: floor 8's navigation notebook is called both. Pick one.
-- **"Wayfinder"** is also the Pathfinder branch's signature trait, the same name as the planning skill used in this repo. Rename the trait or always say "the Wayfinder trait".
 - **"Points"** is overloaded: monster points, proficiency, bond points, clear-grade points, Hero score, risk points. Always name which.

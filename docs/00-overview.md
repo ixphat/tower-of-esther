@@ -102,4 +102,4 @@ This tab is the source of truth. If another tab conflicts with it, this tab wins
 
 ### Next steps
 
-1. Start designing Arc 2 (floors 11–20). Arc 1 is complete at concept level with only balance numbers left (and the sweep times, which need real play to check), and all eight UI screens are designed. Phat should review the screens Claude designed alone (4 to 8 in docs/06-ui.md) and veto anything that does not fit.
+1. Finish the Arc 1 decisions: see the [wayfinder map](https://github.com/ixphat/tower-of-esther/issues/1). Arc 2 design (floors 11–20) comes after that.

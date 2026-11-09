@@ -436,7 +436,7 @@ The material of each floor and how much monsters drop, so the numbers above can 
 | 7 | Rail Scrap | Monsters of the city |
 | 8 | Elder Bark | Beasts and corrupted scouts of the forest |
 | 9 | Arena Sand | Fighters and beasts of the arena |
-| 10 | Wall Stone Dust | Soldiers, echoes and beasts of the wall |
+| 10 | Wall Stone Dust | Soldiers, remnants and beasts of the wall |
 
 Drops by monster type (draft, the same on every floor with combat):
 
@@ -497,11 +497,11 @@ All numbers are drafts. Percentages are small on purpose, so a set helps but is 
 | 1 | Caretaker's | F | Max HP +3% | Recover 3% max HP after each fight | Once per fight, recover 15% max HP when HP first falls below 30% |
 | 2 | Pilgrim's | F | Evasion +3% | 15% chance an item is not used up | The first item used in each fight costs no turn |
 | 3 | Healer's | E | Status resistance +4% | Good statuses on you last 1 turn longer | Once per fight, remove all bad statuses from yourself at no cost |
-| 4 | Sect's | E | Crit chance +4% | Crit damage +10% | A critical hit shortens the charge of your next skill by 1 turn |
+| 4 | Sect's | E | Crit chance +4% | Crit damage +10% | A critical hit makes your held Charge skill ready 1 turn sooner |
 | 5 | Household's | D | Ward +5% | +10% damage against spirit enemies | Spirit enemies deal 10% less damage to you |
 | 6 | Court's | D | Guard +5% | Witness penalties −25% | The first attack you take in each fight deals 40% less damage |
 | 7 | Station's | C | Max HP +6% | Healing items are 15% more effective | Once per fight, using a healing item also gives a shield of 10% max HP |
-| 8 | Forest's | C | Evasion +6% | 10% chance of extra materials from monsters; the route notebook's sketches fade 50% slower | Your first attack in each fight deals 25% more damage |
+| 8 | Forest's | C | Evasion +6% | 10% chance of extra materials from monsters; the path notebook's sketches fade 50% slower (does not stack with Trailwise) | Your first attack in each fight deals 25% more damage |
 | 9 | Gladiator's | C | Max HP +8% | Each risk point taken in a round adds 2% to your damage that round | Handicaps that lower your HP, Guard or Ward are 30% weaker |
 | 10 | Wall Defender's | B | Guard +8% | Damage taken −10% while HP is below half | Rules leaked from floors 3 to 9 affect you 25% less |
 
@@ -637,7 +637,7 @@ At the first advancement every class chooses one of two branches. Besides the st
 | Duelist | Reaver | All In: +20% crit damage, but you take +10% damage | Reckless Slash, Blood Rush, Execution |
 | Arcanist | Elementalist | Attunement: choose one element; spells of that element are 15% stronger | Elemental Lance, Surge (Charge), Ward Break |
 | Arcanist | Fusionist | Resonance: when fusing, count one more shared hidden trait (up to 3) | Distill, Resonate, Amalgam |
-| Ranger | Pathfinder | Wayfinder: route notebook sketches fade 50% slower and traps are easier to spot | Snare Net, Scout Ahead, Lay of the Land |
+| Ranger | Pathfinder | Trailwise: path notebook sketches fade 50% slower (does not stack with the Forest's set) and traps are easier to spot | Snare Net, Scout Ahead, Lay of the Land |
 | Ranger | Sharpshooter | Steady Aim: your first ranged attack in each fight deals 25% more damage | Piercing Shot, Hold Breath (Charge), Headshot |
 | Mender | Lifewarden | Vitality Bloom: recover 2% max HP each turn | Renew, Purify, Second Wind |
 | Mender | Apothecary | Remedies: healing items are 15% more effective and remedies can be crafted between floors | Brew, Tincture, Antidote Bomb |
