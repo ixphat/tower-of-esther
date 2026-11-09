@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Floor } from './data';
+import { newRun } from './run';
 import { readSave, writeSave } from './save';
 
 const floor: Floor = {
@@ -22,17 +23,26 @@ describe('save', () => {
     expect(readSave(fakeStorage(), floor)).toBeNull();
   });
 
-  it('round-trips the location', () => {
+  it('round-trips the run', () => {
     const storage = fakeStorage();
-    writeSave(storage, { locationId: 'a' });
-    expect(readSave(storage, floor)).toEqual({ locationId: 'a' });
+    const run = { ...newRun(floor), hp: 40, memoriesLost: 2, bonds: { keeper: 30 }, lastBond: 'keeper' };
+    writeSave(storage, run);
+    expect(readSave(storage, floor)).toEqual(run);
   });
+
+  const saved = (over: object) => JSON.stringify({ version: 2, run: { ...newRun(floor), ...over } });
 
   it.each([
     ['corrupt JSON', '{oops'],
     ['JSON null', 'null'],
-    ['another version', '{"version":0,"locationId":"a"}'],
-    ['a location that no longer exists', '{"version":1,"locationId":"gone"}'],
+    ['another version', '{"version":1,"locationId":"a"}'],
+    ['a location that no longer exists', saved({ locationId: 'gone' })],
+    ['an unknown safe point', saved({ safePoint: 'gone' })],
+    ['HP of zero', saved({ hp: 0 })],
+    ['HP above the maximum', saved({ hp: 99999 })],
+    ['a negative counter', saved({ memoriesLost: -1 })],
+    ['bonds that are a list', saved({ bonds: [] })],
+    ['a last bond with no points', saved({ lastBond: 'ghost' })],
   ])('ignores %s', (_name, raw) => {
     expect(readSave(fakeStorage(raw), floor)).toBeNull();
   });

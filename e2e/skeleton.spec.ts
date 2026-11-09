@@ -41,6 +41,50 @@ test('climber fights a marked location and returns to the scene', async ({ page 
   await expect(page.getByRole('heading', { name: 'Fields' })).toBeFocused();
 });
 
+test('HP carries, Rest restores it, and defeat returns to the resting place', async ({ page }) => {
+  const hp = async () => Number(/HP (\d+) \//.exec(await page.getByRole('status', { name: 'Climber' }).innerText())![1]);
+  const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
+  const fightOnce = async () => {
+    await page.getByRole('button', { name: 'Fight Straw Remnant' }).click();
+    const attack = page.getByRole('button', { name: 'Weapon attack' });
+    const back = page.getByRole('button', { name: 'Return' });
+    while (!(await back.isVisible())) await attack.click();
+    const defeated = (await page.getByRole('log', { name: 'Combat log' }).innerText()).includes('Defeated');
+    await back.click();
+    return defeated;
+  };
+
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+  const full = await hp();
+  await expect(page.getByRole('button', { name: 'Rest' })).toHaveCount(0);
+
+  await go("Keeper's House");
+  await go('Village Square');
+  await go('Fields, monsters here');
+  await fightOnce();
+  const hurt = await hp();
+  expect(hurt).toBeLessThan(full);
+
+  await go('Village Square');
+  expect(await hp()).toBe(hurt);
+  await go("Keeper's House");
+  await page.getByRole('button', { name: 'Rest' }).click();
+  expect(await hp()).toBe(full);
+
+  await go('Village Square');
+  await go('Fields, monsters here');
+  while (!(await fightOnce()));
+
+  await expect(page.getByRole('heading', { name: "Keeper's House" })).toBeFocused();
+  expect(await hp()).toBe(full);
+
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByRole('heading', { name: "Keeper's House" })).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/memor/i);
+});
+
 test('a window opens over the scene and closes back to it', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'New game' }).click();
