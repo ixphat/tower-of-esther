@@ -25,6 +25,22 @@ test('climber moves by keyboard, autosaves and continues after reload', async ({
   await expect(page.getByRole('heading', { name: 'Riverbank' })).toBeVisible();
 });
 
+test('climber fights a marked location and returns to the scene', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+  await page.getByRole('button', { name: 'Fields, monsters here' }).click();
+  await page.getByRole('button', { name: 'Fight Straw Remnant' }).click();
+
+  await expect(page.getByRole('list', { name: 'Turn order' })).toContainText('Straw Remnant');
+  const attack = page.getByRole('button', { name: 'Weapon attack' });
+  const back = page.getByRole('button', { name: 'Return' });
+  while (!(await back.isVisible())) await attack.click();
+
+  await expect(page.getByRole('log', { name: 'Combat log' })).toContainText(/Victory|Defeated/);
+  await back.click();
+  await expect(page.getByRole('heading', { name: 'Fields' })).toBeFocused();
+});
+
 test('a window opens over the scene and closes back to it', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'New game' }).click();

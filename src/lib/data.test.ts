@@ -24,6 +24,12 @@ describe('floor data', () => {
     expect(validateFloor(broken)).toEqual(['b: exit "nowhere" does not exist']);
   });
 
+  it('reports an enemy that does not exist', () => {
+    const broken = floor();
+    broken.locations[0].enemies = ['ghost'];
+    expect(validateFloor(broken)).toEqual(['a: enemy "ghost" does not exist']);
+  });
+
   it('reports a missing start location', () => {
     expect(validateFloor(floor({ start: 'nowhere' }))).toEqual(['start "nowhere" does not exist']);
   });

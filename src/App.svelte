@@ -1,6 +1,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
-  import { floors } from './lib/data';
+  import Fight from './Fight.svelte';
+  import { enemies, floors, type Enemy } from './lib/data';
   import { readSave, writeSave } from './lib/save';
 
   const floor = floors.find((f) => f.id === 1)!; // the slice has only Floor 1
@@ -9,6 +10,7 @@
 
   let locationId = $state<string | null>(null);
   let windowTitle = $state('');
+  let foes = $state<Enemy[] | null>(null);
   let heading = $state<HTMLHeadingElement>();
   let dialog = $state<HTMLDialogElement>();
 
@@ -29,25 +31,42 @@
     return enter(id);
   }
 
+  function foesAt(ids: string[]) {
+    return ids.map((id) => enemies.find((e) => e.id === id)!); // the data check guarantees it exists
+  }
+
+  function endFight() {
+    foes = null;
+    return enter(locationId!);
+  }
+
   function openWindow(title: string) {
     windowTitle = title;
     dialog?.showModal();
   }
 </script>
 
-{#if location}
+{#if foes}
+  <Fight {floor} {foes} onReturn={endFight} />
+{:else if location}
   <div class="screen">
     <header><h1>Floor {floor.id} · {floor.name}</h1></header>
 
     <main class="scene">
       <h2 bind:this={heading} tabindex="-1">{location.name}</h2>
       <p>{location.description}</p>
+      {#if location.enemies}
+        {@const here = foesAt(location.enemies)}
+        <button onclick={() => (foes = here)}>Fight {here.map((e) => e.name).join(', ')}</button>
+      {/if}
     </main>
 
     <nav aria-label="Go to" class="row">
       <span aria-hidden="true">Go to</span>
       {#each location.exits.map(locationById) as exit (exit.id)}
-        <button onclick={() => move(exit.id)}>{exit.name}</button>
+        <button onclick={() => move(exit.id)} aria-label={exit.enemies ? `${exit.name}, monsters here` : undefined}>
+          {exit.name}{#if exit.enemies}&nbsp;⚔&#xFE0E;{/if}
+        </button>
       {/each}
     </nav>
 
@@ -74,16 +93,6 @@
 {/if}
 
 <style>
-  .screen {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    min-height: 100dvh;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0.75rem;
-  }
-
   header h1 {
     font-size: 1.1rem;
   }
