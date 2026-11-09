@@ -4,7 +4,7 @@ Korean-manhwa-style tower-climbing RPG for the web. Turn-based, single-player, r
 
 ## Phase
 
-**Concept design. No code until Phat asks.** (Change this line when building starts.)
+**Building Arc 1.** Design decisions are recorded in `docs/`. Art source and audio are still undecided, and draft balance numbers need checking in real play. Build floor 1 as a playable slice first.
 
 ## How to work with Phat
 
