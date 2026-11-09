@@ -13,7 +13,7 @@ The shared language of the project. One line per term, plus the doc that owns it
 | Esther / the Creator | Built the Tower, chose to die, left the Throne empty. The system only ever says "the Creator" | 01 |
 | Empty Throne | The authority to decide the fate of every world, on floor 50 | 01 |
 | Ezra / Tower Master | Master of floor 50, Esther's devoted servant, secretly rebuilding her from lost memories | 01 |
-| Order of the Descent | Ezra's polite cult (working name). Sign: white empty chair. Phrase: "He will come down" | 01 |
+| Order of the Descent | Ezra's polite cult. Sign: white empty chair. Phrase: "He will come down" | 01 |
 | Cult hint | The small sign of the Order placed on every floor | 02 |
 | Watchers | Five sealed beings on floors 47–49 (Brio, Nalin, Voss, Nameless/The Mirror, Varek) who want the Throne | 01 |
 | Floor master | The last survivor who guards a floor; also its boss fight. Not a teacher | 02 |
@@ -76,6 +76,9 @@ The shared language of the project. One line per term, plus the doc that owns it
 | Fusion | Consuming 2–3 skills (+ optional catalyst) into a new one | 04 |
 | Hidden traits | Element, motion, mind of every skill; drive fusion odds; never shown directly | 04 |
 | Known recipe | A discovered fusion; always works; recorded in the fusion journal | 04 |
+| Cooldown | Turns a skill must wait before reuse; the only limit on using skills | 04 |
+| Notes in one hand | The in-game label for Esther's clues until Arc 5 reveals her name | 01 |
+| Arena bout | One whole contest on floor 9, the unit handicaps are taken for. A round is one turn cycle inside a fight | 03 |
 | Class skill book | Gives a random first skill of another class (class-locked, fusion-only) | 04 |
 
 ## Items and crafting
@@ -96,6 +99,7 @@ The shared language of the project. One line per term, plus the doc that owns it
 
 | Term | Meaning | Owner |
 | --- | --- | --- |
+| Remnant | An enemy made from what is left of a floor's world (e.g. Straw Remnant, Leaked Remnant). Never an Echo | 03 |
 | Monster tiers | normal, tough, elite, mini-boss, floor master; worth 1, 2, 8, 20, 40 points (EXP and proficiency) | 04 |
 | Weapon master | Teaches one weapon type and runs its stage-up trials; every class | 04 |
 | Class master | Teaches one class, its trials and advancement; floors 3–8 in Arc 1 | 04, 03 |
@@ -129,8 +133,4 @@ The shared language of the project. One line per term, plus the doc that owns it
 - **"Grade"** means three things only: equipment grade, Hero power grade, clear grade. Skills use stage + level, never a grade.
 - **"Master"** alone is ambiguous: say floor master, Tower Master, weapon/class/hidden/wandering master.
 - **"Level"** = character level; for skills say "skill level" or "Lv n within a stage".
-- **"Charge"** with a capital C is the tag. Floor 4's Sect set says it "shortens the charge of your next skill", which needs rewording or a definition.
-- **"Echo"**: floor 10's material list mentions "echoes" among the wall's enemies, which clashes with the online echo (never fightable). Rename one of them.
-- **Path notebook vs route notebook**: floor 8's navigation notebook is called both. Pick one.
-- **"Wayfinder"** is also the Pathfinder branch's signature trait, the same name as the planning skill used in this repo. Rename the trait or always say "the Wayfinder trait".
 - **"Points"** is overloaded: monster points, proficiency, bond points, clear-grade points, Hero score, risk points. Always name which.

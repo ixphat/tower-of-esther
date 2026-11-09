@@ -14,12 +14,12 @@ Real-player features for "Option B": asynchronous, with no need to be online at 
 
 | Feature | Where | What players see and do |
 | --- | --- | --- |
-| Guestbook | Floor 2 (Rest Town) | Read messages left by other climbers and sign it once to open the road gate. Messages are short and moderated |
+| Guestbook | Floor 2 (Rest Town) | Read messages left by other climbers and sign it once to open the road gate. Signing always opens the gate; the message is posted only if the player is signed in and online. Messages are short and moderated |
 | Notice board | Floor 2 | Quests and rumors. Some rumors come from real players' notes |
 | Wall board | Floor 2, and a read-only copy in the Board window | Where the server's climbers are stuck: counts of climbers at each wall floor (the First Wall first), first clears and best clear grades |
-| Echoes | Floor 2 and others | A recorded snapshot of another player's climber (class, any add-on class, branch, level, strongest skills with their stages, gear, clear results) shown as an NPC climber. You can talk to an echo and see the build. You cannot fight or trade with it |
+| Echoes | Floor 2, the hall on floor 9 and each floor's resting place | A recorded snapshot of another player's climber (class, any add-on class, branch, level, strongest skills with their stages, gear, clear results) shown as an NPC climber. You can talk to an echo and see the build. You cannot fight or trade with it. At most 3 appear per location, chosen at random from climbers who reached that floor and refreshed each visit |
 | Hall of echoes | Floor 9 (barracks) | A hall where echoes of other climbers' builds stand as gladiators on display. For viewing only, not fights |
-| Notes at key spots | On every floor | Leave a short note (draft: 60 characters) or a preset sign at a spot. Others see it when they reach it. Examples of presets: "Danger ahead", "Hidden path", "Rest here". On floor 8, where the layout changes every entry, notes attach to stable landmarks (the scouts' camp, the Elder Tree, ancient trees) instead of coordinates, so they stay valid |
+| Notes at key spots | On every floor | Leave a short note (draft: 60 characters) or a preset sign at a spot. Others see it when they reach it. Presets: "Danger ahead", "Hidden path", "Rest here", "Turn back", "Worth it", "Look closer". On floor 8, where the layout changes every entry, notes attach to stable landmarks (the scouts' camp, the Elder Tree, ancient trees) instead of coordinates, so they stay valid |
 | Path statistics | After a clear | After clearing a floor, see how many climbers took each path (for example how many chose Cure on floor 3). Later available in the Board window, only for floors the climber has cleared |
 | Clear grade board | Rest Town wall board, and a read-only copy in the Board window | Best clear grade per floor for the climber and the share of climbers at each grade |
 
@@ -38,7 +38,7 @@ Single-player progress (inventory, fusion journal, recipes) stays with the playe
 ## Backend (concept)
 
 - Supabase (decided Nov 2, 2026, see 00 Overview): database, accounts, access rules, and server-side functions for validation. A separate server such as Elysia can be added in front of it later if the checks become too complex.
-- Players sign in so their echo, results and notes belong to them.
+- No account is needed for single-player play, which is saved on the device. Players sign in by email magic link, with no passwords, only to post or appear to others, so their echo, results and notes belong to them.
 - The game works offline for the single-player parts. Shared features need a connection and fail quietly if it is missing.
 - Shared data is read-only for other players and writable only by its author.
 
@@ -55,7 +55,7 @@ The game runs on the player's device, so any number sent from the client can be 
 | Removal | Cheated entries can be removed from boards and echoes later, with the author's board entries hidden |
 | Reports | Players can report notes and echoes |
 
-The first version relies on plausibility checks, rate limits and reports. Recorded-run checks can be added when the first top results appear.
+The first version relies on plausibility checks, rate limits, reports and outlier flags. Recorded runs are off at launch; storing and checking them is designed when the first real top results appear.
 
 ## Floors that use online features
 
@@ -67,11 +67,8 @@ The first version relies on plausibility checks, rate limits and reports. Record
 | 10 | The First Wall counts and first clears on the wall board |
 | All | Notes at key spots and path statistics after a clear |
 
-## Open questions
+## Decisions on open questions (Nov 9, 2026)
 
-- How echoes appear in other floors beyond floor 2 and floor 9, and how many appear at once.
-- The note length, the preset list, and the moderation approach (automatic filtering, a report threshold, or manual review).
-- Whether the best clear grades and echoes are shown by default or only for players who opt in.
-- How a recorded run is stored and checked, and when to turn it on.
-- What happens to echoes and notes when a floor is changed or removed by a later update.
-- Accounts: how players sign in, and whether a guest play mode without an account is allowed.
+- Moderation: a server word filter runs before a note is posted. A note is hidden automatically at 3 reports, and hidden notes are reviewed by hand.
+- Boards and echoes are on by default, with the off switch shown at first sign-in.
+- A note is tied to a stable spot ID. If its spot is removed by an update, the note is hidden. Echoes remain.

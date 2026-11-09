@@ -37,12 +37,14 @@ The tower's top holds an Empty Throne. Its creator, Esther, chose to die and lef
 | What he does not face | He believes the one who returns will be the true creator. In fact it is assembled from the lives of other people. He also refuses to accept that the creator left by choice |
 | Tragedy | He waits and works for a god who chose to leave, and spends the lives of the people he guards to do it |
 
-### The Order of the Descent (his cult, working name)
+### The Order of the Descent (his cult)
 
 | Element | Setting |
 | --- | --- |
 | Who | Followers of the creator who wait for the god's descent. Members include climbers who lost memories and found purpose, survivors of absorbed worlds, and a few who joined freely. Most do not know what the Order's work costs |
 | Belief | The god will come down. The Order tells those who lost memories that the descent will give back what they lost |
+| Structure | No ranks in Arc 1. Visitor, emissary, recruiter and scribe are flat roles, and Ezra alone leads |
+| Who knows the cost | Only the emissaries and Ezra. Recruiters, scribes and visitors sincerely believe |
 | Sign | A white empty chair, the Empty Throne drawn simply. Phrase: "He will come down" |
 | Manner | Small, polite and helpful. They look benign. They pray for the fallen, offer comfort and give small gifts |
 | Work | Place marks on floors, feed or steer the tampering, quietly make climbers more likely to fail, and gather the memories the Tower takes. Ezra leads them from floor 50 |
@@ -104,7 +106,7 @@ Draft. A single Tower that every climber, and every real player, climbs together
 | --- | --- |
 | Climbers | People who wake inside the Tower with no memory of before. They are survivors of worlds that could not be saved whole, and their memories were spent when the Tower pulled them in. Floor 2 (Rest Town) becomes home |
 | System | Climbers get status windows, grades and skills. The Tower speaks through system messages and grades every clear |
-| Defeat | A defeated climber is returned to the floor's entrance and loses memories and bonds made inside the Tower. These become fuel for the worlds, and part is diverted to Ezra's revival. Arc 3 reveals it |
+| Defeat | A defeated climber is returned to the last safe point and loses memories made inside the Tower, which in play is lost EXP progress and a lost bond level (see 04 Systems). These memories become fuel for the worlds, and part is diverted to Ezra's revival. Arc 3 reveals it |
 | Floors | Each floor is a different world the Tower took in before it vanished. Genre floors (murim, palace, zombie city) are those worlds' remains; floor masters are their last survivors |
 | Tower Master | Ezra rules floor 50 and keeps the Throne empty (see above) |
 | Order of the Descent | Ezra's cult, with a small hint on every floor (see above) |
@@ -130,10 +132,20 @@ Draft. A single Tower that every climber, and every real player, climbs together
 | 4 | 31–40 | War of the Watchers | Floors are territories contested by Watchers against Ezra; the player must choose a side, including whether to let the revival continue |
 | 5 | 41–50 | The Empty Throne | Floors 47–49 are the Watchers' floors, floor 50 is Ezra. The truth about the creator and the choice over the worlds |
 
+## Esther's clues in Arc 1 (draft)
+
+Three short notes in one hand. They ask questions and do not explain the Tower: nothing about her death, Ezra or the memories, and nothing that favors an ending. Each ends with a small drawn river, her home's mark. Every class can read them. Each gives a Journal entry and its Secrets points, nothing else. The Journal labels them "Notes in one hand" until the name is revealed in Arc 5.
+
+| Floor | Where | Text |
+| --- | --- | --- |
+| 1 | Chalk on the schoolhouse board, off the main path | Lesson for whoever comes late. What would you keep, if keeping it cost someone else? Do not write your answer on my board. I could not write mine. |
+| 8 | Carved inside the Elder Tree; the scout captain's Trusted quest points there | I carried all of this up here. I asked none of it. If a door opens easily, ask who opened it. |
+| 10 | A loose page among the Commander's papers, older than the rest, reachable once the logbook is found | A wall holds. That does not make it right, and it does not make it wrong. I stopped being able to tell. I left the chair for a reason. Find your own. |
+
+The Seeker's letter on floor 1 is separate, found only on the refused-gift path, and teaches the Seeker's first skills: "You said no. Nobody here taught you that. I can teach you only how to look. What you do with it, I will not be there to see."
+
 ## Open questions
 
-- What do Esther's will and clues say, and where on the floors are they found? Three clues are placed in Arc 1 (floors 1, 8 and 10). They must not point the player toward a single ending.
+- What does Esther's will say, and what do her clues after Arc 1 say? They must not point the player toward a single ending.
 - What is the assembled creator like if the revival finishes (personality, how it decides)? Needed for the "Let the revival finish" ending.
 - Is there any way out of the Tower other than the Throne?
-- How many members of the Order know what its work costs, and does the Order have its own ranks and leaders besides Ezra?
-- Does the Order's official name stay "Order of the Descent", or change?

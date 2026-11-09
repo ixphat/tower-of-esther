@@ -52,6 +52,8 @@ Points to grade:
 
 Every floor has one hidden SSS condition for players to discover. The criteria for each floor in Arc 1 are in 03 Arc 1.
 
+Grade multipliers (draft): F ×1, E ×1.25, D ×1.5, C ×1.75, B ×2, A ×2.25, S ×2.5, SS ×2.75, SSS ×3. They apply to EXP, drops and coins. An SSS clear also gives a unique title for that floor. Raising a grade on replay pays only the difference, and the set piece and recipe clue come once each. Ordinary coins come only from floor clears (100 × floor number × multiplier) and quests (50 × floor number); monsters drop none.
+
 Rewards scale with grade (draft): the first clear gives EXP and drops that rise with the grade (about ×1 at F up to ×3 at SSS; the EXP part is in 04 Systems). A clear of B or better also gives one guaranteed piece of that world's set, in addition to the set pieces that drop from the floor's elites, mini-bosses and floor master (see 04 Systems). A clear of S or better gives a clue toward a rare recipe. Only the best grade is kept, so replaying a floor can raise it.
 
 ## Floor template

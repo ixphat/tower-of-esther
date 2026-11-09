@@ -117,12 +117,30 @@ A defeated climber loses a little, not everything. In the story the Tower takes 
 
 | Part | Design |
 | --- | --- |
-| Where the climber returns | The last safe point: the floor's entrance, or a resting place such as an inn or camp that the floor defines. Each floor lists its own safe points |
+| Where the climber returns | The last safe point: the floor's entrance, or a resting place such as an inn or camp that the floor defines. See Safe points in Arc 1 below |
 | What is lost | 10% of the EXP progress toward the next level (the level itself never drops), and 1 bond level with the NPC whose bond was raised most recently (never below Stranger, see Bonds). Bonds can be rebuilt by talking, helping and gifts |
 | What is kept | Items, equipment, skills, recipes, the fusion journal, coins, clear grades, quest progress and hidden event discoveries. A defeat never makes the climber redo story steps |
+| Falling below a bond level | One-time rewards and skills already taught are kept. Shop discounts follow the current level. Rewards not yet claimed need the level again |
 | Memories lost counter | The game counts how many times the climber has been defeated. It has no effect on stats. The story uses it, for example the Innkeeper on floor 2 greets a defeated climber with a detail they no longer remember, the Order's recruiters speak to climbers with many defeats, and Arc 3 reveals where the memories go |
 | Floor rules | A floor's own defeat condition applies on that floor (for example, on floor 6 reputation at zero is a fall from grace, and on floor 9 a lost round returns the climber to the barracks and the round can be retried). The loss above applies in every case |
 | Online | The counter is not shown to other players |
+
+### Safe points in Arc 1 (draft)
+
+Every floor has its entrance and one resting place, unlocked when found. A defeat returns the climber to whichever was reached last.
+
+| Floor | Resting place |
+| --- | --- |
+| 1 | The Keeper's house |
+| 2 | The inn |
+| 3 | The clock tower |
+| 4 | The town below the sect |
+| 5 | The half-sunken temple |
+| 6 | The servants' quarters |
+| 7 | Behind the ration counter |
+| 8 | The scouts' hidden camp |
+| 9 | The gladiator barracks |
+| 10 | The refugee quarter behind the wall |
 
 ## Bonds
 
@@ -137,6 +155,8 @@ Bonds are the relationship between the climber and named NPCs (floor masters, to
 | Nothing is required | No floor needs a bond to be cleared. Bonds add depth, rewards and access to some teachers (see Wandering masters) |
 | Defeat | Lowers the bond with the NPC raised most recently by 1 level, to the start of the previous level's points (never below Stranger) |
 | Clear grade | The Content factor counts the bond levels reached with the floor's named NPCs (each floor's list is in 03 Arc 1) |
+| Bond skill strength | Novice, scrap level, with an effect of at most about 5% or 1 turn and a cooldown of 3 to 5 turns (draft) |
+| Rare bond items | Crafting only, with no stats of their own. Any one fills the bond-item slot of the protection charm recipe |
 | Who can be bonded | Named NPCs on each floor, listed with their gift likes and Trusted and Close rewards in 03 Arc 1 (Bondable NPCs). The Watchers, the Order's members, hidden masters and enemies cannot be bonded |
 | Online | Bonds stay in the climber's own save and are not shown to others |
 
@@ -198,13 +218,14 @@ All numbers are drafts.
 | Part | Design |
 | --- | --- |
 | Stage and level | Every skill has a stage (Novice, Intermediate, Advanced, Master, Grandmaster) and a level from 1 to 10 within the stage, for example "Sword Proficiency, Intermediate, Lv 3". Using the skill raises its level |
-| Leveling | A skill gains proficiency in fights. In a fight where the skill was used at least once, it gains points equal to the total value of the enemies in that fight, using the same monster points as EXP (normal 1, tough 2, elite 8, mini-boss 20, floor master 40). Using the skill many times in one fight does not give more. Enemies more than 10 levels below the climber give nothing, the same threshold as EXP. The same rule applies to weapon proficiency using the weapon. Skills used outside fights (gathering, dialogue and the like) are not designed yet |
+| Leveling | A skill gains proficiency in fights. In a fight where the skill was used at least once, it gains points equal to the total value of the enemies in that fight, using the same monster points as EXP (normal 1, tough 2, elite 8, mini-boss 20, floor master 40). Using the skill many times in one fight does not give more. Enemies more than 10 levels below the climber give nothing, the same threshold as EXP. The same rule applies to weapon proficiency using the weapon. A skill with no direct use in a fight counts as used when its effect triggers during or right after the fight (for example Scrounge), and then follows the same rule |
 | Cost per level | The proficiency needed to go from level n to n+1 is 10 × n × a stage multiplier (Novice ×1, Intermediate ×2, Advanced ×4, Master ×8, Grandmaster ×16). A full Novice stage (Lv 1 to Lv 10) takes 450 points and a full Intermediate stage takes 900. Arc 1 enemies give about 1,100 points in total up to floor 9 |
 | Moving up a stage | At Lv 10 the skill can move up to the next stage and start again at Lv 1. How depends on where the skill comes from. Weapon proficiency skills and class skills need a stage-up trial from the matching master (weapon master or class master). All other skills (drops, fusion results, scrap skills, skills from wandering masters, skills that exist only in one world) need a stage catalyst item, one per stage |
-| Stage-up trial | A special fight with a condition tied to that skill (for example, defeat an elite while using Counter Strike at least 3 times). It can be retried without limit, and a failure costs nothing. The content of each skill's trial is TBD. A master can only test up to the stage their floor allows (draft: Arc 1 masters up to Intermediate, Arc 2 up to Advanced, Arcs 3 and 4 up to Master, Arc 5 up to Grandmaster), so the climber returns to higher-floor masters as they climb |
-| Stage catalyst | An item that drops from elites and mini-bosses of the current arc and can be farmed. One is used per stage. Exact drop rates are TBD |
+| Stage-up trial | A special fight with a condition tied to that skill (for example, defeat an elite while using Counter Strike at least 3 times). It can be retried without limit, and a failure costs nothing. Class skill trials are listed in 03 Arc 1, and weapon trials in Weapon stage-up trials below. A master can only test up to the stage their floor allows (draft: Arc 1 masters up to Intermediate, Arc 2 up to Advanced, Arcs 3 and 4 up to Master, Arc 5 up to Grandmaster), so the climber returns to higher-floor masters as they climb |
+| Stage catalyst | An item that drops from elites and mini-bosses of the current arc and can be farmed. One is used per stage. Draft rates: elite 5%, mini-boss 20%, so about 0.35 per sweep on a floor with 3 elites and 1 mini-boss, or about 3 sweeps per catalyst |
+| Cooldowns | Skill use is limited only by cooldowns counted in turns; there is no resource pool. Weapon attacks, Stances and Auras have none. A Charge has none on starting, and its release skill has one. A Form has a 5-turn cooldown from use, so it runs 3 turns on and at best 2 off. Every other skill has its own cooldown of 1 to 5 turns. At Mind 30 or higher every cooldown except a Form's is 1 turn shorter, down to a minimum of 1 |
 | Using skills | There is no slot limit. The climber can use every skill they have learned, as long as it is compatible. A skill is compatible when it is not class-locked to another class, the climber has equipped the weapon type or item it needs, and no other active skill carries the same tag (see Skill tags) |
-| Weapon and item needs | Weapon proficiency skills and the weapon skills they teach need a weapon of that type equipped. Class skills need no particular weapon type unless stated (for example Shield Bash needs a shield) |
+| Weapon and item needs | Weapon proficiency skills and the weapon skills they teach need a weapon of that type equipped. Class skills need no particular weapon type unless stated (for example Shield Bash needs a shield). No other skills need a weapon or item in Arc 1 |
 | Class lock | Some skills are class-locked: only that class can use them (class skills from class masters are the main case). A skill the climber cannot use is kept in the skill list, does not count toward the skill score, and can still be used as a fusion ingredient. Skills that are not class-locked are open to every class. There is no trading in the game, so a class-locked skill found on a drop is simply kept |
 | Skill tags | Some skills carry one of four tags (Stance, Charge, Form, Aura), and only one active skill of each tag can be in effect at a time. Tags are what makes choosing skills matter when there is no slot limit. The full rules, the list of tagged skills and the switching rules are in Skill tags below |
 | Skills in the power score | Only the strongest skills add to the Hero power score (see Hero power grade). The rest stay fully usable and can be fusion ingredients |
@@ -221,8 +242,9 @@ A class skill book lets a climber own a first skill of a class that is not their
 | What a book is | A one-use item. Reading it adds one Novice, Lv 1 first skill of a class (the 18 first class skills in First class skills below). The Seeker and the add-on skills have no books in Arc 1 |
 | Which skill | A book gives a random skill from the 3 first skills of its class that the climber does not own yet, so there are no duplicates. When the climber owns all 3, no more books of that class drop |
 | Drops | Elites and mini-bosses on floors 3 to 8 drop a book of that floor's class: floor 3 Mender, floor 4 Duelist, floor 5 Arcanist, floor 6 Trickster, floor 7 Vanguard, floor 8 Ranger. The draft rate is 8% for an elite and 20% for a mini-boss. On the floor of the climber's own class, the book is of the next floor's class instead (Mender on floor 3 finds Duelist books; Ranger on floor 8 finds Mender books), since a climber can relearn their own class's skills from the master free. The Seeker has no own class and finds the floor's class as usual |
-| Rest Town market | The merchant sells one class skill book per visit, of a skill the climber does not own, for coins (price TBD). The stock refills each time the climber returns from another floor |
+| Rest Town market | The merchant sells one class skill book per visit, of a skill the climber does not own, for coins (draft: 400). The stock refills each time the climber returns from another floor |
 | Rate in practice | A floor with 3 elites and 1 mini-boss gives about 0.44 books per sweep, so about 2 sweeps per book and about 5 sweeps to hold a specific skill from that class (the order of the three is random) |
+| Floor and class | Which floor drops which class's books is left to discovery and is not shown to the player |
 | Not tradable | There is no trading, so a book is read or kept by the climber who found it |
 
 ### Skill tags (draft)
@@ -233,8 +255,8 @@ A tag marks a skill that cannot be in effect together with another skill of the 
 | --- | --- | --- | --- |
 | Stance | A posture held until changed (for example Brace, Iron Wall) | From the moment it is taken until another Stance replaces it or the fight ends | Taking a different Stance costs the turn, so it cannot be switched in the same turn as an attack. The climber picks one Stance for free before the fight starts |
 | Charge | A preparation that is released later (for example Flame Lance, Chant, Hold Breath) | The climber holds one stored charge at a time. It is released by the matching skill | Starting a different Charge discards the one being held, so the climber must commit. A Charge held when the fight ends is lost |
-| Form | A mode of movement or body that lasts for a few turns (for example Blood-Shadow Step, Smoke Step) | For 3 turns after use (draft) | Using another Form ends the current one at once, with no extra turn cost |
-| Aura | A continuing effect that costs something each turn (for example Demon's Mantra, Bark Skin) | While it is switched on. Each Aura has its own small upkeep (HP, or a bit of the climber's skill resource) | Switching on or off costs no turn, but the new Aura starts working at the start of the next turn |
+| Form | A mode of movement or body that lasts for a few turns (for example Blood-Shadow Step, Smoke Step) | For 3 turns after use, for every Form in Arc 1 (draft) | Using another Form ends the current one at once, with no extra turn cost |
+| Aura | A continuing effect that costs something each turn (for example Demon's Mantra, Bark Skin) | While it is switched on. Each Aura costs a percentage of max HP per turn (draft: Bark Skin 1%, Demon's Mantra 4%). If the upkeep would bring the climber to 0 HP, the Aura switches off at the start of the turn instead | Switching on or off costs no turn, but the new Aura starts working at the start of the next turn |
 
 Rules that apply to every tag:
 
@@ -263,11 +285,28 @@ Weapon mastery is a skill like any other, one per weapon type. All numbers are d
 | Per weapon type | Each weapon type has its own proficiency skill, for example Sword Proficiency or Bow Proficiency. Every class can learn every type |
 | Stage and level | Same as other skills: stages from Novice to Grandmaster, each with Lv 1–10. Using a weapon of that type in fights raises the level with the same leveling rule as other skills (see Skills) |
 | Starting point | A climber starts at Novice, Lv 1 in every type |
-| Moving up a stage | At Lv 10, a weapon master's stage-up trial is needed (see Skills): a fight with a condition tied to that weapon type, repeatable without limit, with no catalyst item needed. The master's floor sets the highest stage they can test (draft: Arc 1 masters up to Intermediate). The trial content for each weapon type is TBD |
+| Moving up a stage | At Lv 10, a weapon master's stage-up trial is needed (see Skills): a fight with a condition tied to that weapon type, repeatable without limit, with no catalyst item needed. The master's floor sets the highest stage they can test (draft: Arc 1 masters up to Intermediate). The trial for each weapon type is in Weapon stage-up trials below |
 | Unlocks | Each stage teaches a new weapon skill and allows a higher grade of weapon of that type |
 | Weapon grades by stage | Novice: F–E. Intermediate: D–C. Advanced: B–A. Master: S–SS. Grandmaster: SSS (draft) |
 | Teachers | Weapon masters. In Arc 1: the elders on floor 4, the elf scouts on floor 8 (bows) and the arena master on floor 9 (arena weapons). Higher floors have better weapon masters |
 | Score | The proficiency skills are not counted in the Hero power score. The weapon skills they teach are ordinary skills and do count if they are among the strongest (see Hero power grade) |
+
+### Weapon stage-up trials (draft)
+
+The climber fights the weapon master's practice elite using only that weapon's skills, while meeting one condition. World-specific weapons get a condition when they are designed.
+
+| Weapon | Condition |
+| --- | --- |
+| Sword | Win with 3 critical hits |
+| Sword and shield | Block 3 attacks, then win |
+| Axe | Win after landing Cleave 3 times |
+| Short sword | Act twice before the elite's second turn |
+| Staff | Burn the elite twice, then win |
+| Tome | Win using no weapon attack, only skills |
+| Bow | Win without being hit in the first 3 turns |
+| Mace | Stun the elite twice |
+| Cards | Inflict 3 different weak statuses with Deal, then win |
+| Arena Gear | Restrain the elite twice, then win |
 
 ## Skill fusion
 
@@ -287,9 +326,9 @@ Fusion needs many skills to experiment with, which is why quests, elites, bosses
 | Safe experiments | A skill taught by a master can be relearned from that master for free, so experimenting with class skills is safe |
 | Scrap skill supply | Arc 1 gives the climber about 40 scrap skills for free from quests, elites, bosses, bonds and ordinary wandering masters (draft), so there is plenty to experiment with |
 | Discovery | By experimenting, and by clues from hidden events, books and NPCs |
-| Secret recipes | Some need skills from three floors and yield the strongest skills |
+| Secret recipes | Some need skills from three floors and yield the strongest skills. Arc 1 has 3 (draft), each with three ingredients from three different floors |
 
-Odds for an unknown combination (draft):
+Odds for an unknown combination (draft). The same table applies to three-skill fusion and to every stage in Arc 1:
 
 | Traits shared | One stage higher | Same stage (new skill) | One stage lower | Scrap skill |
 | --- | --- | --- | --- | --- |
@@ -308,7 +347,7 @@ Each trait has six values. The lists are only the draft vocabulary; the player s
 | Motion | Thrust, Slash, Strike, Shot, Guard, Flow |
 | Mind | Calm, Fury, Cunning, Mercy, Resolve, Whimsy |
 
-Values of the main skills named so far (draft). Skills from wandering masters have two values per trait, written with a slash. Add-on class skills, branch skills and the many scrap skills are not assigned yet.
+Values of the main skills named so far (draft). Skills from wandering masters have two values per trait, written with a slash. Branch skills are not assigned yet. Arc 1's other skills are in Arc 1 skill list below.
 
 | Skill | Source | Element | Motion | Mind |
 | --- | --- | --- | --- | --- |
@@ -346,11 +385,160 @@ Five recipes the climber can learn from clues (a hidden manual on floor 4, a bon
 
 | Ingredients | Shared traits | Result | Traits (element, motion, mind) | Class lock | Effect (draft) |
 | --- | --- | --- | --- | --- | --- |
-| Flame Lance + Lunge | Motion Thrust, Mind Fury | Blazing Lunge | Fire, Thrust, Fury | Open to every class (ingredients from two classes) | A fast thrust wreathed in fire with a high crit chance, like Lunge. The target burns for 2 turns |
-| Mend + Cleanse | Motion Flow, Mind Mercy | Cleansing Light | Light, Flow, Mercy | Mender | Removes all bad statuses from yourself and heals a little for each one removed |
-| Brace + Bark Skin | Element Earth, Motion Guard | Stoneskin | Earth, Guard, Resolve | Open to every class (Bark Skin is open) | For 3 turns, Guard +20% and the first hit taken deals 20% less damage. No tag, so it stacks with a Stance and an Aura |
-| Poison Dart + Pickpocket | Element Shadow | Venom Fingers | Shadow, Flow, Cunning | Trickster | Steals an item from the target and poisons it. If there is nothing to steal, the poison is stronger |
-| Feint + Pratfall | Element Wind, Motion Flow | Stumble Feint | Wind, Flow, Cunning | Open to every class (Pratfall is open) | The enemy's next attack misses and it has a 30% chance to lose its next move |
+| Flame Lance + Lunge | Motion Thrust, Mind Fury | Blazing Lunge | Fire, Thrust, Fury | Open to every class (ingredients from two classes) | A fast thrust wreathed in fire: 120% of weapon attack damage with Lunge's crit chance. The target burns for 4% of max HP for 2 turns. Cooldown 3 |
+| Mend + Cleanse | Motion Flow, Mind Mercy | Cleansing Light | Light, Flow, Mercy | Mender | Removes all bad statuses from yourself and heals 5% of max HP for each one removed. Cooldown 4 |
+| Brace + Bark Skin | Element Earth, Motion Guard | Stoneskin | Earth, Guard, Resolve | Open to every class (Bark Skin is open) | For 3 turns, Guard +20% and the first hit taken deals 20% less damage. No tag, so it stacks with a Stance and an Aura. Cooldown 5 |
+| Poison Dart + Pickpocket | Element Shadow | Venom Fingers | Shadow, Flow, Cunning | Trickster | Steals an item from the target and poisons it for 3% of max HP for 3 turns. If there is nothing to steal, the poison is 6%. Cooldown 4 |
+| Feint + Pratfall | Element Wind, Motion Flow | Stumble Feint | Wind, Flow, Cunning | Open to every class (Pratfall is open) | The enemy's next attack misses and it has a 30% chance to lose its next move. Cooldown 4 |
+
+### Arc 1 skill list (draft, Claude's choices)
+
+First-learned skills are at scrap level. A dash means no cooldown or no tag. Stances, Charges, Forms and Auras follow Skill tags above.
+
+#### Scrap skills (40; floor = where it is first given)
+
+| Skill | Effect | Element | Motion | Mind | Tag | Cooldown | Floor |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Whistle | Enemy accuracy −5% for 1 turn | Wind | Flow | Whimsy | - | 3 | 1 |
+| Stubborn Lean | Guard +5%, damage −5% | Earth | Guard | Resolve | Stance | - | 1 |
+| Straw Toss | 70% damage, enemy accuracy −5% for 1 turn | Earth | Shot | Whimsy | - | 2 | 1 |
+| Sweep Up | Remove one weak status from yourself | Water | Flow | Calm | - | 4 | 1 |
+| Road Song | Status resistance +5% for 2 turns | Light | Flow | Calm | - | 4 | 2 |
+| Blister Kick | 70% damage, enemy Agility −5% for 1 turn | Earth | Strike | Fury | - | 2 | 2 |
+| Haggle | Enemy Guard −5% for 1 turn | Shadow | Flow | Cunning | - | 3 | 2 |
+| Long Stare | Enemy deals 3% less damage for 1 turn | Shadow | Shot | Calm | - | 3 | 2 |
+| Deep Breath | Your next skill deals 10% more damage | Wind | Guard | Calm | Charge | - | 3 |
+| Fever Touch | 60% damage, 10% chance to poison for 2 turns | Water | Strike | Fury | - | 3 | 3 |
+| Yawn | 5% chance the enemy loses its next move | Water | Flow | Whimsy | - | 5 | 3 |
+| Dusk Glance | Crit chance +5% for 1 turn | Shadow | Thrust | Calm | - | 4 | 3 |
+| Wind-Up | Your next weapon attack deals 15% more damage | Fire | Strike | Fury | Charge | - | 4 |
+| Elbow | 70% damage, cannot be dodged | Earth | Strike | Cunning | - | 3 | 4 |
+| Tea Splash | 60% damage, 10% chance to burn for 2 turns | Fire | Shot | Whimsy | - | 3 | 4 |
+| Bow Politely | Next hit taken deals 5% less damage | Light | Guard | Mercy | - | 4 | 4 |
+| Candle Flick | 60% damage, ignores 5% of Ward | Fire | Shot | Calm | - | 3 | 5 |
+| Low Crouch | Evasion +5%, damage −5% | Shadow | Guard | Cunning | Stance | - | 5 |
+| Murmur | Remove one good status from an enemy | Water | Flow | Mercy | - | 4 | 5 |
+| Damp Slap | 70% damage, enemy Agility −5% for 1 turn | Water | Slash | Whimsy | - | 2 | 5 |
+| Fan Snap | 70% damage, enemy accuracy −5% for 1 turn | Wind | Slash | Cunning | - | 2 | 6 |
+| Curtsy Step | Evasion +5% for 1 turn | Wind | Flow | Mercy | - | 3 | 6 |
+| Rumor | Enemy deals 3% less damage for 2 turns | Shadow | Flow | Whimsy | - | 4 | 6 |
+| Humming | Status resistance +5%, upkeep 1% max HP | Light | Guard | Calm | Aura | - | 6 |
+| Pipe Swing | 80% damage | Earth | Slash | Fury | - | 2 | 7 |
+| Sulking | Damage taken −3%, upkeep 1% max HP | Shadow | Guard | Resolve | Aura | - | 7 |
+| Bandage Wrap | Heal 3% max HP (blocked on floor 7) | Water | Guard | Mercy | - | 5 | 7 |
+| Thrown Brick | 80% damage at range | Earth | Shot | Fury | - | 3 | 7 |
+| Twig Jab | 70% damage, +5% crit | Earth | Thrust | Whimsy | - | 2 | 8 |
+| Frog Hop | Evasion +10% for the Form's 3 turns | Water | Thrust | Whimsy | Form | - | 8 |
+| Pollen Puff | Enemy accuracy −5% for 2 turns | Wind | Shot | Mercy | - | 4 | 8 |
+| Moss Press | Guard +5% for 1 turn | Water | Guard | Resolve | - | 3 | 8 |
+| Drunken Sway | Evasion +10% for the Form's 3 turns, accuracy −5% | Fire | Flow | Whimsy | Form | - | 9 |
+| Crowd Wave | Attention +1 on a win (used once per fight) | Light | Flow | Whimsy | - | 5 | 9 |
+| Sand Kick | Enemy accuracy −5% for 1 turn | Fire | Slash | Cunning | - | 3 | 9 |
+| Taunt | Enemy targets you and deals 3% less for 1 turn | Fire | Strike | Resolve | - | 3 | 9 |
+| Brick Stance Tap | 70% damage, Guard +3% for 1 turn | Light | Strike | Resolve | - | 3 | 10 |
+| Soot Smear | Enemy accuracy −5% for 1 turn | Fire | Flow | Cunning | - | 3 | 10 |
+| Name Recall | Status resistance +5% for 1 turn | Light | Thrust | Mercy | - | 3 | 10 |
+| Last Nail | 80% damage against enemies below half HP | Light | Slash | Resolve | - | 3 | 10 |
+
+#### Weapon skills
+
+| Weapon | Stage | Skill | Effect | Cooldown | Element | Motion | Mind |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Sword | Novice | Clean Cut | 120% damage | 2 | Wind | Slash | Calm |
+| Sword | Intermediate | Riposte Line | 150% damage, +15% crit | 4 | Light | Slash | Resolve |
+| Sword and shield | Novice | Shield Step | 100% damage, Guard +10% for 2 turns | 3 | Earth | Guard | Resolve |
+| Sword and shield | Intermediate | Wall Push | 130% damage, 25% chance to stun | 4 | Earth | Strike | Resolve |
+| Axe | Novice | Cleave | 90% damage to all enemies | 3 | Fire | Slash | Fury |
+| Axe | Intermediate | Heavy Chop | 180% damage | 5 | Earth | Slash | Fury |
+| Short sword | Novice | Quick Stab | 90% damage, acts first this round | 2 | Wind | Thrust | Cunning |
+| Short sword | Intermediate | Backstep Cut | 130% damage, Evasion +10% for 1 turn | 4 | Shadow | Thrust | Cunning |
+| Staff | Novice | Ember Tap | 110% damage, 20% chance to burn for 3% max HP | 2 | Fire | Strike | Calm |
+| Staff | Intermediate | Focus Burst | 160% damage | 4 | Light | Shot | Calm |
+| Tome | Novice | Page Bolt | 120% damage | 2 | Light | Shot | Cunning |
+| Tome | Intermediate | Bound Word | 110% damage, one enemy skill gets +1 cooldown | 4 | Shadow | Flow | Resolve |
+| Bow | Novice | Quick Nock | 100% damage | 2 | Wind | Shot | Calm |
+| Bow | Intermediate | Long Draw | 170% damage, cannot miss | 5 | Wind | Shot | Resolve |
+| Mace | Novice | Crack | 110% damage, 20% chance to stun | 3 | Earth | Strike | Fury |
+| Mace | Intermediate | Skull Ring | 140% damage, 35% chance to stun | 5 | Light | Strike | Resolve |
+| Cards | Novice | Deal | 100% damage, one random weak status for 1 turn | 2 | Shadow | Shot | Whimsy |
+| Cards | Intermediate | Full House | Three hits of 60% damage | 4 | Wind | Shot | Whimsy |
+| Arena Gear (floor 9) | Novice | Net Throw | 80% damage, restrain for 1 turn | 3 | Water | Shot | Cunning |
+| Arena Gear (floor 9) | Intermediate | Whip Crack | 140% damage | 4 | Wind | Slash | Fury |
+
+#### Add-on class skill traits
+
+| Skill | Class | Element | Motion | Mind |
+| --- | --- | --- | --- | --- |
+| Record | Chronicler | Water | Flow | Calm |
+| Recall | Chronicler | Light | Flow | Cunning |
+| Keepsake | Chronicler | Light | Guard | Resolve |
+| Offer | Merit-Walker | Water | Flow | Mercy |
+| Merit Chant | Merit-Walker | Light | Guard | Mercy |
+| Call Spirit | Merit-Walker | Shadow | Shot | Mercy |
+| Wager | Defier | Fire | Flow | Whimsy |
+| Stubborn Stand | Defier | Earth | Guard | Fury |
+| Spite | Defier | Shadow | Strike | Fury |
+
+#### Bond skill values and traits
+
+| Skill | Effect | Cooldown | Element | Motion | Mind |
+| --- | --- | --- | --- | --- | --- |
+| Tidy Up | Clears one weak status | 4 | Water | Flow | Calm |
+| Hearth Rest | Heal 2% max HP after a fight | - | Fire | Guard | Mercy |
+| Appraise | See an enemy's level | 3 | Light | Shot | Calm |
+| Keen Eye | See a chest's contents | - | Light | Flow | Cunning |
+| Lullaby | Enemy deals 5% less damage for 1 turn | 4 | Water | Flow | Mercy |
+| Green Thumb | Herbs heal 5% more | - | Earth | Flow | Calm |
+| Brave Smile | Guard +5% below half HP | - | Light | Guard | Resolve |
+| Steady Breath | Crit damage taken −5% for 1 turn | 3 | Wind | Guard | Calm |
+| Salute | First hit in a duel +5% damage | - | Light | Thrust | Resolve |
+| Second Wind | Heal 2% max HP after a fight | - | Wind | Flow | Resolve |
+| Teahouse Calm | Remove one debuff, once per fight | 5 | Water | Guard | Calm |
+| Gentle Hand | Calm one weak spirit for 1 turn | 4 | Light | Flow | Mercy |
+| Margin Note | See an enemy's element | 3 | Shadow | Shot | Cunning |
+| Hide and Seek | 5% less likely to be targeted for 1 turn | 3 | Shadow | Flow | Whimsy |
+| Poise | Ward +5% | - | Light | Guard | Calm |
+| Pocket Lock | Open simple locks | - | Shadow | Flow | Cunning |
+| Steady Post | Guard +5% for the first 3 turns | - | Earth | Guard | Resolve |
+| Roaring Laughter | 5% chance to stun | 4 | Wind | Strike | Whimsy |
+| Rally Cry | Guard +5% for 1 turn | 3 | Fire | Guard | Resolve |
+| Hold Steady | Resist knockback for 1 turn | 3 | Earth | Guard | Calm |
+| Field Dressing | Healing items heal 5% more | - | Water | Guard | Mercy |
+| Spark Plug | 5% max HP shock, once per fight | 5 | Fire | Shot | Whimsy |
+| Root Step | Evasion +5% | - | Earth | Flow | Calm |
+| Wind Reading | Accuracy +5% | - | Wind | Shot | Calm |
+| Tree Sit | Heal 3% max HP when you skip a turn | - | Earth | Guard | Calm |
+| Last Bow | Damage +5% for 1 turn after being hit | - | Fire | Strike | Fury |
+| Showboat | Attention +1 on a risky win | - | Fire | Flow | Whimsy |
+| Quick Strap | Swap weapon type free, once per fight | 5 | Wind | Flow | Cunning |
+| Stand Fast | Guard +5% for 1 turn | 3 | Earth | Guard | Resolve |
+| Reinforce | Shield of 3% max HP at fight start | - | Earth | Guard | Cunning |
+| Steady Heart | Resist fear for 1 turn | 3 | Light | Guard | Resolve |
+
+#### Floor-exclusive skills
+
+Novice, open to every class, passive with no cooldown.
+
+| Floor | Skill | Effect | Element | Motion | Mind |
+| --- | --- | --- | --- | --- | --- |
+| 3 | Day's Memory | One good status survives a status reset | Water | Flow | Resolve |
+| 4 | Inner Guard | Crit damage taken −10% | Earth | Guard | Calm |
+| 5 | Rite of Passing | +20% damage to spirits and night enemies | Light | Flow | Mercy |
+| 6 | Court Manner | Reputation loss −10% | Wind | Guard | Cunning |
+| 7 | Survivor's Breath | Heal 5% of max HP after a fight (blocked on floor 7 itself) | Earth | Flow | Resolve |
+| 8 | Forest Sense | Sketches fade 50% slower (does not stack with Trailwise or the Forest's set) | Earth | Flow | Calm |
+| 9 | Crowd's Favor | +5% damage per risk point taken, up to +15% | Fire | Strike | Whimsy |
+| 10 | Leak Reader | Shows which two rules leak before an attempt | Shadow | Flow | Cunning |
+
+#### Secret recipes
+
+Each result is one stage above the highest ingredient and open to every class.
+
+| Ingredients | Result | Traits | Effect | Cooldown |
+| --- | --- | --- | --- | --- |
+| Teahouse Calm (floor 4), Gentle Hand (5), Tree Sit (8) | Stillness of the Kept | Water, Guard, Mercy | Removes all debuffs and heals 15% of max HP | 5 |
+| Salute (4), Last Bow (9), Stand Fast (10) | Wall-Breaker's Salute | Light, Strike, Resolve | 250% damage, ignores Guard | 5 |
+| Appraise (2), Margin Note (5), Wind Reading (8) | Reader of Weight | Shadow, Shot, Cunning | Reveals the enemy's weakness and next move for this fight, and your next hit deals 50% more | 4 |
 
 ## Crafting
 
@@ -375,13 +563,15 @@ All numbers are drafts.
 | Slots (6) | Weapon, head, body, gloves, boots and accessory |
 | Grades | F to SSS, plus Unique. Gear can be found, dropped, crafted or bought |
 | Weapon types | Sword, sword and shield, axe, short sword, staff, tome, bow, mace and cards, plus weapons that exist only in one world (nets, chains and whips from floor 9). Every class can learn every weapon type; the "fitting weapons" of each class are only advice |
-| Not always better | Gear from a world's own set is not automatically the best. A climber can craft or drop something better from anywhere |
+| Not always better | Gear from a world's own set is not automatically the best. A climber can craft or drop something better from anywhere. At the same grade a set piece has about 10% lower base stats than the best crafted piece (draft), and the set bonus pays for that |
 | Sets | Each world has its own set of 6 pieces, one per slot. Set bonuses come at 2, 4 and 6 pieces worn. The bonuses are strong, but never required. Pieces from different sets can be mixed, so wearing 2 + 2 + 2 pieces from three sets gives three 2-piece bonuses |
 | Set bonus shape | The 2-piece bonus is a small stat bonus that every class can use equally, so mixing sets stays worthwhile. The 4-piece bonus is a rule tied to the world's theme. The 6-piece bonus is a signature effect of that world. Bonuses work the same for every class and do not depend on the weapon type. Set bonuses do not count toward the Hero power score |
+| Piece names | A piece is named after its set and slot item, for example Healer's Gloves |
 | Set pieces | A set's pieces drop from the world's elites, mini-bosses and floor master, or are crafted from the world's materials, and a clear of B or better gives one guaranteed piece (see 02 Floor Design). The weapon piece can be crafted as any of 3 weapon types (chosen when crafting), so it does not lock a class. Floor 2 has no combat, so its set comes from the market, quests and hidden events. A set piece's grade is the recommended Hero grade of its floor |
 | Enhancement | +1 up to a cap that rises with each arc (draft: Arc 1 +6, Arc 2 +7, Arc 3 +8, Arc 4 +9, Arc 5 +10), so +10 is a goal of the late game. The higher the level, the lower the chance of success and the more expensive the stone. On failure, the item drops 2 levels (never below +0), except when the attempt was for +1, +2 or +3, which never drops. The item is never destroyed. A failure gives a scrap result that can be an ingredient. A protection charm used on an attempt prevents the drop if it fails (see Protection charms) |
 | Enhancement rates | Chance of success for each target level (draft): +1 100%, +2 95%, +3 90%, +4 85%, +5 80%, +6 70%, +7 60%, +8 50%, +9 40%, +10 30% |
 | Enhancement cost | Each attempt uses one enhancement stone of the grade that matches the target level (a +5 attempt uses a +5 stone). A stone is crafted from a bundle of floor materials, so the higher the target level, the more materials a stone costs (see Enhancement stones below) |
+| Grade limit | An item's grade limits its enhancement (draft): F and E up to +4, C and D up to +5, B and above up to the arc's cap. Success rates are the same for every grade |
 | Average attempts | Average attempts to reach a level from +0 without a protection charm: +4 about 5, +6 about 10, and +10 about 132 (about 17 with a charm on every attempt). In Arc 1 the cap is +6, so +10 only matters in Arc 5. A typical climber with six pieces at +4 by floor 10 spends about 30 attempts in total |
 
 ### Enhancement stones (draft)
@@ -436,7 +626,7 @@ The material of each floor and how much monsters drop, so the numbers above can 
 | 7 | Rail Scrap | Monsters of the city |
 | 8 | Elder Bark | Beasts and corrupted scouts of the forest |
 | 9 | Arena Sand | Fighters and beasts of the arena |
-| 10 | Wall Stone Dust | Soldiers, echoes and beasts of the wall |
+| 10 | Wall Stone Dust | Soldiers, remnants and beasts of the wall |
 
 Drops by monster type (draft, the same on every floor with combat):
 
@@ -484,7 +674,7 @@ A protection charm is used together with a stone on one attempt, and if that att
 | --- | --- | --- |
 | Drops | The first clear of the floor master of each floor from 5 to 10 gives 1 charm. Elites drop one rarely (draft 2%) and mini-bosses somewhat more (draft 5%), on floors 5 to 10, and respawning ones can be farmed | The drop rates are small, so farming is slow |
 | Crafting | 1 charm = 3 rare parts from elites and mini-bosses of floors 5 to 10 + 1 rare crafting item from a bond (the item given at Trusted, or at Close if the climber picks the item) | Bond items are one per NPC (up to 31 in Arc 1), and the rare parts compete with the rare parts that stones for +5 and +6 need |
-| Watcher stall | From floor 9, the Watchers' stall sells charms for Watcher coins. The price rises with each charm bought (draft: base price TBD, +25% per charm bought) | Coins come only from the Attention tips, and the rising price stops stockpiling |
+| Watcher stall | From floor 9, the Watchers' stall sells charms for Watcher coins. The price rises with each charm bought (draft: base price 30, +25% per charm bought) | Coins come only from the Attention tips, and the rising price stops stockpiling |
 
 How many charms a piece needs: with a charm on every attempt at +4 and above, one piece from +0 to +6 uses about 4 charms, so six pieces use about 24, which the three routes together can cover in Arc 1. The pressure grows in later arcs, where caps are higher and stones cost more. Charms of one arc work on that arc's gear only (draft).
 
@@ -497,13 +687,30 @@ All numbers are drafts. Percentages are small on purpose, so a set helps but is 
 | 1 | Caretaker's | F | Max HP +3% | Recover 3% max HP after each fight | Once per fight, recover 15% max HP when HP first falls below 30% |
 | 2 | Pilgrim's | F | Evasion +3% | 15% chance an item is not used up | The first item used in each fight costs no turn |
 | 3 | Healer's | E | Status resistance +4% | Good statuses on you last 1 turn longer | Once per fight, remove all bad statuses from yourself at no cost |
-| 4 | Sect's | E | Crit chance +4% | Crit damage +10% | A critical hit shortens the charge of your next skill by 1 turn |
+| 4 | Sect's | E | Crit chance +4% | Crit damage +10% | A critical hit makes your held Charge skill ready 1 turn sooner |
 | 5 | Household's | D | Ward +5% | +10% damage against spirit enemies | Spirit enemies deal 10% less damage to you |
 | 6 | Court's | D | Guard +5% | Witness penalties −25% | The first attack you take in each fight deals 40% less damage |
 | 7 | Station's | C | Max HP +6% | Healing items are 15% more effective | Once per fight, using a healing item also gives a shield of 10% max HP |
-| 8 | Forest's | C | Evasion +6% | 10% chance of extra materials from monsters; the route notebook's sketches fade 50% slower | Your first attack in each fight deals 25% more damage |
+| 8 | Forest's | C | Evasion +6% | 10% chance of extra materials from monsters; the path notebook's sketches fade 50% slower (does not stack with Trailwise) | Your first attack in each fight deals 25% more damage |
 | 9 | Gladiator's | C | Max HP +8% | Each risk point taken in a round adds 2% to your damage that round | Handicaps that lower your HP, Guard or Ward are 30% weaker |
 | 10 | Wall Defender's | B | Guard +8% | Damage taken −10% while HP is below half | Rules leaked from floors 3 to 9 affect you 25% less |
+
+### Set weapon piece types (draft)
+
+Each set's weapon piece can be crafted as one melee, one magic or one agile type, so no class is locked out.
+
+| Floor | Melee | Magic | Agile |
+| --- | --- | --- | --- |
+| 1 | Axe | Staff | Bow |
+| 2 | Sword and shield | Tome | Cards |
+| 3 | Mace | Staff | Short sword |
+| 4 | Sword | Tome | Short sword |
+| 5 | Mace | Tome | Cards |
+| 6 | Sword | Staff | Cards |
+| 7 | Axe | Tome | Short sword |
+| 8 | Sword | Staff | Bow |
+| 9 | Axe | Staff | Cards |
+| 10 | Sword and shield | Tome | Bow |
 
 ## Watchers
 
@@ -514,17 +721,17 @@ The Watchers first appear on floor 9. The roster, their styles and their endings
 | Part | Design |
 | --- | --- |
 | Gauge | One gauge from 0 to 100 for "how exciting the climber's play is" |
-| What raises it | Exciting play, for example: taking a handicap on floor 9 (+5), winning below 10% HP (+10), winning a hard fight such as an elite (+10), finding a secret (+5), a first clear of a floor (+15), a bold story choice (+5) |
-| What lowers it | Playing safe: it drains slowly (draft: 2 points per fight with no risk) |
-| Tip | When the gauge reaches 100, the Watchers tip Watcher coins and the gauge falls back to 30 |
-| Who gets the share | The tip is split among the Watchers by which kind of play caused the Attention, for example a comeback goes to Brio, sparing an opponent to Nalin, a fast win to Voss, a found secret to the Mirror, a broken rule to Varek |
+| What raises it | Exciting play, for example: taking a handicap on floor 9 (+3 per risk point), winning below 10% HP (+10), winning a hard fight such as an elite (+10), finding a secret (+5), a first clear of a floor (+15), a bold story choice (+5) |
+| What lowers it | Playing safe: it drains slowly (draft: 2 points per fight with no risk, never below 0, so safe farming earns no tips) |
+| Tip | When the gauge reaches 100, the Watchers tip 10 Watcher coins (draft) and the gauge falls back to 30 |
+| Who gets the share | All the coins go to the climber. Each tip also gives 10 Favor, split among the Watchers by which kind of play caused the Attention, for example a comeback goes to Brio, sparing an opponent to Nalin, a fast win to Voss, a found secret to the Mirror, a broken rule to Varek |
 
 ### Watcher coins
 
 | Part | Design |
 | --- | --- |
 | Source | Tips from the Watchers (and the Watchers' sudden quests) |
-| Uses | Buy blessings, protection charms (see Protection charms) and rare items from the Watchers' stall (details TBD) |
+| Uses | Buy blessings and protection charms (see Protection charms) from the Watchers' stall. Rare items join the stall in later arcs |
 | Keeping | Coins stay with the climber across floors. Defeat does not take them |
 
 ### Favor (per Watcher)
@@ -541,7 +748,25 @@ The Watchers first appear on floor 9. The roster, their styles and their endings
 | Part | Design |
 | --- | --- |
 | Blessings | A temporary boost lasting several fights, bought with coins or given at Favor levels. The same for every class |
-| Sudden quests | Each Watcher offers quests in their style, with a cost attached (for example taking a handicap or a risk). A reward is coins and Favor |
+| Sudden quests | Each Watcher offers quests in their style, with a cost attached (for example taking a handicap or a risk). The reward is 5 coins and 5 Favor (draft) |
+
+### Arc 1 values (draft)
+
+| Favor level | Favor needed | Unlock |
+| --- | --- | --- |
+| 1 | 10 | The Watcher's second sudden quest |
+| 2 | 30 | That Watcher's blessing once for free |
+| 3 | 60 | Reserved for later arcs |
+
+Each blessing costs 10 Watcher coins and lasts 5 fights. Only one can be active at a time.
+
+| Watcher | Blessing |
+| --- | --- |
+| Brio | +15% damage while below 30% HP |
+| Nalin | Heal 5% of max HP after each fight |
+| Voss | The first skill used in each fight has its cooldown cut by 1 turn |
+| Mirror | See the enemy's next-move type on turn 1 |
+| Varek | The first bad status in each fight is ignored |
 
 ## Stats
 
@@ -554,7 +779,7 @@ Every class uses the same stats. Classes differ by how their stats grow and by t
 | Vitality | HP and the base of Guard |
 | Power | Strength of every attack, physical or magical. The damage type comes from the skill and weapon, not from the stat |
 | Agility | Speed (turn order), crit chance, and the base of Evasion |
-| Mind | Resistance to statuses, skill charge speed and skill resource, and the base of Ward |
+| Mind | Resistance to statuses, cooldowns (see Skills), and the base of Ward |
 
 ### Secondary ratings (3)
 
@@ -564,7 +789,7 @@ Every class uses the same stats. Classes differ by how their stats grow and by t
 | Guard | Reduces physical damage | Vitality |
 | Ward | Reduces magical and special damage | Mind |
 
-The ratings rise from skills, class and advancement branches (for example Bulwark raises Guard, Shadow raises Evasion), equipment, and items that exist only in one world (for example a talisman that resists spirits). For now they are not trained by repeated exposure (see Open questions).
+The ratings rise from skills, class and advancement branches (for example Bulwark raises Guard, Shadow raises Evasion), equipment, and items that exist only in one world (for example a talisman that resists spirits). They are not trained by repeated exposure, which would reward standing still and taking hits.
 
 Floor rules tie to the stats: status resets use Mind, crit damage ×2 uses Agility, and no healing makes Vitality matter more.
 
@@ -616,6 +841,8 @@ The game is solo, so every class must be able to clear floors alone. Classes dif
 
 Learned from the class master in Arc 1 (see Masters). These are class-locked skills (see Skills). Each class has a distinct style. Weak-early classes have weaker or slower first skills but a higher ceiling when they move up a stage.
 
+In Arc 1 a class master teaches only these three first skills. There is no fourth skill before advancement.
+
 | Class | First skills |
 | --- | --- |
 | Vanguard | Brace (Stance: take a stance that reduces the next hit), Counter Strike (strike back after being hit), Shield Bash (chance to stun; needs a shield) |
@@ -637,7 +864,7 @@ At the first advancement every class chooses one of two branches. Besides the st
 | Duelist | Reaver | All In: +20% crit damage, but you take +10% damage | Reckless Slash, Blood Rush, Execution |
 | Arcanist | Elementalist | Attunement: choose one element; spells of that element are 15% stronger | Elemental Lance, Surge (Charge), Ward Break |
 | Arcanist | Fusionist | Resonance: when fusing, count one more shared hidden trait (up to 3) | Distill, Resonate, Amalgam |
-| Ranger | Pathfinder | Wayfinder: route notebook sketches fade 50% slower and traps are easier to spot | Snare Net, Scout Ahead, Lay of the Land |
+| Ranger | Pathfinder | Trailwise: path notebook sketches fade 50% slower (does not stack with the Forest's set) and traps are easier to spot | Snare Net, Scout Ahead, Lay of the Land |
 | Ranger | Sharpshooter | Steady Aim: your first ranged attack in each fight deals 25% more damage | Piercing Shot, Hold Breath (Charge), Headshot |
 | Mender | Lifewarden | Vitality Bloom: recover 2% max HP each turn | Renew, Purify, Second Wind |
 | Mender | Apothecary | Remedies: healing items are 15% more effective and remedies can be crafted between floors | Brew, Tincture, Antidote Bomb |
@@ -685,7 +912,7 @@ A climber who ignores wandering masters still clears every floor normally, since
 
 | Floor | Master | Kind | Skills (draft) |
 | --- | --- | --- | --- |
-| 4 | The Retired Heavenly Demon, hiding in the town below the sect | Fierce | Heaven-Splitting Palm (a very strong single hit), Blood-Shadow Step (Form: dodge and counter), Demon's Mantra (Aura: more damage at a cost to your own HP) |
+| 4 | The Retired Heavenly Demon, hiding in the town below the sect | Fierce | Heaven-Splitting Palm (300% of weapon attack damage, cooldown 5), Blood-Shadow Step (Form: 40% dodge, counter on a dodge), Demon's Mantra (Aura: +25% damage for 4% of max HP per turn), values at Novice |
 | 6 | The court jester | Ordinary | Pratfall (the enemy's next attack may miss), Mockery (the enemy deals 10% less damage for 2 turns) |
 | 7 | The Station tinkerer | Ordinary | Jury-Rig (turn a scrap material into a small shield), Scrounge (a chance of extra materials after a fight) |
 | 8 | The forest hermit | Ordinary | Quiet Step (Stance: less likely to be targeted or ambushed), Bark Skin (Aura: a small Guard boost) |
@@ -708,21 +935,17 @@ The first advancement for every class opens after floor 10 (First Wall; clearing
 ## Open questions
 
 - The thresholds for grade A and above, and the caps for the secondary ratings. The Arc 1 skill and gear totals are rechecked drafts and should be tested again once real skills and items exist.
-- Skill tags: the four tags and their switching rules are drafted; still open are the exact upkeep of each Aura, how long a Form lasts for different skills, tags on the many scrap skills not yet named, and which skills need a weapon type or an item other than those already named.
-- The number of skills that count toward the power score (draft 12, 16, 20, 24) should be rechecked once later arcs are designed.
-- Now that farming is accepted, should Evasion, Guard and Ward be trainable by exposure to attacks? It was ruled out earlier to avoid grinding.
+- The number of skills that count toward the power score after the first advancement (draft 16, 20, 24) should be rechecked once later arcs are designed. Arc 1 keeps 12.
 - EXP: the level formula and caps after the first advancement, whether the main-path share stays at 70% in later arcs, whether banking at the cap should stay limited to one level in later arcs, and the real monster counts per floor (the counts are drafts used to turn the budget into numbers).
-- Defeat: the safe points of each floor, and whether 10% of EXP progress and one bond level are the right amounts.
-- Bonds: whether bonds appear in Arc 2 and later in the same way, and the real values of the small bond skills and rare items listed in 03 Arc 1.
-- Wandering masters: the exact errands and quests (the legendary master's quest is a draft in 03 Arc 1), the strength of the legendary skills, and how many wandering masters appear in later arcs.
-- How skills that are not used in fights level (gathering, dialogue, crafting and the like), and whether the stage multipliers for skill leveling (×1, ×2, ×4, ×8, ×16) still work in later arcs.
-- Stage-up details: the trial content for weapon proficiency, the drop rates of stage catalysts, and which arc's masters can test which stage.
-- Class skill books: the real drop rates, the market price in coins, whether books exist for branch and add-on class skills in later arcs, and whether the floor-class mapping for drops should be shown to the player or left to discovery.
-- Fusion: hidden trait values for add-on class skills, branch skills, weapon skills and the roughly 40 scrap skills (the main skills are assigned), the numbers inside the effects of the five known recipes' results (the effects are drafted, the numbers are not balanced), more known recipes and the secret recipes, how the fusion journal is shown, and whether the odds change for higher stages or for fusing three skills.
-- Enhancement: whether the assumed fight lengths behind the sweep times hold in real play (about 50 hours for six pieces at +6 is a deliberate target but a guess), the final names of the floor materials, the stone recipes and main floors for the +7 to +10 grades of Arcs 2 to 5, whether the success rates change for higher-grade gear, and whether an item's grade limits how high it can be enhanced.
-- Protection charms: the Watcher stall base price and how many coins the Attention tips give, the real drop rates of charms, and whether charms of one arc work on gear of another arc.
-- Sets: the set bonus values for later arcs, the names and look of each set's pieces, how the 3 weapon types of each set's weapon piece are chosen, which of the 10 Arc 1 sets pair well together, and how Arc 1 set pieces compare with the grades of crafted gear.
+- Bonds: whether bonds appear in Arc 2 and later in the same way.
+- Wandering masters: how many wandering masters appear in later arcs.
+- Whether the stage multipliers for skill leveling (×1, ×2, ×4, ×8, ×16) still work in later arcs.
+- Class skill books: whether books exist for branch and add-on class skills in later arcs.
+- Fusion: trait values for branch skills; more known recipes; odds after Arc 1.
+- Enhancement: whether the assumed fight lengths behind the sweep times hold in real play (about 50 hours for six pieces at +6 is a deliberate target but a guess), and the stone recipes and main floors for the +7 to +10 grades of Arcs 2 to 5.
+- Protection charms: whether charms of one arc work on gear of another arc.
+- Sets: the set bonus values for later arcs, and the look of each set's pieces.
 - Hidden classes: how each add-on class's skills and signature trait grow later, and whether more add-on classes appear in later arcs.
 - Branches: the exact effects and numbers of the 42 branch skills, and what tiers 2 and 3 add.
-- Skills beyond the first three for each class, and what each master teaches at higher floors.
-- Watchers: the exact Attention values and coin amounts, the blessing list and prices, the Favor levels and what each unlocks, and how hostility and Arc 4 opposition work.
+- What each master teaches above Arc 1.
+- Watchers: Favor unlocks after Arc 1, the stall's rare items, and how hostility and Arc 4 opposition work.
