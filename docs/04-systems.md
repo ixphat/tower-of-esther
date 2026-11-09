@@ -393,13 +393,15 @@ All numbers are drafts.
 | Slots (6) | Weapon, head, body, gloves, boots and accessory |
 | Grades | F to SSS, plus Unique. Gear can be found, dropped, crafted or bought |
 | Weapon types | Sword, sword and shield, axe, short sword, staff, tome, bow, mace and cards, plus weapons that exist only in one world (nets, chains and whips from floor 9). Every class can learn every weapon type; the "fitting weapons" of each class are only advice |
-| Not always better | Gear from a world's own set is not automatically the best. A climber can craft or drop something better from anywhere |
+| Not always better | Gear from a world's own set is not automatically the best. A climber can craft or drop something better from anywhere. At the same grade a set piece has about 10% lower base stats than the best crafted piece (draft), and the set bonus pays for that |
 | Sets | Each world has its own set of 6 pieces, one per slot. Set bonuses come at 2, 4 and 6 pieces worn. The bonuses are strong, but never required. Pieces from different sets can be mixed, so wearing 2 + 2 + 2 pieces from three sets gives three 2-piece bonuses |
 | Set bonus shape | The 2-piece bonus is a small stat bonus that every class can use equally, so mixing sets stays worthwhile. The 4-piece bonus is a rule tied to the world's theme. The 6-piece bonus is a signature effect of that world. Bonuses work the same for every class and do not depend on the weapon type. Set bonuses do not count toward the Hero power score |
+| Piece names | A piece is named after its set and slot item, for example Healer's Gloves |
 | Set pieces | A set's pieces drop from the world's elites, mini-bosses and floor master, or are crafted from the world's materials, and a clear of B or better gives one guaranteed piece (see 02 Floor Design). The weapon piece can be crafted as any of 3 weapon types (chosen when crafting), so it does not lock a class. Floor 2 has no combat, so its set comes from the market, quests and hidden events. A set piece's grade is the recommended Hero grade of its floor |
 | Enhancement | +1 up to a cap that rises with each arc (draft: Arc 1 +6, Arc 2 +7, Arc 3 +8, Arc 4 +9, Arc 5 +10), so +10 is a goal of the late game. The higher the level, the lower the chance of success and the more expensive the stone. On failure, the item drops 2 levels (never below +0), except when the attempt was for +1, +2 or +3, which never drops. The item is never destroyed. A failure gives a scrap result that can be an ingredient. A protection charm used on an attempt prevents the drop if it fails (see Protection charms) |
 | Enhancement rates | Chance of success for each target level (draft): +1 100%, +2 95%, +3 90%, +4 85%, +5 80%, +6 70%, +7 60%, +8 50%, +9 40%, +10 30% |
 | Enhancement cost | Each attempt uses one enhancement stone of the grade that matches the target level (a +5 attempt uses a +5 stone). A stone is crafted from a bundle of floor materials, so the higher the target level, the more materials a stone costs (see Enhancement stones below) |
+| Grade limit | An item's grade limits its enhancement (draft): F and E up to +4, C and D up to +5, B and above up to the arc's cap. Success rates are the same for every grade |
 | Average attempts | Average attempts to reach a level from +0 without a protection charm: +4 about 5, +6 about 10, and +10 about 132 (about 17 with a charm on every attempt). In Arc 1 the cap is +6, so +10 only matters in Arc 5. A typical climber with six pieces at +4 by floor 10 spends about 30 attempts in total |
 
 ### Enhancement stones (draft)
@@ -522,6 +524,23 @@ All numbers are drafts. Percentages are small on purpose, so a set helps but is 
 | 8 | Forest's | C | Evasion +6% | 10% chance of extra materials from monsters; the path notebook's sketches fade 50% slower (does not stack with Trailwise) | Your first attack in each fight deals 25% more damage |
 | 9 | Gladiator's | C | Max HP +8% | Each risk point taken in a round adds 2% to your damage that round | Handicaps that lower your HP, Guard or Ward are 30% weaker |
 | 10 | Wall Defender's | B | Guard +8% | Damage taken −10% while HP is below half | Rules leaked from floors 3 to 9 affect you 25% less |
+
+### Set weapon piece types (draft)
+
+Each set's weapon piece can be crafted as one melee, one magic or one agile type, so no class is locked out.
+
+| Floor | Melee | Magic | Agile |
+| --- | --- | --- | --- |
+| 1 | Axe | Staff | Bow |
+| 2 | Sword and shield | Tome | Cards |
+| 3 | Mace | Staff | Short sword |
+| 4 | Sword | Tome | Short sword |
+| 5 | Mace | Tome | Cards |
+| 6 | Sword | Staff | Cards |
+| 7 | Axe | Tome | Short sword |
+| 8 | Sword | Staff | Bow |
+| 9 | Axe | Staff | Cards |
+| 10 | Sword and shield | Tome | Bow |
 
 ## Watchers
 
@@ -755,9 +774,9 @@ The first advancement for every class opens after floor 10 (First Wall; clearing
 - Whether the stage multipliers for skill leveling (×1, ×2, ×4, ×8, ×16) still work in later arcs.
 - Class skill books: whether books exist for branch and add-on class skills in later arcs.
 - Fusion: the Arc 1 list of scrap skills, weapon skills, their trait values, add-on class skill trait values and the three secret recipes; trait values for branch skills; more known recipes; odds after Arc 1.
-- Enhancement: whether the assumed fight lengths behind the sweep times hold in real play (about 50 hours for six pieces at +6 is a deliberate target but a guess), the final names of the floor materials, the stone recipes and main floors for the +7 to +10 grades of Arcs 2 to 5, whether the success rates change for higher-grade gear, and whether an item's grade limits how high it can be enhanced.
-- Protection charms: the real drop rates of charms, and whether charms of one arc work on gear of another arc.
-- Sets: the set bonus values for later arcs, the names and look of each set's pieces, how the 3 weapon types of each set's weapon piece are chosen, which of the 10 Arc 1 sets pair well together, and how Arc 1 set pieces compare with the grades of crafted gear.
+- Enhancement: whether the assumed fight lengths behind the sweep times hold in real play (about 50 hours for six pieces at +6 is a deliberate target but a guess), and the stone recipes and main floors for the +7 to +10 grades of Arcs 2 to 5.
+- Protection charms: whether charms of one arc work on gear of another arc.
+- Sets: the set bonus values for later arcs, and the look of each set's pieces.
 - Hidden classes: how each add-on class's skills and signature trait grow later, and whether more add-on classes appear in later arcs.
 - Branches: the exact effects and numbers of the 42 branch skills, and what tiers 2 and 3 add.
 - What each master teaches above Arc 1.
