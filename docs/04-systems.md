@@ -222,8 +222,9 @@ A class skill book lets a climber own a first skill of a class that is not their
 | What a book is | A one-use item. Reading it adds one Novice, Lv 1 first skill of a class (the 18 first class skills in First class skills below). The Seeker and the add-on skills have no books in Arc 1 |
 | Which skill | A book gives a random skill from the 3 first skills of its class that the climber does not own yet, so there are no duplicates. When the climber owns all 3, no more books of that class drop |
 | Drops | Elites and mini-bosses on floors 3 to 8 drop a book of that floor's class: floor 3 Mender, floor 4 Duelist, floor 5 Arcanist, floor 6 Trickster, floor 7 Vanguard, floor 8 Ranger. The draft rate is 8% for an elite and 20% for a mini-boss. On the floor of the climber's own class, the book is of the next floor's class instead (Mender on floor 3 finds Duelist books; Ranger on floor 8 finds Mender books), since a climber can relearn their own class's skills from the master free. The Seeker has no own class and finds the floor's class as usual |
-| Rest Town market | The merchant sells one class skill book per visit, of a skill the climber does not own, for coins (price TBD). The stock refills each time the climber returns from another floor |
+| Rest Town market | The merchant sells one class skill book per visit, of a skill the climber does not own, for coins (draft: 400, to be adjusted when coin income is set). The stock refills each time the climber returns from another floor |
 | Rate in practice | A floor with 3 elites and 1 mini-boss gives about 0.44 books per sweep, so about 2 sweeps per book and about 5 sweeps to hold a specific skill from that class (the order of the three is random) |
+| Floor and class | Which floor drops which class's books is left to discovery and is not shown to the player |
 | Not tradable | There is no trading, so a book is read or kept by the climber who found it |
 
 ### Skill tags (draft)
@@ -304,9 +305,9 @@ Fusion needs many skills to experiment with, which is why quests, elites, bosses
 | Safe experiments | A skill taught by a master can be relearned from that master for free, so experimenting with class skills is safe |
 | Scrap skill supply | Arc 1 gives the climber about 40 scrap skills for free from quests, elites, bosses, bonds and ordinary wandering masters (draft), so there is plenty to experiment with |
 | Discovery | By experimenting, and by clues from hidden events, books and NPCs |
-| Secret recipes | Some need skills from three floors and yield the strongest skills |
+| Secret recipes | Some need skills from three floors and yield the strongest skills. Arc 1 has 3 (draft), each with three ingredients from three different floors |
 
-Odds for an unknown combination (draft):
+Odds for an unknown combination (draft). The same table applies to three-skill fusion and to every stage in Arc 1:
 
 | Traits shared | One stage higher | Same stage (new skill) | One stage lower | Scrap skill |
 | --- | --- | --- | --- | --- |
@@ -363,11 +364,11 @@ Five recipes the climber can learn from clues (a hidden manual on floor 4, a bon
 
 | Ingredients | Shared traits | Result | Traits (element, motion, mind) | Class lock | Effect (draft) |
 | --- | --- | --- | --- | --- | --- |
-| Flame Lance + Lunge | Motion Thrust, Mind Fury | Blazing Lunge | Fire, Thrust, Fury | Open to every class (ingredients from two classes) | A fast thrust wreathed in fire with a high crit chance, like Lunge. The target burns for 2 turns |
-| Mend + Cleanse | Motion Flow, Mind Mercy | Cleansing Light | Light, Flow, Mercy | Mender | Removes all bad statuses from yourself and heals a little for each one removed |
-| Brace + Bark Skin | Element Earth, Motion Guard | Stoneskin | Earth, Guard, Resolve | Open to every class (Bark Skin is open) | For 3 turns, Guard +20% and the first hit taken deals 20% less damage. No tag, so it stacks with a Stance and an Aura |
-| Poison Dart + Pickpocket | Element Shadow | Venom Fingers | Shadow, Flow, Cunning | Trickster | Steals an item from the target and poisons it. If there is nothing to steal, the poison is stronger |
-| Feint + Pratfall | Element Wind, Motion Flow | Stumble Feint | Wind, Flow, Cunning | Open to every class (Pratfall is open) | The enemy's next attack misses and it has a 30% chance to lose its next move |
+| Flame Lance + Lunge | Motion Thrust, Mind Fury | Blazing Lunge | Fire, Thrust, Fury | Open to every class (ingredients from two classes) | A fast thrust wreathed in fire: 120% of weapon attack damage with Lunge's crit chance. The target burns for 4% of max HP for 2 turns. Cooldown 3 |
+| Mend + Cleanse | Motion Flow, Mind Mercy | Cleansing Light | Light, Flow, Mercy | Mender | Removes all bad statuses from yourself and heals 5% of max HP for each one removed. Cooldown 4 |
+| Brace + Bark Skin | Element Earth, Motion Guard | Stoneskin | Earth, Guard, Resolve | Open to every class (Bark Skin is open) | For 3 turns, Guard +20% and the first hit taken deals 20% less damage. No tag, so it stacks with a Stance and an Aura. Cooldown 5 |
+| Poison Dart + Pickpocket | Element Shadow | Venom Fingers | Shadow, Flow, Cunning | Trickster | Steals an item from the target and poisons it for 3% of max HP for 3 turns. If there is nothing to steal, the poison is 6%. Cooldown 4 |
+| Feint + Pratfall | Element Wind, Motion Flow | Stumble Feint | Wind, Flow, Cunning | Open to every class (Pratfall is open) | The enemy's next attack misses and it has a 30% chance to lose its next move. Cooldown 4 |
 
 ## Crafting
 
@@ -633,6 +634,8 @@ The game is solo, so every class must be able to clear floors alone. Classes dif
 
 Learned from the class master in Arc 1 (see Masters). These are class-locked skills (see Skills). Each class has a distinct style. Weak-early classes have weaker or slower first skills but a higher ceiling when they move up a stage.
 
+In Arc 1 a class master teaches only these three first skills. There is no fourth skill before advancement.
+
 | Class | First skills |
 | --- | --- |
 | Vanguard | Brace (Stance: take a stance that reduces the next hit), Counter Strike (strike back after being hit), Shield Bash (chance to stun; needs a shield) |
@@ -702,7 +705,7 @@ A climber who ignores wandering masters still clears every floor normally, since
 
 | Floor | Master | Kind | Skills (draft) |
 | --- | --- | --- | --- |
-| 4 | The Retired Heavenly Demon, hiding in the town below the sect | Fierce | Heaven-Splitting Palm (a very strong single hit), Blood-Shadow Step (Form: dodge and counter), Demon's Mantra (Aura: more damage at a cost to your own HP) |
+| 4 | The Retired Heavenly Demon, hiding in the town below the sect | Fierce | Heaven-Splitting Palm (300% of weapon attack damage, cooldown 5), Blood-Shadow Step (Form: 40% dodge, counter on a dodge), Demon's Mantra (Aura: +25% damage for 4% of max HP per turn), values at Novice |
 | 6 | The court jester | Ordinary | Pratfall (the enemy's next attack may miss), Mockery (the enemy deals 10% less damage for 2 turns) |
 | 7 | The Station tinkerer | Ordinary | Jury-Rig (turn a scrap material into a small shield), Scrounge (a chance of extra materials after a fight) |
 | 8 | The forest hermit | Ordinary | Quiet Step (Stance: less likely to be targeted or ambushed), Bark Skin (Aura: a small Guard boost) |
@@ -725,19 +728,19 @@ The first advancement for every class opens after floor 10 (First Wall; clearing
 ## Open questions
 
 - The thresholds for grade A and above, and the caps for the secondary ratings. The Arc 1 skill and gear totals are rechecked drafts and should be tested again once real skills and items exist.
-- Skill tags: the four tags and their switching rules are drafted; still open are tags on the many scrap skills not yet named, and which skills need a weapon type or an item other than those already named.
+- Skill tags: the four tags and their switching rules are drafted; still open are tags on the many scrap skills not yet named (draft: 8 of about 40). No skills need a weapon type or item beyond those already named.
 - The number of skills that count toward the power score after the first advancement (draft 16, 20, 24) should be rechecked once later arcs are designed. Arc 1 keeps 12.
 - EXP: the level formula and caps after the first advancement, whether the main-path share stays at 70% in later arcs, whether banking at the cap should stay limited to one level in later arcs, and the real monster counts per floor (the counts are drafts used to turn the budget into numbers).
 - Defeat: the safe points of each floor, and whether 10% of EXP progress and one bond level are the right amounts.
 - Bonds: whether bonds appear in Arc 2 and later in the same way, and the real values of the small bond skills and rare items listed in 03 Arc 1.
-- Wandering masters: the exact errands and quests (the legendary master's quest is a draft in 03 Arc 1), the strength of the legendary skills, and how many wandering masters appear in later arcs.
+- Wandering masters: how many wandering masters appear in later arcs.
 - Whether the stage multipliers for skill leveling (×1, ×2, ×4, ×8, ×16) still work in later arcs.
-- Class skill books: the real drop rates, the market price in coins, whether books exist for branch and add-on class skills in later arcs, and whether the floor-class mapping for drops should be shown to the player or left to discovery.
-- Fusion: hidden trait values for add-on class skills, branch skills, weapon skills and the roughly 40 scrap skills (the main skills are assigned), the numbers inside the effects of the five known recipes' results (the effects are drafted, the numbers are not balanced), more known recipes and the secret recipes, how the fusion journal is shown, and whether the odds change for higher stages or for fusing three skills.
+- Class skill books: whether books exist for branch and add-on class skills in later arcs.
+- Fusion: the Arc 1 list of scrap skills, weapon skills, their trait values, add-on class skill trait values and the three secret recipes; trait values for branch skills; more known recipes; odds after Arc 1.
 - Enhancement: whether the assumed fight lengths behind the sweep times hold in real play (about 50 hours for six pieces at +6 is a deliberate target but a guess), the final names of the floor materials, the stone recipes and main floors for the +7 to +10 grades of Arcs 2 to 5, whether the success rates change for higher-grade gear, and whether an item's grade limits how high it can be enhanced.
 - Protection charms: the Watcher stall base price and how many coins the Attention tips give, the real drop rates of charms, and whether charms of one arc work on gear of another arc.
 - Sets: the set bonus values for later arcs, the names and look of each set's pieces, how the 3 weapon types of each set's weapon piece are chosen, which of the 10 Arc 1 sets pair well together, and how Arc 1 set pieces compare with the grades of crafted gear.
 - Hidden classes: how each add-on class's skills and signature trait grow later, and whether more add-on classes appear in later arcs.
 - Branches: the exact effects and numbers of the 42 branch skills, and what tiers 2 and 3 add.
-- Skills beyond the first three for each class, and what each master teaches at higher floors.
+- What each master teaches above Arc 1.
 - Watchers: the exact Attention values and coin amounts, the blessing list and prices, the Favor levels and what each unlocks, and how hostility and Arc 4 opposition work.
