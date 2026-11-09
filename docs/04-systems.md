@@ -924,7 +924,7 @@ The First Wall master stays at Attack ×1.2 for now. With 2 Draughts every class
 
 ### Statuses
 
-Skill chance is reduced by 0.5 percentage points per target's Mind. Reapplying refreshes the duration and does not stack. Damage over time and stun chance are halved against elites, mini-bosses and floor masters.
+Claude's choices: a weak status is Poison, Slow, Fear or an accuracy penalty; a Stance's bonus grows with skill level and stage but its drawback does not. Skill chance is reduced by 0.5 percentage points per target's Mind. Reapplying refreshes the duration and does not stack. Damage over time and stun chance are halved against elites, mini-bosses and floor masters.
 
 | Status | Effect | Default length |
 | --- | --- | --- |

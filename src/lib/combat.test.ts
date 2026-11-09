@@ -225,6 +225,17 @@ describe('skills', () => {
     expect(act(start([sweep], poisoned), use(), miss).state.climber.statuses).toEqual([]);
   });
 
+  it('removes only weak statuses', () => {
+    const stunnedOnly = climber({ statuses: [{ id: 'burn', turns: 2 }] });
+    expect(skillBlock(start([skill({ cleanse: true })], stunnedOnly), 's')).toBe('No status to remove');
+  });
+
+  it('raises a Stance bonus with level but not its drawback', () => {
+    const lean = skill({ tag: 'Stance', cooldown: 0, damageBonus: -0.5, scale: 2 });
+    const state = start([lean], climber(), enemy(), 's');
+    expect(act(state, attack, script(0.99, 0.99, 0.5)).events[0]).toMatchObject({ damage: 9 }); // 17.48 x 0.5, not x 0
+  });
+
   it('tracks skills used once, plus the stance held from the start', () => {
     const lean = skill({ id: 'lean', tag: 'Stance', cooldown: 0 });
     let state = start([skill({ cooldown: 1 }), lean], climber(), enemy(), 'lean');

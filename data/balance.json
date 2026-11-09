@@ -11,6 +11,7 @@
     "fear": { "damage": 0.85, "turns": 2 },
     "slow": { "agility": 0.7, "turns": 2 }
   },
+  "weakStatuses": ["poison", "slow", "fear", "accuracyDown"],
   "stunImmuneTurns": 1,
   "cooldownMindThreshold": 30,
   "cooldownMindCut": 1,

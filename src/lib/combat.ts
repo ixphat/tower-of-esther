@@ -158,7 +158,7 @@ function strike(state: FightState, attacker: Combatant, target: Combatant, rng: 
 
   const stance = activeStance(state);
   const stanceOn = (c: Combatant, bonus?: number) =>
-    c === state.climber && stance && bonus ? 1 + bonus * stance.scale : 1;
+    c === state.climber && stance && bonus ? 1 + (bonus > 0 ? bonus * stance.scale : bonus) : 1;
   const guard = target.guard * stanceOn(target, stance?.guardBonus);
   const dealt = stanceOn(attacker, stance?.damageBonus) * (has(attacker, 'fear') ? balance.statuses.fear.damage : 1);
 
@@ -263,7 +263,7 @@ export function startFight(
   return { state, events };
 }
 
-const removableStatus = (c: Combatant) => c.statuses.find((status) => status.id !== STUN_IMMUNE);
+const removableStatus = (c: Combatant) => c.statuses.find((status) => balance.weakStatuses.includes(status.id));
 
 // Why a skill cannot be used right now, or null when it can.
 export function skillBlock(state: FightState, id: string): string | null {
