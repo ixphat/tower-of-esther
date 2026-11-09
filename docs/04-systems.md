@@ -306,6 +306,7 @@ The climber fights the weapon master's practice elite using only that weapon's s
 | Bow | Win without being hit in the first 3 turns |
 | Mace | Stun the elite twice |
 | Cards | Inflict 3 different weak statuses with Deal, then win |
+| Arena Gear | Restrain the elite twice, then win |
 
 ## Skill fusion
 
@@ -461,6 +462,8 @@ First-learned skills are at scrap level. A dash means no cooldown or no tag. Sta
 | Mace | Intermediate | Skull Ring | 140% damage, 35% chance to stun | 5 | Light | Strike | Resolve |
 | Cards | Novice | Deal | 100% damage, one random weak status for 1 turn | 2 | Shadow | Shot | Whimsy |
 | Cards | Intermediate | Full House | Three hits of 60% damage | 4 | Wind | Shot | Whimsy |
+| Arena Gear (floor 9) | Novice | Net Throw | 80% damage, restrain for 1 turn | 3 | Water | Shot | Cunning |
+| Arena Gear (floor 9) | Intermediate | Whip Crack | 140% damage | 4 | Wind | Slash | Fury |
 
 #### Add-on class skill traits
 
@@ -511,6 +514,21 @@ First-learned skills are at scrap level. A dash means no cooldown or no tag. Sta
 | Stand Fast | Guard +5% for 1 turn | 3 | Earth | Guard | Resolve |
 | Reinforce | Shield of 3% max HP at fight start | - | Earth | Guard | Cunning |
 | Steady Heart | Resist fear for 1 turn | 3 | Light | Guard | Resolve |
+
+#### Floor-exclusive skills
+
+Novice, open to every class, passive with no cooldown.
+
+| Floor | Skill | Effect | Element | Motion | Mind |
+| --- | --- | --- | --- | --- | --- |
+| 3 | Day's Memory | One good status survives a status reset | Water | Flow | Resolve |
+| 4 | Inner Guard | Crit damage taken −10% | Earth | Guard | Calm |
+| 5 | Rite of Passing | +20% damage to spirits and night enemies | Light | Flow | Mercy |
+| 6 | Court Manner | Reputation loss −10% | Wind | Guard | Cunning |
+| 7 | Survivor's Breath | Heal 5% of max HP after a fight (blocked on floor 7 itself) | Earth | Flow | Resolve |
+| 8 | Forest Sense | Sketches fade 50% slower (does not stack with Trailwise or the Forest's set) | Earth | Flow | Calm |
+| 9 | Crowd's Favor | +5% damage per risk point taken, up to +15% | Fire | Strike | Whimsy |
+| 10 | Leak Reader | Shows which two rules leak before an attempt | Shadow | Flow | Cunning |
 
 #### Secret recipes
 
