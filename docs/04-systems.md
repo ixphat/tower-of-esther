@@ -27,7 +27,7 @@ F → E → D → C → B → A → S → SS → SSS, plus Unique/Hidden for one
 | Equipment | 6 slots, grades, enhancement whose cap rises by arc (Arc 1 up to +6, up to +10 only in Arc 5) with stones crafted from materials of several floors and protection charms from three sources, and set bonuses at 2, 4 and 6 pieces. Each world has its own set, but gear from anywhere can be as good (see Equipment below) |
 | Monster drops and crafting | Each world's monsters drop materials native to that world. All drops can be farmed. Recipes are found by trying; plain materials can matter (see Crafting below). Materials from early floors gain value when combined with later-floor items, giving reasons to revisit old floors |
 | Shops | Stock themed to each floor's story |
-| Watchers | One shared Attention gauge that pays Watcher coins when play is exciting, plus a slower Favor with each Watcher that unlocks blessings and sudden quests. They first appear on floor 9 (see Watchers below). The roster and what each tips for are in 01 Lore |
+| Watchers | One shared Attention gauge that pays Tithes when play is exciting, plus a slower Favor with each Watcher that unlocks blessings and sudden quests. They first appear on floor 9 (see Watchers below). The roster and what each offerings for are in 01 Lore |
 
 ## Levels
 
@@ -223,7 +223,7 @@ All numbers are drafts.
 | Moving up a stage | At Lv 10 the skill can move up to the next stage and start again at Lv 1. How depends on where the skill comes from. Weapon proficiency skills and class skills need a stage-up trial from the matching master (weapon master or class master). All other skills (drops, fusion results, scrap skills, skills from wandering masters, skills that exist only in one world) need a stage catalyst item, one per stage |
 | Stage-up trial | A special fight with a condition tied to that skill (for example, defeat an elite while using Counter Strike at least 3 times). It can be retried without limit, and a failure costs nothing. Class skill trials are listed in 03 Arc 1, and weapon trials in Weapon stage-up trials below. A master can only test up to the stage their floor allows (draft: Arc 1 masters up to Intermediate, Arc 2 up to Advanced, Arcs 3 and 4 up to Master, Arc 5 up to Grandmaster), so the climber returns to higher-floor masters as they climb |
 | Stage catalyst | An item that drops from elites and mini-bosses of the current arc and can be farmed. One is used per stage. Draft rates: elite 5%, mini-boss 20%, so about 0.35 per sweep on a floor with 3 elites and 1 mini-boss, or about 3 sweeps per catalyst |
-| Cooldowns | Skill use is limited only by cooldowns counted in turns; there is no resource pool. Weapon attacks, Stances and Auras have none. A Charge has none on starting, and its release skill has one. A Form has a 5-turn cooldown from use, so it runs 3 turns on and at best 2 off. Every other skill has its own cooldown of 1 to 5 turns. At Mind 30 or higher every cooldown except a Form's is 1 turn shorter, down to a minimum of 1 |
+| Cooldowns | Skill use is limited only by cooldowns counted in turns; there is no resource pool. Cooldown N means usable again after N turns, so cooldown 1 is every turn. Weapon attacks, Stances and Auras have none. A Charge has none on starting, and its release skill has one. A Form has a 5-turn cooldown from use, so it runs 3 turns on and at best 2 off. Every other skill has its own cooldown of 1 to 5 turns. At Mind 30 or higher every cooldown except a Form's is 1 turn shorter, down to a minimum of 1 |
 | Using skills | There is no slot limit. The climber can use every skill they have learned, as long as it is compatible. A skill is compatible when it is not class-locked to another class, the climber has equipped the weapon type or item it needs, and no other active skill carries the same tag (see Skill tags) |
 | Weapon and item needs | Weapon proficiency skills and the weapon skills they teach need a weapon of that type equipped. Class skills need no particular weapon type unless stated (for example Shield Bash needs a shield). No other skills need a weapon or item in Arc 1 |
 | Class lock | Some skills are class-locked: only that class can use them (class skills from class masters are the main case). A skill the climber cannot use is kept in the skill list, does not count toward the skill score, and can still be used as a fusion ingredient. Skills that are not class-locked are open to every class. There is no trading in the game, so a class-locked skill found on a drop is simply kept |
@@ -287,7 +287,7 @@ Weapon mastery is a skill like any other, one per weapon type. All numbers are d
 | Starting point | A climber starts at Novice, Lv 1 in every type |
 | Moving up a stage | At Lv 10, a weapon master's stage-up trial is needed (see Skills): a fight with a condition tied to that weapon type, repeatable without limit, with no catalyst item needed. The master's floor sets the highest stage they can test (draft: Arc 1 masters up to Intermediate). The trial for each weapon type is in Weapon stage-up trials below |
 | Unlocks | Each stage teaches a new weapon skill and allows a higher grade of weapon of that type |
-| Weapon grades by stage | Novice: F–E. Intermediate: D–C. Advanced: B–A. Master: S–SS. Grandmaster: SSS (draft) |
+| Weapon grades by stage | Novice: F–E. Intermediate: D–B. Advanced: A. Master: S–SS. Grandmaster: SSS (draft) |
 | Teachers | Weapon masters. In Arc 1: the elders on floor 4, the elf scouts on floor 8 (bows) and the arena master on floor 9 (arena weapons). Higher floors have better weapon masters |
 | Score | The proficiency skills are not counted in the Hero power score. The weapon skills they teach are ordinary skills and do count if they are among the strongest (see Hero power grade) |
 
@@ -303,7 +303,7 @@ The climber fights the weapon master's practice elite using only that weapon's s
 | Short sword | Act twice before the elite's second turn |
 | Staff | Burn the elite twice, then win |
 | Tome | Win using no weapon attack, only skills |
-| Bow | Win without being hit in the first 3 turns |
+| Bow | Win without being hit in the first 2 turns |
 | Mace | Stun the elite twice |
 | Cards | Inflict 3 different weak statuses with Deal, then win |
 | Arena Gear | Restrain the elite twice, then win |
@@ -529,8 +529,8 @@ First-learned skills are at scrap level. A dash means no cooldown or no tag. Sta
 | Snare Trap | Slow for 2 turns | 4 |
 | Mark Prey | Target takes 20% more damage for 3 turns | 5 |
 | Spark | 120% damage | 1 |
-| Flame Lance | Charge one turn, release for 220% | 3 |
-| Chant | Charge: next spell +40% | 3 |
+| Flame Lance | Charge one turn, release for 250% | 3 |
+| Chant | Charge: next spell +110% | 3 |
 | Mend | Heal 15% of max HP | 5 |
 | Cleanse | Remove up to 2 bad statuses | 4 |
 | Poultice | Heal 6% of max HP per turn for 3 turns | 5 |
@@ -712,7 +712,7 @@ A protection charm is used together with a stone on one attempt, and if that att
 | --- | --- | --- |
 | Drops | The first clear of the floor master of each floor from 5 to 10 gives 1 charm. Elites drop one rarely (draft 2%) and mini-bosses somewhat more (draft 5%), on floors 5 to 10, and respawning ones can be farmed | The drop rates are small, so farming is slow |
 | Crafting | 1 charm = 3 rare parts from elites and mini-bosses of floors 5 to 10 + 1 rare crafting item from a bond (the item given at Trusted, or at Close if the climber picks the item) | Bond items are one per NPC (up to 31 in Arc 1), and the rare parts compete with the rare parts that stones for +5 and +6 need |
-| Watcher stall | From floor 9, the Watchers' stall sells charms for Watcher coins. The price rises with each charm bought (draft: base price 30, +25% per charm bought) | Coins come only from the Attention tips, and the rising price stops stockpiling |
+| Watcher stall | From floor 9, the Watchers' stall sells charms for Tithes. The price rises with each charm bought (draft: base price 30, +25% per charm bought) | Tithes come only from the Attention offerings, and the rising price stops stockpiling |
 
 How many charms a piece needs: with a charm on every attempt at +4 and above, one piece from +0 to +6 uses about 4 charms, so six pieces use about 24, which the three routes together can cover in Arc 1. The pressure grows in later arcs, where caps are higher and stones cost more. Charms of one arc work on that arc's gear only (draft).
 
@@ -760,17 +760,17 @@ The Watchers first appear on floor 9. The roster, their styles and their endings
 | --- | --- |
 | Gauge | One gauge from 0 to 100 for "how exciting the climber's play is" |
 | What raises it | Exciting play, for example: taking a handicap on floor 9 (+3 per risk point), winning below 10% HP (+10), winning a hard fight such as an elite (+10), finding a secret (+5), a first clear of a floor (+15), a bold story choice (+5) |
-| What lowers it | Playing safe: it drains slowly (draft: 2 points per fight with no risk, never below 0, so safe farming earns no tips) |
-| Tip | When the gauge reaches 100, the Watchers tip 10 Watcher coins (draft) and the gauge falls back to 30 |
-| Who gets the share | All the coins go to the climber. Each tip also gives 10 Favor, split among the Watchers by which kind of play caused the Attention, for example a comeback goes to Brio, sparing an opponent to Nalin, a fast win to Voss, a found secret to the Mirror, a broken rule to Varek |
+| What lowers it | Playing safe: it drains slowly (draft: 2 points per fight with no risk, never below 0, so safe farming earns no offerings) |
+| Offering | When the gauge reaches 100, the Watchers offer 10 Tithes (draft) and the gauge falls back to 30 |
+| Who gets the share | All the Tithes go to the climber. Each offering also gives 10 Favor, split among the Watchers by which kind of play caused the Attention, for example a comeback goes to Brio, sparing an opponent to Nalin, a fast win to Voss, a found secret to the Mirror, a broken rule to Varek |
 
-### Watcher coins
+### Tithes
 
 | Part | Design |
 | --- | --- |
-| Source | Tips from the Watchers (and the Watchers' sudden quests) |
+| Source | Offerings from the Watchers (and the Watchers' sudden quests) |
 | Uses | Buy blessings and protection charms (see Protection charms) from the Watchers' stall. Rare items join the stall in later arcs |
-| Keeping | Coins stay with the climber across floors. Defeat does not take them |
+| Keeping | Tithes stay with the climber across floors. Defeat does not take them |
 
 ### Favor (per Watcher)
 
@@ -786,7 +786,7 @@ The Watchers first appear on floor 9. The roster, their styles and their endings
 | Part | Design |
 | --- | --- |
 | Blessings | A temporary boost lasting several fights, bought with coins or given at Favor levels. The same for every class |
-| Sudden quests | Each Watcher offers quests in their style, with a cost attached (for example taking a handicap or a risk). The reward is 5 coins and 5 Favor (draft) |
+| Sudden quests | Each Watcher offers quests in their style, with a cost attached (for example taking a handicap or a risk). The reward is 5 Tithes and 5 Favor (draft) |
 
 ### Arc 1 values (draft)
 
@@ -796,7 +796,7 @@ The Watchers first appear on floor 9. The roster, their styles and their endings
 | 2 | 30 | That Watcher's blessing once for free |
 | 3 | 60 | Reserved for later arcs |
 
-Each blessing costs 10 Watcher coins and lasts 5 fights. Only one can be active at a time.
+Each blessing costs 10 Tithes and lasts 5 fights. Only one can be active at a time.
 
 | Watcher | Blessing |
 | --- | --- |
@@ -865,12 +865,14 @@ Checked with a throwaway simulator that assumes skills average 130% of attack an
 | Part | Formula |
 | --- | --- |
 | Damage | Attack × skill % × 100 / (100 + target's Guard or Ward) |
-| Attack | Power × 2 + weapon attack. Each +1 enhancement adds 5% weapon attack |
+| Damage roll and rounding | Each hit rolls ×0.9 to ×1.1. Damage rounds to the nearest whole number, minimum 1 on a hit that lands |
+| Skill strength | Skill % and effect values × (1 + 1% per level above 1) × (1 + 10% per stage above Novice) |
+| Attack | Power × 2 + weapon attack. Each +1 enhancement adds 5% weapon attack. On armor, each +1 adds 5% of that piece's Guard and Ward |
 | Max HP | 50 + 12 × Vitality + 5 × level + gear |
 | Crit | Chance 5% + 0.5% per Agility, up to 50%. Damage ×1.5, replaced by ×2 under floor 4's rule |
 | Evasion | 0.3% per Agility plus gear, up to 40%. Hit chance is 100% minus the target's Evasion, plus accuracy effects |
 | Guard and Ward | Guard = Vitality + armor. Ward = Mind + armor |
-| Status chance | Reduced by 0.5% per Mind |
+| Status chance | Reduced by 0.5 percentage points per target's Mind. Enemy Mind is 2 × floor number |
 | Turn order | By Agility, ties go to the climber |
 
 | Grade | F | E | D | C | B |
@@ -892,18 +894,18 @@ Enemy base values (normal tier). One enemy can override these, and floor gimmick
 
 The First Wall master stays at Attack ×1.2 for now. With 2 Draughts every class won in the simulator, which leaves out the two leaked rules, so recheck it once floor rules exist in the build and raise it if it is still easy.
 
-| Floor | HP | Attack | Def | Agility |
-| --- | --- | --- | --- | --- |
-| 1 | 70 | 4 | 3 | 3 |
-| 2 | 78 | 6 | 9 | 4 |
-| 3 | 109 | 7 | 15 | 6 |
-| 4 | 117 | 9 | 21 | 8 |
-| 5 | 149 | 11 | 27 | 9 |
-| 6 | 155 | 13 | 33 | 11 |
-| 7 | 191 | 17 | 39 | 12 |
-| 8 | 196 | 19 | 45 | 14 |
-| 9 | 197 | 21 | 51 | 16 |
-| 10 | 233 | 27 | 60 | 18 |
+| Floor | HP | Attack | Def | Agility | Mind |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 70 | 4 | 3 | 3 | 2 |
+| 2 | 79 | 6 | 9 | 4 | 4 |
+| 3 | 112 | 7 | 15 | 6 | 6 |
+| 4 | 122 | 9 | 21 | 8 | 8 |
+| 5 | 158 | 11 | 27 | 9 | 10 |
+| 6 | 167 | 13 | 33 | 11 | 12 |
+| 7 | 209 | 18 | 39 | 12 | 14 |
+| 8 | 217 | 20 | 45 | 14 | 16 |
+| 9 | 222 | 22 | 51 | 16 | 18 |
+| 10 | 266 | 29 | 60 | 18 | 20 |
 
 ## Combat rules (draft, Claude's choices)
 
@@ -922,7 +924,7 @@ The First Wall master stays at Attack ×1.2 for now. With 2 Draughts every class
 
 ### Statuses
 
-Skill chance is reduced by 0.5% per target's Mind. Reapplying refreshes the duration and does not stack. Damage over time and stun chance are halved against elites, mini-bosses and floor masters.
+Skill chance is reduced by 0.5 percentage points per target's Mind. Reapplying refreshes the duration and does not stack. Damage over time and stun chance are halved against elites, mini-bosses and floor masters.
 
 | Status | Effect | Default length |
 | --- | --- | --- |

@@ -110,8 +110,8 @@ The shared language of the project. One line per term, plus the doc that owns it
 
 | Term | Meaning | Owner |
 | --- | --- | --- |
-| Attention | One shared 0–100 gauge for exciting play; at 100 the Watchers tip | 04 |
-| Watcher coins | Currency from tips and sudden quests | 04 |
+| Attention | One shared 0–100 gauge for exciting play; at 100 the Watchers make an offering | 04 |
+| Tithes | Currency from offerings and sudden quests | 04 |
 | Favor | A slower, separate meter per Watcher | 04 |
 | Blessing | Temporary boost bought with coins or given at Favor levels | 04 |
 | Sudden quest | A Watcher's quest with a cost attached | 04 |

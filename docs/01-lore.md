@@ -57,14 +57,14 @@ The tower's top holds an Empty Throne. Its creator, Esther, chose to die and lef
 | Who | Lesser gods and other beings. Includes former climbers who reached the top but could not pass floor 50 |
 | Where | Sealed on floors 47, 48 and 49. They cannot come down or act directly. They first appear to the climber as projections on floor 9 |
 | Stance | They challenge the creator's authority and the Tower Master, and want the Throne for themselves. They hold the Order in contempt |
-| How they interfere | Watch climbers like a livestream, tip coins for exciting play, give sudden quests, and send hostile interference |
+| How they interfere | Watch climbers as an audience at a great game, offer Tithes for exciting play, give sudden quests, and send hostile interference |
 | Reach downward | In Arc 4 they contest the floors below through climbers and floor rules. Their homes stay on 47–49 |
 
 #### Roster (five Watchers)
 
 Each Watcher leans toward one ending, so who the player earns attention from matters when choosing a side in Arc 4. They come from different worlds, so their names differ in style.
 
-| Floor | Name (epithet) | Who | Tips coins for | Wants from the Throne | Leans toward |
+| Floor | Name (epithet) | Who | Offers Tithes for | Wants from the Throne | Leans toward |
 | --- | --- | --- | --- | --- | --- |
 | 47 | Brio (The Showman) | God of a vanished world's festival. Cheerful, shallow | Comebacks, big risks, thrilling wins | Restore his world and its festival | Keep |
 | 47 | Nalin (The Mourner) | Goddess of the dead of a drowned world (Thai-folklore flavor). Her name means lotus | Mercy, merit-making for spirits, not killing needlessly | Let her world's dead finally rest | Release |
@@ -92,7 +92,7 @@ The protagonist's motive is answered in steps, so the player's journey is the re
 
 | Arc | What the protagonist learns |
 | --- | --- |
-| 1 | The first signs that floors are being tampered with; the system messages leave things out; the first clues left by the creator; a white empty-chair mark and polite strangers who say "He will come down"; the Watchers exist and are watching (floor 9) |
+| 1 | One real answer by floor 10: every floor is a world the Tower took in before it vanished. The first signs that floors are being tampered with; the system messages leave things out; the first clues left by the creator; a white empty-chair mark and polite strangers who say "He will come down"; the Watchers exist and are watching (floor 9) |
 | 2 | One or more Watchers take special interest in this climber; the Order of the Descent appears openly and recruits climbers |
 | 3 | What the Tower takes from those who fail, and where it goes: into a new creator being assembled |
 | 4 | Who is tampering with the floors and why; the Order serves Ezra; the Watchers want the Throne; the need to choose a side |
@@ -119,7 +119,7 @@ Draft. A single Tower that every climber, and every real player, climbs together
 - The tower's creator, Esther, chose to die and left the Empty Throne for someone else to fill. Whoever takes it decides the fate of all worlds.
 - The **Tower Master**, Ezra, keeps the Throne empty for the creator's return and secretly tampers with floors to rebuild the creator from the memories fallen climbers lose. His cult, the **Order of the Descent**, helps him.
 - The **Watchers** are lesser gods and beings, including former climbers who could not pass floor 50. They are sealed on floors 47–49 and want the Throne.
-- They can't act directly, so they watch climbers like a livestream and interfere, using climbers as pawns to claim the throne.
+- They can't act directly, so they watch climbers as an audience at a great game and interfere, using climbers as pawns to claim the throne.
 - Every interference in the game is motivated by this: they want the player, or want the player gone.
 
 ## Arcs
