@@ -502,7 +502,7 @@ A protection charm is used together with a stone on one attempt, and if that att
 | --- | --- | --- |
 | Drops | The first clear of the floor master of each floor from 5 to 10 gives 1 charm. Elites drop one rarely (draft 2%) and mini-bosses somewhat more (draft 5%), on floors 5 to 10, and respawning ones can be farmed | The drop rates are small, so farming is slow |
 | Crafting | 1 charm = 3 rare parts from elites and mini-bosses of floors 5 to 10 + 1 rare crafting item from a bond (the item given at Trusted, or at Close if the climber picks the item) | Bond items are one per NPC (up to 31 in Arc 1), and the rare parts compete with the rare parts that stones for +5 and +6 need |
-| Watcher stall | From floor 9, the Watchers' stall sells charms for Watcher coins. The price rises with each charm bought (draft: base price TBD, +25% per charm bought) | Coins come only from the Attention tips, and the rising price stops stockpiling |
+| Watcher stall | From floor 9, the Watchers' stall sells charms for Watcher coins. The price rises with each charm bought (draft: base price 30, +25% per charm bought) | Coins come only from the Attention tips, and the rising price stops stockpiling |
 
 How many charms a piece needs: with a charm on every attempt at +4 and above, one piece from +0 to +6 uses about 4 charms, so six pieces use about 24, which the three routes together can cover in Arc 1. The pressure grows in later arcs, where caps are higher and stones cost more. Charms of one arc work on that arc's gear only (draft).
 
@@ -533,16 +533,16 @@ The Watchers first appear on floor 9. The roster, their styles and their endings
 | --- | --- |
 | Gauge | One gauge from 0 to 100 for "how exciting the climber's play is" |
 | What raises it | Exciting play, for example: taking a handicap on floor 9 (+5), winning below 10% HP (+10), winning a hard fight such as an elite (+10), finding a secret (+5), a first clear of a floor (+15), a bold story choice (+5) |
-| What lowers it | Playing safe: it drains slowly (draft: 2 points per fight with no risk) |
-| Tip | When the gauge reaches 100, the Watchers tip Watcher coins and the gauge falls back to 30 |
-| Who gets the share | The tip is split among the Watchers by which kind of play caused the Attention, for example a comeback goes to Brio, sparing an opponent to Nalin, a fast win to Voss, a found secret to the Mirror, a broken rule to Varek |
+| What lowers it | Playing safe: it drains slowly (draft: 2 points per fight with no risk, never below 0, so safe farming earns no tips) |
+| Tip | When the gauge reaches 100, the Watchers tip 10 Watcher coins (draft) and the gauge falls back to 30 |
+| Who gets the share | All the coins go to the climber. Each tip also gives 10 Favor, split among the Watchers by which kind of play caused the Attention, for example a comeback goes to Brio, sparing an opponent to Nalin, a fast win to Voss, a found secret to the Mirror, a broken rule to Varek |
 
 ### Watcher coins
 
 | Part | Design |
 | --- | --- |
 | Source | Tips from the Watchers (and the Watchers' sudden quests) |
-| Uses | Buy blessings, protection charms (see Protection charms) and rare items from the Watchers' stall (details TBD) |
+| Uses | Buy blessings and protection charms (see Protection charms) from the Watchers' stall. Rare items join the stall in later arcs |
 | Keeping | Coins stay with the climber across floors. Defeat does not take them |
 
 ### Favor (per Watcher)
@@ -559,7 +559,25 @@ The Watchers first appear on floor 9. The roster, their styles and their endings
 | Part | Design |
 | --- | --- |
 | Blessings | A temporary boost lasting several fights, bought with coins or given at Favor levels. The same for every class |
-| Sudden quests | Each Watcher offers quests in their style, with a cost attached (for example taking a handicap or a risk). A reward is coins and Favor |
+| Sudden quests | Each Watcher offers quests in their style, with a cost attached (for example taking a handicap or a risk). The reward is 5 coins and 5 Favor (draft) |
+
+### Arc 1 values (draft)
+
+| Favor level | Favor needed | Unlock |
+| --- | --- | --- |
+| 1 | 10 | The Watcher's second sudden quest |
+| 2 | 30 | That Watcher's blessing once for free |
+| 3 | 60 | Reserved for later arcs |
+
+Each blessing costs 10 Watcher coins and lasts 5 fights. Only one can be active at a time.
+
+| Watcher | Blessing |
+| --- | --- |
+| Brio | +15% damage while below 30% HP |
+| Nalin | Heal 5% of max HP after each fight |
+| Voss | The first skill used in each fight has its cooldown cut by 1 turn |
+| Mirror | See the enemy's next-move type on turn 1 |
+| Varek | The first bad status in each fight is ignored |
 
 ## Stats
 
@@ -738,9 +756,9 @@ The first advancement for every class opens after floor 10 (First Wall; clearing
 - Class skill books: whether books exist for branch and add-on class skills in later arcs.
 - Fusion: the Arc 1 list of scrap skills, weapon skills, their trait values, add-on class skill trait values and the three secret recipes; trait values for branch skills; more known recipes; odds after Arc 1.
 - Enhancement: whether the assumed fight lengths behind the sweep times hold in real play (about 50 hours for six pieces at +6 is a deliberate target but a guess), the final names of the floor materials, the stone recipes and main floors for the +7 to +10 grades of Arcs 2 to 5, whether the success rates change for higher-grade gear, and whether an item's grade limits how high it can be enhanced.
-- Protection charms: the Watcher stall base price and how many coins the Attention tips give, the real drop rates of charms, and whether charms of one arc work on gear of another arc.
+- Protection charms: the real drop rates of charms, and whether charms of one arc work on gear of another arc.
 - Sets: the set bonus values for later arcs, the names and look of each set's pieces, how the 3 weapon types of each set's weapon piece are chosen, which of the 10 Arc 1 sets pair well together, and how Arc 1 set pieces compare with the grades of crafted gear.
 - Hidden classes: how each add-on class's skills and signature trait grow later, and whether more add-on classes appear in later arcs.
 - Branches: the exact effects and numbers of the 42 branch skills, and what tiers 2 and 3 add.
 - What each master teaches above Arc 1.
-- Watchers: the exact Attention values and coin amounts, the blessing list and prices, the Favor levels and what each unlocks, and how hostility and Arc 4 opposition work.
+- Watchers: Favor unlocks after Arc 1, the stall's rare items, and how hostility and Arc 4 opposition work.
