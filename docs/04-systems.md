@@ -917,14 +917,13 @@ The first advancement for every class opens after floor 10 (First Wall; clearing
 ## Open questions
 
 - The thresholds for grade A and above, and the caps for the secondary ratings. The Arc 1 skill and gear totals are rechecked drafts and should be tested again once real skills and items exist.
-- Skill tags: the four tags and their switching rules are drafted; still open are tags on the many scrap skills not yet named (draft: 8 of about 40). No skills need a weapon type or item beyond those already named.
 - The number of skills that count toward the power score after the first advancement (draft 16, 20, 24) should be rechecked once later arcs are designed. Arc 1 keeps 12.
 - EXP: the level formula and caps after the first advancement, whether the main-path share stays at 70% in later arcs, whether banking at the cap should stay limited to one level in later arcs, and the real monster counts per floor (the counts are drafts used to turn the budget into numbers).
 - Bonds: whether bonds appear in Arc 2 and later in the same way.
 - Wandering masters: how many wandering masters appear in later arcs.
 - Whether the stage multipliers for skill leveling (×1, ×2, ×4, ×8, ×16) still work in later arcs.
 - Class skill books: whether books exist for branch and add-on class skills in later arcs.
-- Fusion: the Arc 1 list of scrap skills, weapon skills, their trait values, add-on class skill trait values and the three secret recipes; trait values for branch skills; more known recipes; odds after Arc 1.
+- Fusion: trait values for branch skills; more known recipes; odds after Arc 1.
 - Enhancement: whether the assumed fight lengths behind the sweep times hold in real play (about 50 hours for six pieces at +6 is a deliberate target but a guess), and the stone recipes and main floors for the +7 to +10 grades of Arcs 2 to 5.
 - Protection charms: whether charms of one arc work on gear of another arc.
 - Sets: the set bonus values for later arcs, and the look of each set's pieces.
