@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import { statsAt } from './lib/climber';
-  import { act, climberCombatant, createRng, enemyCombatant, startFight, type Action, type FightEvent, type FightState } from './lib/combat';
+  import { fightLoadout, statsAt, type OwnedSkills } from './lib/climber';
+  import { act, climberCombatant, createRng, enemyCombatant, skillBlock, startFight, type Action, type Combatant, type FightEvent, type FightSkill, type FightState } from './lib/combat';
   import { itemById, type Enemy, type Floor, type Item } from './lib/data';
   import { fightRewards, type Rewards } from './lib/run';
   import balance from '../data/balance.json';
@@ -14,17 +14,37 @@
     level: number;
     worn: Worn;
     items: Record<string, number>;
+    skills: OwnedSkills;
+    pins: (string | null)[];
+    stance: string | null;
     onSpendItem: (item: string) => void; // saved at once, a used item stays used
-    onFinish: (outcome: 'won' | 'lost', hp: number, rewards: Rewards) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
+    onFinish: (outcome: 'won' | 'lost', hp: number, rewards: Rewards, used: string[]) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
     onReturn: () => void;
   }
 
-  const { floor, foes, hp, level, worn, items, onSpendItem, onFinish, onReturn }: Props = $props();
+  const { floor, foes, hp, level, worn, items, skills, pins, stance, onSpendItem, onFinish, onReturn }: Props = $props();
 
   const LOG_LINES = 5;
+  const TAGS = ['Stance', 'Charge', 'Form', 'Aura'];
+  const STATUS_NAMES: Record<string, string> = {
+    poison: 'Poison',
+    burn: 'Burn',
+    stun: 'Stun',
+    confuse: 'Confuse',
+    restrain: 'Restrain',
+    fear: 'Fear',
+    slow: 'Slow',
+    accuracyDown: 'Accuracy down',
+  };
 
   function describe(event: FightEvent): string {
     if (event.type === 'miss') return `${event.target} evades ${event.attacker}.`;
+    if (event.type === 'skill') return `${event.actor} uses ${event.skill}.`;
+    if (event.type === 'status') return `${event.target}: ${STATUS_NAMES[event.status]}.`;
+    if (event.type === 'cleanse') return `${event.target} is rid of ${STATUS_NAMES[event.status]}.`;
+    if (event.type === 'tick') return `${event.target} takes ${event.damage} from ${STATUS_NAMES[event.status]}.`;
+    if (event.type === 'stunned') return `${event.actor} is stunned.`;
+    if (event.type === 'fail') return `${event.actor}'s move fails.`;
     if (event.type === 'heal') return `${event.target} recovers ${event.amount} HP.`;
     if (event.type === 'end') return event.outcome === 'won' ? 'Victory.' : 'Defeated.';
     return `${event.crit ? 'Critical. ' : ''}${event.attacker} hits ${event.target} for ${event.damage}.`;
@@ -32,7 +52,7 @@
 
   const rng = createRng(crypto.getRandomValues(new Uint32Array(1))[0]);
   // svelte-ignore state_referenced_locally -- foes are fixed for the life of this fight
-  const start = startFight({ ...climberCombatant(statsAt(level, worn)), hp }, foes.map(enemyCombatant), rng);
+  const start = startFight({ ...climberCombatant(statsAt(level, worn)), hp }, foes.map(enemyCombatant), rng, fightLoadout(skills, stance));
 
   let fight = $state(start.state);
   let log = $state(start.events.map(describe));
@@ -48,7 +68,7 @@
       const drops = Object.entries(rewards.drops).map(([id, amount]) => `${itemById(id)!.name} ×${amount}`);
       log = [...log, `Gained ${[`${rewards.exp} EXP`, ...drops].join(', ')}.`];
     }
-    onFinish(state.outcome, state.climber.hp, rewards);
+    onFinish(state.outcome, state.climber.hp, rewards, state.used);
   }
 
   onMount(() => reportEnd(start.state)); // a faster enemy can end the fight before the first action
@@ -59,6 +79,16 @@
       .filter(({ item, count }) => count > 0 && item.heal && !item.outsideFightOnly),
   );
   const healLimitReached = $derived(fight.healsUsed >= balance.healItemsPerFight);
+
+  let showSkills = $state(false);
+  const pinned = $derived(pins.map((id) => fight.skills.find((skill) => skill.id === id) ?? null));
+  const visibleStatuses = (c: Combatant) => c.statuses.filter((status) => STATUS_NAMES[status.id]);
+  const tagValue = (tag: string) =>
+    tag === 'Stance' ? (fight.skills.find((skill) => skill.id === fight.stance)?.name ?? '-') : '-';
+
+  function useSkill(id: string) {
+    return perform({ type: 'skill', skill: id, target: fight.enemies.findIndex((e) => e.hp > 0) });
+  }
 
   function attack() {
     return perform({ type: 'attack', target: fight.enemies.findIndex((e) => e.hp > 0) });
@@ -80,6 +110,11 @@
   }
 </script>
 
+{#snippet skillButton(skill: FightSkill)}
+  {@const block = skillBlock(fight, skill.id)}
+  <button disabled={block !== null} onclick={() => useSkill(skill.id)}>{skill.name}{block ? ` (${block})` : ''}</button>
+{/snippet}
+
 <div class="screen">
   <header>
     <h1>Floor {floor.id} · Round {fight.round}</h1>
@@ -96,9 +131,19 @@
         <h2>{combatant.name}</h2>
         <progress max={combatant.maxHp} value={combatant.hp} aria-label="{combatant.name} HP"></progress>
         <p>{combatant.hp} / {combatant.maxHp}</p>
+        <p>
+          Statuses:
+          {visibleStatuses(combatant).map((s) => `${STATUS_NAMES[s.id]} ${s.turns}`).join(', ') || '-'}
+        </p>
       </section>
     {/each}
   </main>
+
+  <ul class="tags" aria-label="Tag slots">
+    {#each TAGS as tag (tag)}
+      <li>{tag}: {tagValue(tag)}</li>
+    {/each}
+  </ul>
 
   <div role="log" aria-label="Combat log" class="log">
     {#each log.slice(-LOG_LINES) as line, index (log.length - LOG_LINES + index)}
@@ -106,17 +151,34 @@
     {/each}
   </div>
 
-  <div class="actions">
-    {#if fight.outcome === 'ongoing'}
+  {#if fight.outcome === 'ongoing'}
+    <div class="actions">
       <button onclick={attack}>Weapon attack</button>
       {#each healingItems as { item, count } (item.id)}
         <button disabled={healLimitReached} onclick={() => heal(item)}>{item.name} ×{count}</button>
       {/each}
       {#if healLimitReached}<span>Healing items used up for this fight.</span>{/if}
-    {:else}
-      <button bind:this={back} onclick={onReturn}>Return</button>
+      <button aria-expanded={showSkills} onclick={() => (showSkills = !showSkills)}>Skills</button>
+    </div>
+    <div class="actions" role="group" aria-label="Pinned skills">
+      {#each pinned as skill, slot (slot)}
+        {#if skill}
+          {@render skillButton(skill)}
+        {:else}
+          <button disabled aria-label="Empty pin {slot + 1}">-</button>
+        {/if}
+      {/each}
+    </div>
+    {#if showSkills}
+      <div class="actions" role="group" aria-label="All skills">
+        {#each fight.skills as skill (skill.id)}
+          {@render skillButton(skill)}
+        {/each}
+      </div>
     {/if}
-  </div>
+  {:else}
+    <div class="actions"><button bind:this={back} onclick={onReturn}>Return</button></div>
+  {/if}
 </div>
 
 <style>
@@ -162,6 +224,15 @@
   .scene p,
   .log p {
     margin: 0;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .actions {

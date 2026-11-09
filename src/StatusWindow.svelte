@@ -10,7 +10,7 @@
   let tab = $state('Overview');
 
   const stats = $derived(statsAt(run.level, run.worn));
-  const parts = $derived(heroParts(run.level, run.worn));
+  const parts = $derived(heroParts(run.level, run.worn, run.skills));
   const hero = $derived(heroPower(parts));
   const bars = $derived([
     ['Stats', parts.stats],

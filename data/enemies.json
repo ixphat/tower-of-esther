@@ -7,6 +7,8 @@
     "def": 3,
     "agility": 3,
     "exp": 1,
+    "monsterPoints": 1,
+    "mind": 2,
     "drops": { "straw-thread": 1 }
   }
 ]

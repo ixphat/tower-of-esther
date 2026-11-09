@@ -4,6 +4,7 @@
   import { enemies, floors, type Enemy } from './lib/data';
   import BagWindow from './BagWindow.svelte';
   import StallWindow from './StallWindow.svelte';
+  import SkillsWindow from './SkillsWindow.svelte';
   import StatusWindow from './StatusWindow.svelte';
   import { expToNext, maxHp } from './lib/climber';
   import { applyAction, newRun, resumeRun, type Rewards, type RunAction, type RunState } from './lib/run';
@@ -61,8 +62,8 @@
     return ids.map((id) => enemies.find((e) => e.id === id)!); // the data check guarantees it exists
   }
 
-  function finishFight(outcome: 'won' | 'lost', hp: number, rewards: Rewards) {
-    commit(outcome === 'won' ? { type: 'fightEnd', outcome, hp, rewards } : { type: 'fightEnd', outcome });
+  function finishFight(outcome: 'won' | 'lost', hp: number, rewards: Rewards, used: string[]) {
+    commit(outcome === 'won' ? { type: 'fightEnd', outcome, hp, rewards, used } : { type: 'fightEnd', outcome });
   }
 
   function endFight() {
@@ -77,7 +78,7 @@
 </script>
 
 {#if foes}
-  <Fight {floor} {foes} hp={run!.hp} level={run!.level} worn={run!.worn} items={run!.items} onSpendItem={(item) => commit({ type: 'spendItem', item })} onFinish={finishFight} onReturn={endFight} />
+  <Fight {floor} {foes} hp={run!.hp} level={run!.level} worn={run!.worn} items={run!.items} skills={run!.skills} pins={run!.pins} stance={run!.stance} onSpendItem={(item) => commit({ type: 'spendItem', item })} onFinish={finishFight} onReturn={endFight} />
 {:else if location && run}
   <div class="screen">
     <header><h1>Floor {floor.id} · {floor.name}</h1></header>
@@ -127,6 +128,8 @@
     <h2 id="window-title">{windowTitle}</h2>
     {#if windowTitle === 'Status'}
       <StatusWindow {run} {floor} />
+    {:else if windowTitle === 'Skills'}
+      <SkillsWindow {run} onAction={commit} />
     {:else if windowTitle === 'Bag'}
       <BagWindow {run} onAction={commit} />
     {:else if windowTitle === 'Stall'}

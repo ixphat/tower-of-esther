@@ -131,6 +131,43 @@ test('items, drops, respawn, stall and comparing gear', async ({ page }) => {
   await expect(bag).toContainText('Straw Thread ×');
 });
 
+test('pinned skills, cooldown reason, tag slots and the Skills window', async ({ page }) => {
+  const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+
+  await page.getByRole('button', { name: 'Skills' }).click();
+  const window = page.getByRole('dialog', { name: 'Skills' });
+  await expect(window).toContainText('Novice Lv 1');
+  await window.getByRole('searchbox').fill('lean');
+  await expect(window.getByRole('button', { name: 'Unpin Straw Toss' })).toHaveCount(0);
+  await window.getByRole('searchbox').fill('');
+  await window.getByRole('button', { name: 'Unpin Whistle' }).click();
+  await expect(window.getByRole('button', { name: 'Pin Whistle' })).toBeVisible();
+  await window.getByRole('button', { name: 'Close' }).click();
+
+  await go('Fields, monsters here');
+  await page.getByRole('button', { name: 'Fight Straw Remnant' }).click();
+  await expect(page.getByRole('list', { name: 'Tag slots' }).getByRole('listitem')).toHaveCount(4);
+
+  const pins = page.getByRole('group', { name: 'Pinned skills' });
+  await expect(pins.getByRole('button', { name: 'Whistle' })).toHaveCount(0);
+  await expect(pins.getByRole('button', { name: 'Sweep Up (No status to remove)' })).toBeDisabled();
+  await pins.getByRole('button', { name: 'Straw Toss' }).click();
+  await expect(pins.getByRole('button', { name: 'Straw Toss (Cooldown 1)' })).toBeDisabled();
+  await expect(page.getByRole('log', { name: 'Combat log' })).toContainText('uses Straw Toss');
+
+  await pins.getByRole('button', { name: 'Stubborn Lean' }).click();
+  await expect(page.getByRole('list', { name: 'Tag slots' })).toContainText('Stance: Stubborn Lean');
+
+  const back = page.getByRole('button', { name: 'Return' });
+  while (!(await back.isVisible())) await page.getByRole('button', { name: 'Weapon attack' }).click();
+  await back.click();
+
+  await page.getByRole('button', { name: 'Skills' }).click();
+  await expect(window.locator('li', { hasText: 'Straw Toss' })).toContainText('Novice Lv 1');
+});
+
 test('reloading mid-fight counts as a defeat', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'New game' }).click();

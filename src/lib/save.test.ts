@@ -31,7 +31,7 @@ describe('save', () => {
     expect(readSave(storage, floor)).toEqual(run);
   });
 
-  const saved = (over: object) => JSON.stringify({ version: 5, run: { ...newRun(floor), ...over } });
+  const saved = (over: object) => JSON.stringify({ version: 6, run: { ...newRun(floor), ...over } });
 
   it.each([
     ['corrupt JSON', '{oops'],
@@ -45,6 +45,11 @@ describe('save', () => {
     ['an unknown item', saved({ items: { ghost: 1 } })],
     ['a piece worn in the wrong slot', saved({ worn: { head: 'plain-coat' } })],
     ['an unknown cleared location', saved({ cleared: ['gone'] })],
+    ['an unknown skill', saved({ skills: { ghost: { stage: 0, level: 1, proficiency: 0 } } })],
+    ['a skill level above 10', saved({ skills: { whistle: { stage: 0, level: 11, proficiency: 0 } } })],
+    ['too few pin slots', saved({ pins: [null] })],
+    ['a pin of an unowned skill', saved({ pins: ['ghost', null, null, null, null, null] })],
+    ['a Stance that is not one', saved({ stance: 'whistle' })],
     ['a level below 1', saved({ level: 0 })],
     ['a negative counter', saved({ memoriesLost: -1 })],
     ['bonds that are a list', saved({ bonds: [] })],

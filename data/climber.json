@@ -4,6 +4,7 @@
   "agility": 3,
   "mind": 4,
   "startingCoins": 100,
+  "startingSkills": ["whistle", "stubborn-lean", "straw-toss", "sweep-up"],
   "startingWeapon": "worn-sword",
   "startingItems": { "basic-salve": 3 }
 }
