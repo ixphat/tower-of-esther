@@ -3,6 +3,7 @@
   "power": 5,
   "agility": 3,
   "mind": 4,
+  "startingCoins": 100,
   "startingWeapon": "worn-sword",
   "startingItems": { "basic-salve": 3 }
 }

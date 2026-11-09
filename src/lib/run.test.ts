@@ -98,8 +98,8 @@ describe('rewards and respawn', () => {
 describe('items', () => {
   const inn = { locationId: 'inn' };
 
-  it('starts with 3 Basic Salves and the starting weapon worn', () => {
-    expect(newRun(floor)).toMatchObject({ coins: 0, items: { 'basic-salve': 3 }, worn: { weapon: 'worn-sword' } });
+  it('starts with 100 coins, 3 Basic Salves and the starting weapon worn', () => {
+    expect(newRun(floor)).toMatchObject({ coins: 100, items: { 'basic-salve': 3 }, worn: { weapon: 'worn-sword' } });
   });
 
   it('spends one item in a fight without healing here', () => {

@@ -112,16 +112,6 @@ test('items, drops, respawn, stall and comparing gear', async ({ page }) => {
   await back.click();
   await expect(fight).toHaveCount(0); // beaten until re-entry
 
-  // coins come from quests and floor clears, which do not exist yet
-  await page.evaluate(() => {
-    const key = 'tower-of-esther.save';
-    const save = JSON.parse(localStorage.getItem(key)!);
-    save.run.coins = 50;
-    localStorage.setItem(key, JSON.stringify(save));
-  });
-  await page.reload();
-  await page.getByRole('button', { name: 'Continue' }).click();
-
   await go('Village Square');
   await go("Keeper's House");
   const before = await coins();

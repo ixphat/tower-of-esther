@@ -46,7 +46,7 @@ export function newRun(floor: Floor): RunState {
     lastBond: null,
     memoriesLost: 0,
     inFight: false,
-    coins: 0,
+    coins: climberData.startingCoins,
     items: { ...climberData.startingItems },
     worn: { weapon: climberData.startingWeapon },
     cleared: [],
