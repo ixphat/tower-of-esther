@@ -1,6 +1,7 @@
 {
   "id": 1,
   "name": "First Trial",
+  "recommendedGrade": "F",
   "start": "square",
   "locations": [
     {

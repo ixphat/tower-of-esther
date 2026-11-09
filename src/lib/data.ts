@@ -7,6 +7,7 @@ export interface Enemy {
   attack: number;
   def: number;
   agility: number;
+  exp: number;
 }
 
 export interface Location {
@@ -21,6 +22,7 @@ export interface Location {
 export interface Floor {
   id: number;
   name: string;
+  recommendedGrade: string;
   start: string;
   locations: Location[];
 }

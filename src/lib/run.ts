@@ -1,12 +1,12 @@
 import balance from '../../data/balance.json';
-import climberData from '../../data/climber.json';
-import { climberCombatant } from './combat';
+import { expToNext, maxHp } from './climber';
 import type { Floor } from './data';
 
 export interface RunState {
   locationId: string;
   safePoint: string;
   hp: number;
+  level: number;
   exp: number; // progress toward the next level
   bonds: Record<string, number>; // bond points by NPC id
   lastBond: string | null; // NPC whose bond was raised most recently
@@ -18,15 +18,15 @@ export type RunAction =
   | { type: 'move'; to: string }
   | { type: 'rest' }
   | { type: 'fightStart' }
-  | { type: 'fightEnd'; outcome: 'won' | 'lost'; hp: number };
-
-export const maxHp = (): number => climberCombatant(climberData).maxHp;
+  | { type: 'fightEnd'; outcome: 'won'; hp: number; exp: number }
+  | { type: 'fightEnd'; outcome: 'lost' };
 
 export function newRun(floor: Floor): RunState {
   return {
     locationId: floor.start,
     safePoint: floor.start,
-    hp: maxHp(),
+    hp: maxHp(1),
+    level: 1,
     exp: 0,
     bonds: {},
     lastBond: null,
@@ -47,11 +47,21 @@ function lowerLastBond({ bonds, lastBond }: RunState): Record<string, number> {
   return bondLevel === 0 ? bonds : { ...bonds, [lastBond]: balance.bondThresholds[bondLevel - 1] };
 }
 
+function gainExp(state: RunState, gained: number): Pick<RunState, 'level' | 'exp'> {
+  let { level } = state;
+  let exp = state.exp + gained;
+  while (exp >= expToNext(level)) {
+    exp -= expToNext(level);
+    level += 1;
+  }
+  return { level, exp };
+}
+
 function defeat(state: RunState): RunState {
   return {
     ...state,
     locationId: state.safePoint,
-    hp: maxHp(),
+    hp: maxHp(state.level),
     exp: state.exp - Math.ceil((state.exp * balance.defeatExpLossPercent) / 100),
     bonds: lowerLastBond(state),
     memoriesLost: state.memoriesLost + 1,
@@ -68,14 +78,16 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
     }
     case 'rest':
       if (!find(floor, state.locationId).rest) throw new Error('No resting place here');
-      return { ...state, hp: maxHp() };
+      return { ...state, hp: maxHp(state.level) };
     case 'fightStart':
       return { ...state, inFight: true };
     case 'fightEnd':
-      return action.outcome === 'lost' ? defeat(state) : { ...state, hp: action.hp, inFight: false };
+      return action.outcome === 'lost'
+        ? defeat(state)
+        : { ...state, ...gainExp(state, action.exp), hp: action.hp, inFight: false };
   }
 }
 
 export function resumeRun(state: RunState, floor: Floor): RunState {
-  return state.inFight ? applyAction(state, floor, { type: 'fightEnd', outcome: 'lost', hp: 0 }) : state;
+  return state.inFight ? applyAction(state, floor, { type: 'fightEnd', outcome: 'lost' }) : state;
 }

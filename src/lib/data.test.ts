@@ -4,6 +4,7 @@ import { floors, validateFloor, type Floor } from './data';
 const floor = (over: Partial<Floor> = {}): Floor => ({
   id: 1,
   name: 'Test',
+  recommendedGrade: 'F',
   start: 'a',
   locations: [
     { id: 'a', name: 'A', description: '', exits: ['b'] },

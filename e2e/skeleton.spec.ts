@@ -39,6 +39,7 @@ test('climber fights a marked location and returns to the scene', async ({ page 
   await expect(page.getByRole('log', { name: 'Combat log' })).toContainText(/Victory|Defeated/);
   await back.click();
   await expect(page.getByRole('heading', { name: 'Fields' })).toBeFocused();
+  await expect(page.getByRole('status', { name: 'Climber' })).toContainText('EXP 1 / 100');
 });
 
 test('HP carries, Rest restores it, and defeat returns to the resting place', async ({ page }) => {
@@ -102,7 +103,14 @@ test('a window opens over the scene and closes back to it', async ({ page }) => 
   await page.getByRole('button', { name: 'New game' }).click();
 
   await page.getByRole('button', { name: 'Status' }).click();
-  await expect(page.getByRole('dialog', { name: 'Status' })).toBeVisible();
+  const status = page.getByRole('dialog', { name: 'Status' });
+  await expect(status).toBeVisible();
+  await expect(status).toContainText('Vitality 8');
+  await expect(status).toContainText('Hero power F');
+  for (const tab of ['Titles', 'Bonds', 'Floor clears', 'Overview']) {
+    await status.getByRole('button', { name: tab }).click();
+    await expect(status.getByRole('button', { name: tab })).toHaveAttribute('aria-pressed', 'true');
+  }
 
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);

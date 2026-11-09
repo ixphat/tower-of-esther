@@ -58,7 +58,7 @@ describe('strike formulas (04 Systems)', () => {
   });
 
   it('derives the climber from core stats', () => {
-    const stats = { level: 1, vitality: 8, power: 5, agility: 3, weaponAttack: 8 };
+    const stats = { level: 1, vitality: 8, power: 5, agility: 3, mind: 4, weaponAttack: 8 };
     expect(climberCombatant(stats)).toMatchObject({ maxHp: 151, hp: 151, attack: 18, guard: 8, agility: 3 });
   });
 });

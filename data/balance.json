@@ -1,4 +1,19 @@
 {
+  "expPerLevel": 100,
+  "statPointsPerLevel": 3,
+  "heroPartCap": 0.5,
+  "heroGrades": [
+    { "grade": "F", "score": 0 },
+    { "grade": "E", "score": 36 },
+    { "grade": "D", "score": 60 },
+    { "grade": "C", "score": 90 },
+    { "grade": "B", "score": 140 },
+    { "grade": "A", "score": 220 },
+    { "grade": "S", "score": 330 },
+    { "grade": "SS", "score": 470 },
+    { "grade": "SSS", "score": 650 }
+  ],
+  "gearGradePoints": { "F": 1, "E": 2, "D": 3, "C": 4, "B": 5, "A": 6, "S": 7, "SS": 8, "SSS": 9 },
   "defeatExpLossPercent": 10,
   "bondThresholds": [0, 10, 30, 60, 100],
   "guardScale": 100,

@@ -5,6 +5,7 @@ import { applyAction, newRun, resumeRun, type RunState } from './run';
 const floor: Floor = {
   id: 1,
   name: 'Test',
+  recommendedGrade: 'F',
   start: 'gate',
   locations: [
     { id: 'gate', name: 'Gate', description: '', exits: ['inn', 'field'] },
@@ -15,7 +16,8 @@ const floor: Floor = {
 
 const full = newRun(floor).hp;
 const run = (over: Partial<RunState> = {}): RunState => ({ ...newRun(floor), ...over });
-const lose = { type: 'fightEnd', outcome: 'lost', hp: 0 } as const;
+const lose = { type: 'fightEnd', outcome: 'lost' } as const;
+const win = (exp: number, hp = 40) => ({ type: 'fightEnd', outcome: 'won', hp, exp }) as const;
 
 describe('HP between fights', () => {
   it('starts full at the floor start, with the start as safe point', () => {
@@ -23,7 +25,7 @@ describe('HP between fights', () => {
   });
 
   it('keeps the HP a won fight ended on, through moves', () => {
-    let state = applyAction(run(), floor, { type: 'fightEnd', outcome: 'won', hp: 40 });
+    let state = applyAction(run(), floor, { type: 'fightEnd', outcome: 'won', hp: 40, exp: 0 });
     state = applyAction(state, floor, { type: 'move', to: 'field' });
     expect(state.hp).toBe(40);
   });
@@ -42,6 +44,29 @@ describe('HP between fights', () => {
   });
 });
 
+describe('EXP from wins', () => {
+  it('adds EXP below the level cost', () => {
+    expect(applyAction(run({ exp: 10 }), floor, win(5))).toMatchObject({ level: 1, exp: 15 });
+  });
+
+  it('levels up at exactly 100 x level and keeps the remainder', () => {
+    expect(applyAction(run({ exp: 99 }), floor, win(1))).toMatchObject({ level: 2, exp: 0 });
+    expect(applyAction(run(), floor, win(350))).toMatchObject({ level: 3, exp: 50 });
+  });
+
+  it('does not heal on level-up', () => {
+    expect(applyAction(run({ exp: 99 }), floor, win(1, 40)).hp).toBe(40);
+  });
+
+  it('never drops the level on defeat', () => {
+    expect(applyAction(run({ level: 3, exp: 0 }), floor, lose).level).toBe(3);
+  });
+
+  it('rests to the max HP of the current level', () => {
+    expect(applyAction(run({ level: 2, locationId: 'inn', hp: 1 }), floor, { type: 'rest' }).hp).toBe(168);
+  });
+});
+
 describe('leaving a fight unfinished', () => {
   it('counts as a defeat when the run resumes', () => {
     const started = applyAction(run({ locationId: 'field', exp: 200 }), floor, { type: 'fightStart' });
@@ -50,7 +75,7 @@ describe('leaving a fight unfinished', () => {
 
   it('costs nothing once the fight has ended', () => {
     const started = applyAction(run({ hp: 90 }), floor, { type: 'fightStart' });
-    const ended = applyAction(started, floor, { type: 'fightEnd', outcome: 'won', hp: 40 });
+    const ended = applyAction(started, floor, { type: 'fightEnd', outcome: 'won', hp: 40, exp: 0 });
     expect(resumeRun(ended, floor)).toEqual({ ...run(), hp: 40 });
   });
 });
