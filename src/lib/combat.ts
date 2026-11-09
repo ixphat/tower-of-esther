@@ -16,6 +16,7 @@ export interface ClimberStats {
   vitality: number;
   power: number;
   agility: number;
+  mind: number;
   weaponAttack: number;
 }
 
@@ -73,10 +74,12 @@ export function enemyCombatant({ id, name, hp, attack, def, agility }: Enemy, in
   return { id: `${id}-${index}`, name, hp, maxHp: hp, attack, guard: def, agility };
 }
 
+export const evasionChance = (agility: number): number =>
+  Math.min(agility * balance.evasionPerAgility, balance.evasionCap);
+
 function strike(attacker: Combatant, target: Combatant, rng: Rng): FightEvent {
   const names = { attacker: attacker.name, target: target.name };
-  const evasion = Math.min(target.agility * balance.evasionPerAgility, balance.evasionCap);
-  if (rng() < evasion) return { type: 'miss', ...names };
+  if (rng() < evasionChance(target.agility)) return { type: 'miss', ...names };
 
   const critChance = Math.min(balance.critBase + attacker.agility * balance.critPerAgility, balance.critCap);
   const crit = rng() < critChance;

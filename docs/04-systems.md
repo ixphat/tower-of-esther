@@ -174,7 +174,7 @@ Power score = stat score + skill score + gear score.
 
 Weapon mastery is not counted separately. It limits which weapon grades can be used, so it affects the gear score indirectly.
 
-**Cap rule:** no single part can supply more than half of the score needed for a grade; anything above that does not count. This keeps stats, skills and gear all mattering, rewards crafting and skill fusion, and stops one source (such as farming levels alone) from raising the grade. The limit on how many skills count stops a pile of weak skills from filling the skill part; to raise it, the climber has to make their strongest skills stronger, through leveling, moving up stages and fusion.
+**Cap rule:** no single part can supply more than half of the score needed for a grade; anything above that does not count. This keeps stats, skills and gear all mattering, rewards crafting and skill fusion, and stops one source (such as farming levels alone) from raising the grade. The limit on how many skills count stops a pile of weak skills from filling the skill part; to raise it, the climber has to make their strongest skills stronger, through leveling, moving up stages and fusion. Claude's choice: the score and bars shown are counted against the next grade, so the player sees what is short.
 
 ### Thresholds (draft)
 
@@ -912,13 +912,13 @@ The First Wall master stays at Attack ×1.2 for now. With 2 Draughts every class
 | Part | Rule |
 | --- | --- |
 | Turn | One action per turn. Using an item or swapping a weapon costs the turn (Quick Strap excepted). Enemies only target the climber |
-| HP between fights | No regeneration. Rest at a resting place is free and restores all HP. A defeat returns the climber at full HP, except on floor 7 (50%) |
+| HP between fights | No regeneration. Rest at a resting place is free and restores all HP, and so does a level-up. A defeat returns the climber at full HP, except on floor 7 (50%) |
 | Fight size | A field fight holds 1 to 3 enemies, drawn from the floor's monster counts. Each enemy's Attack is ×0.8 in a pair and ×0.6 in a group of three |
 | Enemy moves | Each enemy has a weighted move list with cooldowns. Move types are attack, guard, status and charge. Elites and bosses add scripted moves at HP thresholds. An enemy's next move is hidden unless a skill or blessing reveals it |
 | Weakness | Each enemy has one weak Element and takes 25% more from skills of that Element. Skills do not show their Element |
-| Level-up | Stats rise automatically, in proportion to the class's starting stats. There are no free points |
+| Level-up | Stats rise automatically, in proportion to the class's starting stats, in whole points (leftovers go to the largest remainders). There are no free points. A level-up restores full HP (decided with Phat, Nov 10, 2026), except on floor 7 |
 | Start | Enter a name and pick one of 4 preset portraits. Class comes from floor 1's gift. The climber starts with a class-style F weapon, no armor and 3 Basic Salves |
-| Save | One slot on the device, saved after each fight and location change |
+| Save | One slot on the device, saved after each fight and location change, and when a fight starts. A fight left unfinished (reload, closed tab, crash) counts as a defeat (decided with Phat, Nov 10, 2026) |
 | Flee | 40% + 1% per Agility, up to 90% |
 | Healing | Healing skills and items restore a percentage of max HP. At most 2 healing items can be used per fight |
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
-  import climberData from '../data/climber.json';
+  import { statsAt } from './lib/climber';
   import { act, climberCombatant, createRng, enemyCombatant, startFight, type FightEvent, type FightState } from './lib/combat';
   import type { Enemy, Floor } from './lib/data';
 
@@ -8,11 +8,12 @@
     floor: Floor;
     foes: Enemy[];
     hp: number;
-    onFinish: (outcome: 'won' | 'lost', hp: number) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
+    level: number;
+    onFinish: (outcome: 'won' | 'lost', hp: number, exp: number) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
     onReturn: () => void;
   }
 
-  const { floor, foes, hp, onFinish, onReturn }: Props = $props();
+  const { floor, foes, hp, level, onFinish, onReturn }: Props = $props();
 
   const LOG_LINES = 5;
 
@@ -24,7 +25,7 @@
 
   const rng = createRng(crypto.getRandomValues(new Uint32Array(1))[0]);
   // svelte-ignore state_referenced_locally -- foes are fixed for the life of this fight
-  const start = startFight({ ...climberCombatant(climberData), hp }, foes.map(enemyCombatant), rng);
+  const start = startFight({ ...climberCombatant(statsAt(level)), hp }, foes.map(enemyCombatant), rng);
 
   let fight = $state(start.state);
   let log = $state(start.events.map(describe));
@@ -34,7 +35,10 @@
   const order = $derived(fight.turnOrder.map((id) => everyone.find((c) => c.id === id)!).filter((c) => c.hp > 0));
 
   function reportEnd(state: FightState) {
-    if (state.outcome !== 'ongoing') onFinish(state.outcome, state.climber.hp);
+    if (state.outcome === 'ongoing') return;
+    const exp = foes.reduce((sum, foe) => sum + foe.exp, 0);
+    if (state.outcome === 'won') log = [...log, `Gained ${exp} EXP.`];
+    onFinish(state.outcome, state.climber.hp, exp);
   }
 
   onMount(() => reportEnd(start.state)); // a faster enemy can end the fight before the first action

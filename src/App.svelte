@@ -2,7 +2,9 @@
   import { tick } from 'svelte';
   import Fight from './Fight.svelte';
   import { enemies, floors, type Enemy } from './lib/data';
-  import { applyAction, maxHp, newRun, type RunAction, type RunState } from './lib/run';
+  import StatusWindow from './StatusWindow.svelte';
+  import { expToNext, maxHp } from './lib/climber';
+  import { applyAction, newRun, resumeRun, type RunAction, type RunState } from './lib/run';
   import { readSave, writeSave } from './lib/save';
 
   const floor = floors.find((f) => f.id === 1)!; // the slice has only Floor 1
@@ -36,6 +38,18 @@
     writeSave(localStorage, run);
   }
 
+  function continueRun(titleScreenSave: RunState) {
+    // another tab may have written since the title screen loaded
+    run = resumeRun(readSave(localStorage, floor) ?? titleScreenSave, floor);
+    writeSave(localStorage, run);
+    return focusScene();
+  }
+
+  function startFight(here: Enemy[]) {
+    commit({ type: 'fightStart' });
+    foes = here;
+  }
+
   function move(to: string) {
     commit({ type: 'move', to });
     return focusScene();
@@ -43,6 +57,10 @@
 
   function foesAt(ids: string[]) {
     return ids.map((id) => enemies.find((e) => e.id === id)!); // the data check guarantees it exists
+  }
+
+  function finishFight(outcome: 'won' | 'lost', hp: number, exp: number) {
+    commit(outcome === 'won' ? { type: 'fightEnd', outcome, hp, exp } : { type: 'fightEnd', outcome });
   }
 
   function endFight() {
@@ -57,14 +75,17 @@
 </script>
 
 {#if foes}
-  <Fight {floor} {foes} hp={run!.hp} onFinish={(outcome, hp) => commit({ type: 'fightEnd', outcome, hp })} onReturn={endFight} />
+  <Fight {floor} {foes} hp={run!.hp} level={run!.level} onFinish={finishFight} onReturn={endFight} />
 {:else if location && run}
   <div class="screen">
     <header><h1>Floor {floor.id} · {floor.name}</h1></header>
 
     <section class="vitals" role="status" aria-label="Climber">
-      <span>HP {run.hp} / {maxHp()}</span>
-      <progress max={maxHp()} value={run.hp} aria-hidden="true"></progress>
+      <span>Lv {run.level}</span>
+      <span>HP {run.hp} / {maxHp(run.level)}</span>
+      <progress max={maxHp(run.level)} value={run.hp} aria-hidden="true"></progress>
+      <span>EXP {run.exp} / {expToNext(run.level)}</span>
+      <progress max={expToNext(run.level)} value={run.exp} aria-hidden="true"></progress>
     </section>
 
     <main class="scene">
@@ -72,7 +93,7 @@
       <p>{location.description}</p>
       {#if location.enemies}
         {@const here = foesAt(location.enemies)}
-        <button onclick={() => (foes = here)}>Fight {here.map((e) => e.name).join(', ')}</button>
+        <button onclick={() => startFight(here)}>Fight {here.map((e) => e.name).join(', ')}</button>
       {/if}
     </main>
 
@@ -98,14 +119,18 @@
 
   <dialog bind:this={dialog} aria-labelledby="window-title">
     <h2 id="window-title">{windowTitle}</h2>
-    <p>Nothing here yet.</p>
+    {#if windowTitle === 'Status'}
+      <StatusWindow {run} {floor} />
+    {:else}
+      <p>Nothing here yet.</p>
+    {/if}
     <form method="dialog"><button>Close</button></form>
   </dialog>
 {:else}
   <main class="title">
     <h1>Tower of Esther</h1>
     {#if save}
-      <button onclick={() => begin(save)}>Continue</button>
+      <button onclick={() => continueRun(save)}>Continue</button>
     {/if}
     <button onclick={() => begin(newRun(floor))}>New game</button>
   </main>

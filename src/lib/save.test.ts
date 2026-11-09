@@ -6,6 +6,7 @@ import { readSave, writeSave } from './save';
 const floor: Floor = {
   id: 1,
   name: 'Test',
+  recommendedGrade: 'F',
   start: 'a',
   locations: [{ id: 'a', name: 'A', description: '', exits: [] }],
 };
@@ -30,7 +31,7 @@ describe('save', () => {
     expect(readSave(storage, floor)).toEqual(run);
   });
 
-  const saved = (over: object) => JSON.stringify({ version: 2, run: { ...newRun(floor), ...over } });
+  const saved = (over: object) => JSON.stringify({ version: 4, run: { ...newRun(floor), ...over } });
 
   it.each([
     ['corrupt JSON', '{oops'],
@@ -40,6 +41,7 @@ describe('save', () => {
     ['an unknown safe point', saved({ safePoint: 'gone' })],
     ['HP of zero', saved({ hp: 0 })],
     ['HP above the maximum', saved({ hp: 99999 })],
+    ['a level below 1', saved({ level: 0 })],
     ['a negative counter', saved({ memoriesLost: -1 })],
     ['bonds that are a list', saved({ bonds: [] })],
     ['a last bond with no points', saved({ lastBond: 'ghost' })],
