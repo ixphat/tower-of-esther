@@ -19,6 +19,7 @@
       "id": "fields",
       "name": "Fields",
       "description": "Straw figures lean over a harvest no one came for.",
+      "enemies": ["straw-remnant"],
       "exits": ["square"]
     },
     {

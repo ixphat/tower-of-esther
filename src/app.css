@@ -41,6 +41,21 @@ button:hover {
   background: var(--ink);
 }
 
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 100dvh;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.75rem;
+}
+
+progress {
+  width: 100%;
+  accent-color: var(--gold);
+}
+
 :focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 2px;

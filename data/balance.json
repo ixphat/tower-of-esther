@@ -1,0 +1,16 @@
+{
+  "guardScale": 100,
+  "minDamage": 1,
+  "damageRollMin": 0.9,
+  "damageRollMax": 1.1,
+  "critBase": 0.05,
+  "critPerAgility": 0.005,
+  "critCap": 0.5,
+  "critMultiplier": 1.5,
+  "evasionPerAgility": 0.003,
+  "evasionCap": 0.4,
+  "hpBase": 50,
+  "hpPerVitality": 12,
+  "hpPerLevel": 5,
+  "attackPerPower": 2
+}
