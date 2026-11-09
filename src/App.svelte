@@ -2,33 +2,43 @@
   import { tick } from 'svelte';
   import Fight from './Fight.svelte';
   import { enemies, floors, type Enemy } from './lib/data';
+  import { applyAction, maxHp, newRun, type RunAction, type RunState } from './lib/run';
   import { readSave, writeSave } from './lib/save';
 
   const floor = floors.find((f) => f.id === 1)!; // the slice has only Floor 1
   const menu = ['Status', 'Bag', 'Skills', 'Quests', 'Journal'];
   const save = readSave(localStorage, floor);
 
-  let locationId = $state<string | null>(null);
+  let run = $state.raw<RunState | null>(null);
   let windowTitle = $state('');
   let foes = $state<Enemy[] | null>(null);
   let heading = $state<HTMLHeadingElement>();
   let dialog = $state<HTMLDialogElement>();
 
-  const location = $derived(floor.locations.find((l) => l.id === locationId));
+  const location = $derived(floor.locations.find((l) => l.id === run?.locationId));
 
   function locationById(id: string) {
     return floor.locations.find((l) => l.id === id)!; // the data check guarantees it exists
   }
 
-  async function enter(id: string) {
-    locationId = id;
+  async function focusScene() {
     await tick();
     heading?.focus(); // the pressed button is gone, keep keyboard users in the scene
   }
 
-  function move(id: string) {
-    writeSave(localStorage, { locationId: id });
-    return enter(id);
+  function begin(state: RunState) {
+    run = state;
+    return focusScene();
+  }
+
+  function commit(action: RunAction) {
+    run = applyAction(run!, floor, action);
+    writeSave(localStorage, run);
+  }
+
+  function move(to: string) {
+    commit({ type: 'move', to });
+    return focusScene();
   }
 
   function foesAt(ids: string[]) {
@@ -37,7 +47,7 @@
 
   function endFight() {
     foes = null;
-    return enter(locationId!);
+    return focusScene();
   }
 
   function openWindow(title: string) {
@@ -47,10 +57,15 @@
 </script>
 
 {#if foes}
-  <Fight {floor} {foes} onReturn={endFight} />
-{:else if location}
+  <Fight {floor} {foes} hp={run!.hp} onFinish={(outcome, hp) => commit({ type: 'fightEnd', outcome, hp })} onReturn={endFight} />
+{:else if location && run}
   <div class="screen">
     <header><h1>Floor {floor.id} · {floor.name}</h1></header>
+
+    <section class="vitals" role="status" aria-label="Climber">
+      <span>HP {run.hp} / {maxHp()}</span>
+      <progress max={maxHp()} value={run.hp} aria-hidden="true"></progress>
+    </section>
 
     <main class="scene">
       <h2 bind:this={heading} tabindex="-1">{location.name}</h2>
@@ -70,6 +85,10 @@
       {/each}
     </nav>
 
+    {#if location.rest}
+      <div class="row"><button onclick={() => commit({ type: 'rest' })}>Rest</button></div>
+    {/if}
+
     <nav aria-label="Menu" class="row menu">
       {#each menu as item (item)}
         <button onclick={() => openWindow(item)}>{item}</button>
@@ -86,13 +105,20 @@
   <main class="title">
     <h1>Tower of Esther</h1>
     {#if save}
-      <button onclick={() => enter(save.locationId)}>Continue</button>
+      <button onclick={() => begin(save)}>Continue</button>
     {/if}
-    <button onclick={() => enter(floor.start)}>New game</button>
+    <button onclick={() => begin(newRun(floor))}>New game</button>
   </main>
 {/if}
 
 <style>
+  .vitals {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+  }
+
   header h1 {
     font-size: 1.1rem;
   }

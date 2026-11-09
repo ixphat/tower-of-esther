@@ -127,7 +127,7 @@ A defeated climber loses a little, not everything. In the story the Tower takes 
 
 ### Safe points in Arc 1 (draft)
 
-Every floor has its entrance and one resting place, unlocked when found. A defeat returns the climber to whichever was reached last.
+Every floor has its entrance and one resting place, unlocked when found. A defeat returns the climber to whichever was reached last. Claude's choice: once found, the resting place stays the safe point even if the climber walks back past the entrance. EXP loss rounds up to a whole number.
 
 | Floor | Resting place |
 | --- | --- |

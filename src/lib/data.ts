@@ -15,6 +15,7 @@ export interface Location {
   description: string;
   exits: string[];
   enemies?: string[];
+  rest?: boolean;
 }
 
 export interface Floor {

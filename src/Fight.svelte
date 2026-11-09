@@ -1,10 +1,18 @@
 <script lang="ts">
-  import { tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import climberData from '../data/climber.json';
-  import { act, climberCombatant, createRng, enemyCombatant, startFight, type FightEvent } from './lib/combat';
+  import { act, climberCombatant, createRng, enemyCombatant, startFight, type FightEvent, type FightState } from './lib/combat';
   import type { Enemy, Floor } from './lib/data';
 
-  const { floor, foes, onReturn }: { floor: Floor; foes: Enemy[]; onReturn: () => void } = $props();
+  interface Props {
+    floor: Floor;
+    foes: Enemy[];
+    hp: number;
+    onFinish: (outcome: 'won' | 'lost', hp: number) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
+    onReturn: () => void;
+  }
+
+  const { floor, foes, hp, onFinish, onReturn }: Props = $props();
 
   const LOG_LINES = 5;
 
@@ -16,7 +24,7 @@
 
   const rng = createRng(crypto.getRandomValues(new Uint32Array(1))[0]);
   // svelte-ignore state_referenced_locally -- foes are fixed for the life of this fight
-  const start = startFight(climberCombatant(climberData), foes.map(enemyCombatant), rng);
+  const start = startFight({ ...climberCombatant(climberData), hp }, foes.map(enemyCombatant), rng);
 
   let fight = $state(start.state);
   let log = $state(start.events.map(describe));
@@ -25,10 +33,17 @@
   const everyone = $derived([fight.climber, ...fight.enemies]);
   const order = $derived(fight.turnOrder.map((id) => everyone.find((c) => c.id === id)!).filter((c) => c.hp > 0));
 
+  function reportEnd(state: FightState) {
+    if (state.outcome !== 'ongoing') onFinish(state.outcome, state.climber.hp);
+  }
+
+  onMount(() => reportEnd(start.state)); // a faster enemy can end the fight before the first action
+
   async function attack() {
     const step = act($state.snapshot(fight), { type: 'attack', target: fight.enemies.findIndex((e) => e.hp > 0) }, rng);
     fight = step.state;
     log = [...log, ...step.events.map(describe)];
+    reportEnd(step.state);
     await tick();
     back?.focus(); // the attack button is gone once the fight ends
   }

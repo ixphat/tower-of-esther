@@ -1,4 +1,6 @@
 {
+  "defeatExpLossPercent": 10,
+  "bondThresholds": [0, 10, 30, 60, 100],
   "guardScale": 100,
   "minDamage": 1,
   "damageRollMin": 0.9,
