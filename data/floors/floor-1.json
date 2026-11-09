@@ -1,0 +1,43 @@
+{
+  "id": 1,
+  "name": "First Trial",
+  "start": "square",
+  "locations": [
+    {
+      "id": "square",
+      "name": "Village Square",
+      "description": "Dusk. Tables are still set. No one is here.",
+      "exits": ["keepers-house", "fields", "riverbank", "gate"]
+    },
+    {
+      "id": "keepers-house",
+      "name": "Keeper's House",
+      "description": "Swept floors. A chair stands empty at the head of the table.",
+      "exits": ["square"]
+    },
+    {
+      "id": "fields",
+      "name": "Fields",
+      "description": "Straw figures lean over a harvest no one came for.",
+      "exits": ["square"]
+    },
+    {
+      "id": "riverbank",
+      "name": "Riverbank",
+      "description": "The river moves. Nothing else does.",
+      "exits": ["square", "schoolhouse"]
+    },
+    {
+      "id": "schoolhouse",
+      "name": "Schoolhouse",
+      "description": "Books lie open on every desk.",
+      "exits": ["riverbank"]
+    },
+    {
+      "id": "gate",
+      "name": "Village Gate",
+      "description": "The road ends here. The gate is shut.",
+      "exits": ["square"]
+    }
+  ]
+}
