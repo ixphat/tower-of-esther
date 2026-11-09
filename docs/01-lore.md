@@ -132,8 +132,20 @@ Draft. A single Tower that every climber, and every real player, climbs together
 | 4 | 31–40 | War of the Watchers | Floors are territories contested by Watchers against Ezra; the player must choose a side, including whether to let the revival continue |
 | 5 | 41–50 | The Empty Throne | Floors 47–49 are the Watchers' floors, floor 50 is Ezra. The truth about the creator and the choice over the worlds |
 
+## Esther's clues in Arc 1 (draft)
+
+Three short notes in one hand. They ask questions and do not explain the Tower: nothing about her death, Ezra or the memories, and nothing that favors an ending. Each ends with a small drawn river, her home's mark. Every class can read them. Each gives a Journal entry and its Secrets points, nothing else. The Journal labels them "Notes in one hand" until the name is revealed in Arc 5.
+
+| Floor | Where | Text |
+| --- | --- | --- |
+| 1 | Chalk on the schoolhouse board, off the main path | Lesson for whoever comes late. What would you keep, if keeping it cost someone else? Do not write your answer on my board. I could not write mine. |
+| 8 | Carved inside the Elder Tree; the scout captain's Trusted quest points there | I carried all of this up here. I asked none of it. If a door opens easily, ask who opened it. |
+| 10 | A loose page among the Commander's papers, older than the rest, reachable once the logbook is found | A wall holds. That does not make it right, and it does not make it wrong. I stopped being able to tell. I left the chair for a reason. Find your own. |
+
+The Seeker's letter on floor 1 is separate, found only on the refused-gift path, and teaches the Seeker's first skills: "You said no. Nobody here taught you that. I can teach you only how to look. What you do with it, I will not be there to see."
+
 ## Open questions
 
-- What do Esther's will and clues say, and where on the floors are they found? Three clues are placed in Arc 1 (floors 1, 8 and 10). They must not point the player toward a single ending.
+- What does Esther's will say, and what do her clues after Arc 1 say? They must not point the player toward a single ending.
 - What is the assembled creator like if the revival finishes (personality, how it decides)? Needed for the "Let the revival finish" ending.
 - Is there any way out of the Tower other than the Throne?

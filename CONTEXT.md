@@ -77,6 +77,7 @@ The shared language of the project. One line per term, plus the doc that owns it
 | Hidden traits | Element, motion, mind of every skill; drive fusion odds; never shown directly | 04 |
 | Known recipe | A discovered fusion; always works; recorded in the fusion journal | 04 |
 | Cooldown | Turns a skill must wait before reuse; the only limit on using skills | 04 |
+| Notes in one hand | The in-game label for Esther's clues until Arc 5 reveals her name | 01 |
 | Arena bout | One whole contest on floor 9, the unit handicaps are taken for. A round is one turn cycle inside a fight | 03 |
 | Class skill book | Gives a random first skill of another class (class-locked, fusion-only) | 04 |
 
