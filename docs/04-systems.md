@@ -820,6 +820,51 @@ Growth: every class gains the same total per level (draft: 3 points), distribute
 
 In floors 1 to 9 the weak-early classes trail by no more than 3 points, which keeps every floor clearable, then catch up at the first advancement and pull ahead later. The Seeker trails by 4 points, which its information skills make up for (see Hidden classes).
 
+## Combat formulas (draft)
+
+Checked with a throwaway simulator that assumes skills average 130% of attack and leaves out healing, statuses, cooldowns and floor rules. Real play must confirm them.
+
+| Part | Formula |
+| --- | --- |
+| Damage | Attack × skill % × 100 / (100 + target's Guard or Ward) |
+| Attack | Power × 2 + weapon attack. Each +1 enhancement adds 5% weapon attack |
+| Max HP | 50 + 12 × Vitality + 5 × level + gear |
+| Crit | Chance 5% + 0.5% per Agility, up to 50%. Damage ×1.5, replaced by ×2 under floor 4's rule |
+| Evasion | 0.3% per Agility plus gear, up to 40%. Hit chance is 100% minus the target's Evasion, plus accuracy effects |
+| Guard and Ward | Guard = Vitality + armor. Ward = Mind + armor |
+| Status chance | Reduced by 0.5% per Mind |
+| Turn order | By Agility, ties go to the climber |
+
+| Grade | F | E | D | C | B |
+| --- | --- | --- | --- | --- | --- |
+| Weapon attack | 8 | 14 | 22 | 32 | 44 |
+| Guard and Ward per armor piece (5 pieces) | 2 | 4 | 7 | 11 | 16 |
+
+Fight length targets for a climber at the recommended level:
+
+| Tier | Turns | Time | HP multiplier | Attack multiplier |
+| --- | --- | --- | --- | --- |
+| Normal | 3 | 20 s | 1 | 1 |
+| Tough | 5 | 40 s | 1.67 | 1 |
+| Elite | 10 | 2 min | 3.33 | 1.2 |
+| Mini-boss | 14 | 4 min | 4.67 | 1.3 |
+| Floor master | 12 to 24 by floor | 4 to 6 min | Target turns ÷ 3 (4 on floor 1 to 8 on floor 10) | 1.2 |
+
+Enemy base values (normal tier). One enemy can override these, and floor gimmicks come on top.
+
+| Floor | HP | Attack | Def | Agility |
+| --- | --- | --- | --- | --- |
+| 1 | 70 | 4 | 3 | 3 |
+| 2 | 78 | 6 | 9 | 4 |
+| 3 | 109 | 7 | 15 | 6 |
+| 4 | 117 | 9 | 21 | 8 |
+| 5 | 149 | 11 | 27 | 9 |
+| 6 | 155 | 13 | 33 | 11 |
+| 7 | 191 | 17 | 39 | 12 |
+| 8 | 196 | 19 | 45 | 14 |
+| 9 | 197 | 21 | 51 | 16 |
+| 10 | 233 | 27 | 60 | 18 |
+
 ## Classes
 
 The game is solo, so every class must be able to clear floors alone. Classes differ by playstyle, not by party role. The starting class comes from the Tower's gift on floor 1.
