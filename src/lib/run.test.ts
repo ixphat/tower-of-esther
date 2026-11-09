@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Floor } from './data';
-import { applyAction, newRun, type RunState } from './run';
+import { applyAction, newRun, resumeRun, type RunState } from './run';
 
 const floor: Floor = {
   id: 1,
@@ -39,6 +39,19 @@ describe('HP between fights', () => {
 
   it('refuses a move that is not an exit', () => {
     expect(() => applyAction(run({ locationId: 'inn' }), floor, { type: 'move', to: 'field' })).toThrow();
+  });
+});
+
+describe('leaving a fight unfinished', () => {
+  it('counts as a defeat when the run resumes', () => {
+    const started = applyAction(run({ locationId: 'field', exp: 200 }), floor, { type: 'fightStart' });
+    expect(resumeRun(started, floor)).toMatchObject({ locationId: 'gate', hp: full, exp: 180, memoriesLost: 1, inFight: false });
+  });
+
+  it('costs nothing once the fight has ended', () => {
+    const started = applyAction(run({ hp: 90 }), floor, { type: 'fightStart' });
+    const ended = applyAction(started, floor, { type: 'fightEnd', outcome: 'won', hp: 40 });
+    expect(resumeRun(ended, floor)).toEqual({ ...run(), hp: 40 });
   });
 });
 

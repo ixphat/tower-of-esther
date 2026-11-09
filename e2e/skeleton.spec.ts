@@ -85,6 +85,18 @@ test('HP carries, Rest restores it, and defeat returns to the resting place', as
   await expect(page.locator('body')).not.toContainText(/memor/i);
 });
 
+test('reloading mid-fight counts as a defeat', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+  await page.getByRole('button', { name: 'Fields, monsters here' }).click();
+  await page.getByRole('button', { name: 'Fight Straw Remnant' }).click();
+  await page.getByRole('button', { name: 'Weapon attack' }).click();
+
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByRole('heading', { name: 'Village Square' })).toBeFocused();
+});
+
 test('a window opens over the scene and closes back to it', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'New game' }).click();

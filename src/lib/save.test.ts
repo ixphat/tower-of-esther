@@ -30,7 +30,7 @@ describe('save', () => {
     expect(readSave(storage, floor)).toEqual(run);
   });
 
-  const saved = (over: object) => JSON.stringify({ version: 2, run: { ...newRun(floor), ...over } });
+  const saved = (over: object) => JSON.stringify({ version: 3, run: { ...newRun(floor), ...over } });
 
   it.each([
     ['corrupt JSON', '{oops'],

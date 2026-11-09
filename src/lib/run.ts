@@ -11,11 +11,13 @@ export interface RunState {
   bonds: Record<string, number>; // bond points by NPC id
   lastBond: string | null; // NPC whose bond was raised most recently
   memoriesLost: number; // never shown as a number
+  inFight: boolean; // saved so that abandoning a fight counts as a defeat
 }
 
 export type RunAction =
   | { type: 'move'; to: string }
   | { type: 'rest' }
+  | { type: 'fightStart' }
   | { type: 'fightEnd'; outcome: 'won' | 'lost'; hp: number };
 
 export const maxHp = (): number => climberCombatant(climberData).maxHp;
@@ -29,6 +31,7 @@ export function newRun(floor: Floor): RunState {
     bonds: {},
     lastBond: null,
     memoriesLost: 0,
+    inFight: false,
   };
 }
 
@@ -52,6 +55,7 @@ function defeat(state: RunState): RunState {
     exp: state.exp - Math.ceil((state.exp * balance.defeatExpLossPercent) / 100),
     bonds: lowerLastBond(state),
     memoriesLost: state.memoriesLost + 1,
+    inFight: false,
   };
 }
 
@@ -65,7 +69,13 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
     case 'rest':
       if (!find(floor, state.locationId).rest) throw new Error('No resting place here');
       return { ...state, hp: maxHp() };
+    case 'fightStart':
+      return { ...state, inFight: true };
     case 'fightEnd':
-      return action.outcome === 'lost' ? defeat(state) : { ...state, hp: action.hp };
+      return action.outcome === 'lost' ? defeat(state) : { ...state, hp: action.hp, inFight: false };
   }
+}
+
+export function resumeRun(state: RunState, floor: Floor): RunState {
+  return state.inFight ? applyAction(state, floor, { type: 'fightEnd', outcome: 'lost', hp: 0 }) : state;
 }

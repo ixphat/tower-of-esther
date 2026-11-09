@@ -918,7 +918,7 @@ The First Wall master stays at Attack ×1.2 for now. With 2 Draughts every class
 | Weakness | Each enemy has one weak Element and takes 25% more from skills of that Element. Skills do not show their Element |
 | Level-up | Stats rise automatically, in proportion to the class's starting stats. There are no free points |
 | Start | Enter a name and pick one of 4 preset portraits. Class comes from floor 1's gift. The climber starts with a class-style F weapon, no armor and 3 Basic Salves |
-| Save | One slot on the device, saved after each fight and location change |
+| Save | One slot on the device, saved after each fight and location change, and when a fight starts. A fight left unfinished (reload, closed tab, crash) counts as a defeat (decided with Phat, Nov 10, 2026) |
 | Flee | 40% + 1% per Agility, up to 90% |
 | Healing | Healing skills and items restore a percentage of max HP. At most 2 healing items can be used per fight |
 

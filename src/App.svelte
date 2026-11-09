@@ -2,7 +2,7 @@
   import { tick } from 'svelte';
   import Fight from './Fight.svelte';
   import { enemies, floors, type Enemy } from './lib/data';
-  import { applyAction, maxHp, newRun, type RunAction, type RunState } from './lib/run';
+  import { applyAction, maxHp, newRun, resumeRun, type RunAction, type RunState } from './lib/run';
   import { readSave, writeSave } from './lib/save';
 
   const floor = floors.find((f) => f.id === 1)!; // the slice has only Floor 1
@@ -34,6 +34,17 @@
   function commit(action: RunAction) {
     run = applyAction(run!, floor, action);
     writeSave(localStorage, run);
+  }
+
+  function continueRun(saved: RunState) {
+    run = resumeRun(saved, floor);
+    writeSave(localStorage, run);
+    return focusScene();
+  }
+
+  function startFight(here: Enemy[]) {
+    commit({ type: 'fightStart' });
+    foes = here;
   }
 
   function move(to: string) {
@@ -72,7 +83,7 @@
       <p>{location.description}</p>
       {#if location.enemies}
         {@const here = foesAt(location.enemies)}
-        <button onclick={() => (foes = here)}>Fight {here.map((e) => e.name).join(', ')}</button>
+        <button onclick={() => startFight(here)}>Fight {here.map((e) => e.name).join(', ')}</button>
       {/if}
     </main>
 
@@ -105,7 +116,7 @@
   <main class="title">
     <h1>Tower of Esther</h1>
     {#if save}
-      <button onclick={() => begin(save)}>Continue</button>
+      <button onclick={() => continueRun(save)}>Continue</button>
     {/if}
     <button onclick={() => begin(newRun(floor))}>New game</button>
   </main>

@@ -2,7 +2,7 @@ import type { Floor } from './data';
 import { maxHp, type RunState } from './run';
 
 const KEY = 'tower-of-esther.save';
-const VERSION = 2;
+const VERSION = 3;
 
 type Reader = Pick<Storage, 'getItem'>;
 type Writer = Pick<Storage, 'setItem'>;
@@ -24,6 +24,7 @@ function isRun(value: unknown, floor: Floor): value is RunState {
     run.hp <= maxHp() &&
     isCount(run.exp) &&
     isCount(run.memoriesLost) &&
+    typeof run.inFight === 'boolean' &&
     typeof run.bonds === 'object' &&
     run.bonds !== null &&
     !Array.isArray(run.bonds) &&
