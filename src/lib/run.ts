@@ -39,7 +39,8 @@ export type RunAction =
   | { type: 'togglePin'; skill: string }
   | { type: 'setStance'; skill: string | null }
   | { type: 'fightEnd'; outcome: 'won'; hp: number; rewards: Rewards; used: string[] }
-  | { type: 'fightEnd'; outcome: 'lost' };
+  | { type: 'fightEnd'; outcome: 'lost' }
+  | { type: 'fightEnd'; outcome: 'fled'; hp: number };
 
 export function newRun(floor: Floor): RunState {
   return {
@@ -196,9 +197,9 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
     case 'fightStart':
       return { ...state, inFight: true };
     case 'fightEnd':
-      return action.outcome === 'lost'
-        ? defeat(state)
-        : winFight(state, action.hp, action.rewards, action.used);
+      if (action.outcome === 'lost') return defeat(state);
+      if (action.outcome === 'fled') return { ...state, hp: action.hp, inFight: false }; // no rewards
+      return winFight(state, action.hp, action.rewards, action.used);
   }
 }
 

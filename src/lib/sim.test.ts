@@ -9,10 +9,16 @@ describe('balance simulator', () => {
 
   it('reports every enemy against its tier target', () => {
     const [row] = simulate(1, 200);
-    expect(row).toMatchObject({ enemy: 'Straw Remnant', tier: 'normal', target: 3, runs: 200 });
+    expect(row).toMatchObject({ enemy: 'Fields: Straw Remnant', tier: 'normal', target: 3, runs: 200 });
     expect(row.winRate).toBeGreaterThan(0);
     expect(row.avgTurns).toBeGreaterThan(0);
     expect(row.avgHpLeft).toBeLessThanOrEqual(1);
+  });
+
+  it('reports a group by its strongest tier', () => {
+    const rows = simulate(1, 50);
+    expect(rows.find((row) => row.enemy.startsWith('Tool Shed'))).toMatchObject({ tier: 'tough', target: 5 });
+    expect(rows.find((row) => row.enemy.startsWith('Riverbank'))?.enemy).toBe('Riverbank: Crow ×3');
   });
 
   it('prints the gap to target', () => {

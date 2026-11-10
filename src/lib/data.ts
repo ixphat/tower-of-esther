@@ -2,7 +2,7 @@ import climberData from '../../data/climber.json';
 import enemyData from '../../data/enemies.json';
 import itemData from '../../data/items.json';
 import skillData from '../../data/skills.json';
-import type { FightSkill } from './combat';
+import type { EnemyMove, FightSkill, ScriptedMove, Tier } from './combat';
 
 export const SLOTS = ['weapon', 'head', 'body', 'gloves', 'boots', 'accessory'] as const;
 export type Slot = (typeof SLOTS)[number];
@@ -25,7 +25,9 @@ export interface Item {
 export interface Enemy {
   id: string;
   name: string;
-  tier: 'normal' | 'tough' | 'elite' | 'miniBoss' | 'floorMaster';
+  tier: Tier;
+  moves: EnemyMove[];
+  scripted?: ScriptedMove[];
   hp: number;
   attack: number;
   def: number;
@@ -102,4 +104,11 @@ export function validateGameData(): string[] {
     ...refs.filter(([, id]) => !itemById(id)).map(([owner, id]) => `${owner}: "${id}" does not exist`),
     ...missingSkills,
   ];
+}
+
+// "Crow ×3, Straw Remnant"
+export function groupName(names: string[]): string {
+  const counts = new Map<string, number>();
+  for (const name of names) counts.set(name, (counts.get(name) ?? 0) + 1);
+  return [...counts].map(([name, count]) => (count > 1 ? `${name} ×${count}` : name)).join(', ');
 }

@@ -81,8 +81,13 @@ describe('rewards and respawn', () => {
   });
 
   it('adds up the rewards of every foe', () => {
-    const foe = { id: 'a', name: 'A', tier: 'normal' as const, hp: 1, attack: 1, def: 0, agility: 0, exp: 1, monsterPoints: 2, mind: 2, drops: { 'straw-thread': 1 } };
+    const foe = { id: 'a', name: 'A', tier: 'normal' as const, moves: [], hp: 1, attack: 1, def: 0, agility: 0, exp: 1, monsterPoints: 2, mind: 2, drops: { 'straw-thread': 1 } };
     expect(fightRewards([foe, foe])).toEqual({ exp: 2, monsterPoints: 4, drops: { 'straw-thread': 2 } });
+  });
+
+  it('keeps HP and gives nothing after fleeing, leaving the monsters there', () => {
+    const state = applyAction(run({ locationId: 'field', inFight: true }), floor, { type: 'fightEnd', outcome: 'fled', hp: 33 });
+    expect(state).toMatchObject({ hp: 33, inFight: false, exp: 0, cleared: [] });
   });
 
   it('clears the location on a win and respawns on re-entry', () => {

@@ -8,7 +8,12 @@
       "id": "square",
       "name": "Village Square",
       "description": "Dusk. Tables are still set. No one is here.",
-      "exits": ["keepers-house", "fields", "riverbank", "gate"]
+      "exits": [
+        "keepers-house",
+        "fields",
+        "riverbank",
+        "gate"
+      ]
     },
     {
       "id": "keepers-house",
@@ -26,32 +31,78 @@
         "plain-boots",
         "plain-charm"
       ],
-      "exits": ["square"]
+      "exits": [
+        "square"
+      ]
     },
     {
       "id": "fields",
       "name": "Fields",
       "description": "Straw figures lean over a harvest no one came for.",
-      "enemies": ["straw-remnant"],
-      "exits": ["square"]
+      "enemies": [
+        "straw-remnant"
+      ],
+      "exits": [
+        "square",
+        "tool-shed",
+        "scarecrow-hill"
+      ]
+    },
+    {
+      "id": "tool-shed",
+      "name": "Tool Shed",
+      "description": "Rakes and hoes hang in rows. Some of them have climbed down.",
+      "exits": [
+        "fields"
+      ],
+      "enemies": [
+        "rusted-tool-remnant",
+        "straw-remnant"
+      ]
+    },
+    {
+      "id": "scarecrow-hill",
+      "name": "Scarecrow Hill",
+      "description": "One scarecrow stands taller than the rest. Roots have grown through it.",
+      "exits": [
+        "fields"
+      ],
+      "enemies": [
+        "overgrown-scarecrow"
+      ]
     },
     {
       "id": "riverbank",
       "name": "Riverbank",
       "description": "The river moves. Nothing else does.",
-      "exits": ["square", "schoolhouse"]
+      "exits": [
+        "square",
+        "schoolhouse"
+      ],
+      "enemies": [
+        "crow",
+        "crow",
+        "crow"
+      ]
     },
     {
       "id": "schoolhouse",
       "name": "Schoolhouse",
       "description": "Books lie open on every desk.",
-      "exits": ["riverbank"]
+      "exits": [
+        "riverbank"
+      ]
     },
     {
       "id": "gate",
       "name": "Village Gate",
       "description": "The road ends here. The gate is shut.",
-      "exits": ["square"]
+      "exits": [
+        "square"
+      ],
+      "enemies": [
+        "gate-scarecrow"
+      ]
     }
   ]
 }

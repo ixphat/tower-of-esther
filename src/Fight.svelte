@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { fightLoadout, statsAt, type OwnedSkills } from './lib/climber';
-  import { act, climberCombatant, createRng, enemyCombatant, skillBlock, startFight, type Action, type Combatant, type FightEvent, type FightSkill, type FightState } from './lib/combat';
+  import { act, climberCombatant, createRng, enemyCombatant, enemyGroup, fleeBlock, isStrong, skillBlock, startFight, type Action, type Combatant, type FightEvent, type FightSkill, type FightState } from './lib/combat';
   import { itemById, type Enemy, type Floor, type Item } from './lib/data';
   import { fightRewards, type Rewards } from './lib/run';
   import balance from '../data/balance.json';
@@ -18,7 +18,7 @@
     pins: (string | null)[];
     stance: string | null;
     onSpendItem: (item: string) => void; // saved at once, a used item stays used
-    onFinish: (outcome: 'won' | 'lost', hp: number, rewards: Rewards, used: string[]) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
+    onFinish: (outcome: 'won' | 'lost' | 'fled', hp: number, rewards: Rewards, used: string[]) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
     onReturn: () => void;
   }
 
@@ -44,15 +44,17 @@
     if (event.type === 'cleanse') return `${event.target} is rid of ${STATUS_NAMES[event.status]}.`;
     if (event.type === 'tick') return `${event.target} takes ${event.damage} from ${STATUS_NAMES[event.status]}.`;
     if (event.type === 'stunned') return `${event.actor} is stunned.`;
+    if (event.type === 'charge') return `${event.actor} winds up.`;
+    if (event.type === 'fleeFailed') return `${event.actor} fails to flee.`;
     if (event.type === 'fail') return `${event.actor}'s move fails.`;
     if (event.type === 'heal') return `${event.target} recovers ${event.amount} HP.`;
-    if (event.type === 'end') return event.outcome === 'won' ? 'Victory.' : 'Defeated.';
+    if (event.type === 'end') return { won: 'Victory.', lost: 'Defeated.', fled: 'Fled.' }[event.outcome];
     return `${event.crit ? 'Critical. ' : ''}${event.attacker} hits ${event.target} for ${event.damage}.`;
   }
 
   const rng = createRng(crypto.getRandomValues(new Uint32Array(1))[0]);
   // svelte-ignore state_referenced_locally -- foes are fixed for the life of this fight
-  const start = startFight({ ...climberCombatant(statsAt(level, worn)), hp }, foes.map(enemyCombatant), rng, fightLoadout(skills, stance));
+  const start = startFight({ ...climberCombatant(statsAt(level, worn)), hp }, enemyGroup(foes.map(enemyCombatant)), rng, fightLoadout(skills, stance));
 
   let fight = $state(start.state);
   let log = $state(start.events.map(describe));
@@ -86,12 +88,16 @@
   const tagValue = (tag: string) =>
     tag === 'Stance' ? (fight.skills.find((skill) => skill.id === fight.stance)?.name ?? '-') : '-';
 
+  let chosen = $state(0);
+  const target = $derived(fight.enemies[chosen]?.hp > 0 ? chosen : fight.enemies.findIndex((e) => e.hp > 0));
+  const fleeReason = $derived(fleeBlock(fight));
+
   function useSkill(id: string) {
-    return perform({ type: 'skill', skill: id, target: fight.enemies.findIndex((e) => e.hp > 0) });
+    return perform({ type: 'skill', skill: id, target });
   }
 
   function attack() {
-    return perform({ type: 'attack', target: fight.enemies.findIndex((e) => e.hp > 0) });
+    return perform({ type: 'attack', target });
   }
 
   function heal(item: Item) {
@@ -126,9 +132,14 @@
   </header>
 
   <main class="scene">
-    {#each everyone as combatant (combatant.id)}
-      <section>
+    {#each everyone as combatant, index (combatant.id)}
+      <section class:strong={isStrong(combatant)}>
         <h2>{combatant.name}</h2>
+        {#if index > 0 && combatant.hp > 0 && fight.outcome === 'ongoing'}
+          <button aria-pressed={target === index - 1} onclick={() => (chosen = index - 1)}>
+            Target {combatant.name} {index}
+          </button>
+        {/if}
         <progress max={combatant.maxHp} value={combatant.hp} aria-label="{combatant.name} HP"></progress>
         <p>{combatant.hp} / {combatant.maxHp}</p>
         <p>
@@ -158,6 +169,9 @@
         <button disabled={healLimitReached} onclick={() => heal(item)}>{item.name} ×{count}</button>
       {/each}
       {#if healLimitReached}<span>Healing items used up for this fight.</span>{/if}
+      <button disabled={fleeReason !== null} onclick={() => perform({ type: 'flee' })}>
+        Flee{fleeReason ? ` (${fleeReason})` : ''}
+      </button>
       <button aria-expanded={showSkills} onclick={() => (showSkills = !showSkills)}>Skills</button>
     </div>
     <div class="actions" role="group" aria-label="Pinned skills">
@@ -224,6 +238,11 @@
   .scene p,
   .log p {
     margin: 0;
+  }
+
+  .strong {
+    outline: 1px solid var(--gold);
+    outline-offset: 0.5rem;
   }
 
   .tags {

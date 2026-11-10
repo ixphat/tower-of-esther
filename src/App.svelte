@@ -1,7 +1,7 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import Fight from './Fight.svelte';
-  import { enemies, floors, type Enemy } from './lib/data';
+  import { enemies, floors, groupName, type Enemy } from './lib/data';
   import BagWindow from './BagWindow.svelte';
   import StallWindow from './StallWindow.svelte';
   import SkillsWindow from './SkillsWindow.svelte';
@@ -62,8 +62,10 @@
     return ids.map((id) => enemies.find((e) => e.id === id)!); // the data check guarantees it exists
   }
 
-  function finishFight(outcome: 'won' | 'lost', hp: number, rewards: Rewards, used: string[]) {
-    commit(outcome === 'won' ? { type: 'fightEnd', outcome, hp, rewards, used } : { type: 'fightEnd', outcome });
+  function finishFight(outcome: 'won' | 'lost' | 'fled', hp: number, rewards: Rewards, used: string[]) {
+    if (outcome === 'won') commit({ type: 'fightEnd', outcome, hp, rewards, used });
+    else if (outcome === 'fled') commit({ type: 'fightEnd', outcome, hp });
+    else commit({ type: 'fightEnd', outcome });
   }
 
   function endFight() {
@@ -97,7 +99,7 @@
       <p>{location.description}</p>
       {#if location.enemies && !run.cleared.includes(location.id)}
         {@const here = foesAt(location.enemies)}
-        <button onclick={() => startFight(here)}>Fight {here.map((e) => e.name).join(', ')}</button>
+        <button onclick={() => startFight(here)}>Fight {groupName(here.map((e) => e.name))}</button>
       {/if}
     </main>
 
