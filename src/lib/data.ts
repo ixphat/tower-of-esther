@@ -3,6 +3,7 @@ import climberData from '../../data/climber.json';
 import enemyData from '../../data/enemies.json';
 import itemData from '../../data/items.json';
 import npcData from '../../data/npcs.json';
+import journalData from '../../data/journal.json';
 import questData from '../../data/quests.json';
 import sceneData from '../../data/scenes.json';
 import skillData from '../../data/skills.json';
@@ -36,6 +37,7 @@ export interface Enemy {
   attack: number;
   def: number;
   agility: number;
+  description: string;
   exp: number;
   monsterPoints: number; // earns skill proficiency
   mind: number;
@@ -51,6 +53,7 @@ export interface Location {
   exits: string[];
   enemies?: string[];
   rest?: boolean;
+  enterFlag?: string; // noticed on arrival
   shop?: string[];
   npcs?: string[];
 }
@@ -75,9 +78,17 @@ export interface Npc {
   likes: string[]; // item ids worth a liked gift
 }
 
+export interface ItemCount {
+  id: string;
+  count: number;
+}
+
 export interface Condition {
   flag?: string;
   notFlag?: string;
+  anyFlag?: string[];
+  allFlags?: string[];
+  hasItems?: ItemCount[];
   bondAtLeast?: number; // bond level with the scene's NPC
 }
 
@@ -86,12 +97,22 @@ export interface SceneNode {
   text: string;
   next?: string;
   choices?: { text: string; next?: string; liked?: boolean; condition?: Condition }[];
-  effects?: { setFlag?: string; firstTalk?: boolean }; // firstTalk raises the scene NPC's bond
+  effects?: {
+    setFlag?: string;
+    firstTalk?: boolean; // raises the scene NPC's bond by the first-talk amount
+    bond?: number; // quest reward to the scene NPC
+    exp?: number;
+    coins?: number;
+    take?: ItemCount[];
+    give?: ItemCount[];
+    learnSkill?: string;
+  };
 }
 
 export interface Scene {
   id: string;
   npc?: string; // none for the Tower's voice and found writing
+  location?: string; // offered by Look around there
   condition?: Condition;
   start: string;
   nodes: Record<string, SceneNode>;
@@ -101,13 +122,24 @@ export const npcs = npcData as Npc[];
 export const scenes = sceneData as unknown as Scene[]; // JSON infers each scene's own node keys
 export interface Quest {
   id: string;
-  kind: 'main' | 'side';
+  kind: 'main' | 'side' | 'secret';
   giver?: string;
   title: string;
-  steps: { id: string; text: string }[]; // directions in words, no markers
+  startWhen: Condition;
+  steps: { text: string; doneWhen: Condition }[]; // directions in words, no markers
 }
 
-export const quests = questData as Quest[];
+export interface JournalEntry {
+  id: string;
+  section: 'notes' | 'order';
+  flag: string;
+  title: string;
+  text: string;
+}
+
+export const journal = journalData as JournalEntry[];
+
+export const quests = questData as unknown as Quest[];
 export const npcById = (id: string): Npc | undefined => npcs.find((npc) => npc.id === id);
 export const sceneById = (id: string): Scene | undefined => scenes.find((scene) => scene.id === id);
 export const skills = skillData as SkillData[];

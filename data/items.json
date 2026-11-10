@@ -6,6 +6,7 @@
   { "id": "wooden-horse", "name": "Wooden Horse", "kind": "key" },
   { "id": "reading-glasses", "name": "Reading Glasses", "kind": "key" },
   { "id": "bread-knife", "name": "Bread Knife", "kind": "key" },
+  { "id": "plate", "name": "Plate", "kind": "key" },
   { "id": "hearth-ash", "name": "Hearth Ash", "kind": "material", "floor": 1},
   { "id": "lamp-oil", "name": "Lamp Oil of the First World", "kind": "material", "floor": 1},
   { "id": "keepers-spare-key", "name": "Keeper's Spare Key", "kind": "key" },

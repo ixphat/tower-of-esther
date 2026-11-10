@@ -10,11 +10,26 @@
     "mind": 2,
     "exp": 1,
     "monsterPoints": 1,
-    "drops": { "straw-thread": 1 },
+    "drops": {
+      "straw-thread": 1
+    },
     "moves": [
-      { "name": "Straw Lash", "type": "attack", "weight": 3, "cooldown": 0, "power": 1 },
-      { "name": "Hunker Down", "type": "guard", "weight": 1, "cooldown": 3, "value": 0.5 }
-    ]
+      {
+        "name": "Straw Lash",
+        "type": "attack",
+        "weight": 3,
+        "cooldown": 0,
+        "power": 1
+      },
+      {
+        "name": "Hunker Down",
+        "type": "guard",
+        "weight": 1,
+        "cooldown": 3,
+        "value": 0.5
+      }
+    ],
+    "description": "Straw bound into the shape of someone who worked the fields."
   },
   {
     "id": "crow",
@@ -27,11 +42,31 @@
     "mind": 2,
     "exp": 1,
     "monsterPoints": 1,
-    "drops": { "straw-thread": 1 },
+    "drops": {
+      "straw-thread": 1
+    },
     "moves": [
-      { "name": "Peck", "type": "attack", "weight": 3, "cooldown": 0, "power": 1 },
-      { "name": "Wing Flurry", "type": "status", "weight": 1, "cooldown": 3, "status": { "id": "accuracyDown", "chance": 0.6, "turns": 1, "value": 0.1 } }
-    ]
+      {
+        "name": "Peck",
+        "type": "attack",
+        "weight": 3,
+        "cooldown": 0,
+        "power": 1
+      },
+      {
+        "name": "Wing Flurry",
+        "type": "status",
+        "weight": 1,
+        "cooldown": 3,
+        "status": {
+          "id": "accuracyDown",
+          "chance": 0.6,
+          "turns": 1,
+          "value": 0.1
+        }
+      }
+    ],
+    "description": "Crows that never left the village. They move together."
   },
   {
     "id": "rusted-tool-remnant",
@@ -44,11 +79,26 @@
     "mind": 2,
     "exp": 2,
     "monsterPoints": 2,
-    "drops": { "straw-thread": 2 },
+    "drops": {
+      "straw-thread": 2
+    },
     "moves": [
-      { "name": "Rusted Swing", "type": "attack", "weight": 2, "cooldown": 0, "power": 1 },
-      { "name": "Overhead", "type": "charge", "weight": 1, "cooldown": 3, "power": 1.8 }
-    ]
+      {
+        "name": "Rusted Swing",
+        "type": "attack",
+        "weight": 2,
+        "cooldown": 0,
+        "power": 1
+      },
+      {
+        "name": "Overhead",
+        "type": "charge",
+        "weight": 1,
+        "cooldown": 3,
+        "power": 1.8
+      }
+    ],
+    "description": "Old tools that kept working after the hands were gone. Slow, and heavy."
   },
   {
     "id": "overgrown-scarecrow",
@@ -61,12 +111,39 @@
     "mind": 2,
     "exp": 8,
     "monsterPoints": 8,
-    "drops": { "straw-thread": 6 },
+    "drops": {
+      "straw-thread": 6
+    },
     "moves": [
-      { "name": "Vine Lash", "type": "attack", "weight": 3, "cooldown": 0, "power": 1 },
-      { "name": "Root Grip", "type": "status", "weight": 1, "cooldown": 3, "status": { "id": "restrain", "chance": 0.5 } }
+      {
+        "name": "Vine Lash",
+        "type": "attack",
+        "weight": 3,
+        "cooldown": 0,
+        "power": 1
+      },
+      {
+        "name": "Root Grip",
+        "type": "status",
+        "weight": 1,
+        "cooldown": 3,
+        "status": {
+          "id": "restrain",
+          "chance": 0.5
+        }
+      }
     ],
-    "scripted": [{ "belowHp": 0.5, "name": "Shed Straw", "type": "guard", "weight": 0, "cooldown": 0, "value": 0.5 }]
+    "scripted": [
+      {
+        "belowHp": 0.5,
+        "name": "Shed Straw",
+        "type": "guard",
+        "weight": 0,
+        "cooldown": 0,
+        "value": 0.5
+      }
+    ],
+    "description": "A scarecrow the roots grew through. It guards the hill."
   },
   {
     "id": "gate-scarecrow",
@@ -79,15 +156,56 @@
     "mind": 2,
     "exp": 20,
     "monsterPoints": 20,
-    "drops": { "straw-thread": 15 },
+    "drops": {
+      "straw-thread": 15
+    },
     "moves": [
-      { "name": "Gate Bar", "type": "attack", "weight": 3, "cooldown": 0, "power": 1 },
-      { "name": "Rusted Nail", "type": "status", "weight": 1, "cooldown": 3, "status": { "id": "poison", "chance": 0.6 } },
-      { "name": "Brace the Gate", "type": "guard", "weight": 1, "cooldown": 3, "value": 0.5 }
+      {
+        "name": "Gate Bar",
+        "type": "attack",
+        "weight": 3,
+        "cooldown": 0,
+        "power": 1
+      },
+      {
+        "name": "Rusted Nail",
+        "type": "status",
+        "weight": 1,
+        "cooldown": 3,
+        "status": {
+          "id": "poison",
+          "chance": 0.6
+        }
+      },
+      {
+        "name": "Brace the Gate",
+        "type": "guard",
+        "weight": 1,
+        "cooldown": 3,
+        "value": 0.5
+      }
     ],
     "scripted": [
-      { "belowHp": 0.6, "name": "Creaking Swing", "type": "charge", "weight": 0, "cooldown": 0, "power": 2 },
-      { "belowHp": 0.3, "name": "Hollow Cry", "type": "status", "weight": 0, "cooldown": 0, "status": { "id": "fear", "chance": 1 } }
-    ]
+      {
+        "belowHp": 0.6,
+        "name": "Creaking Swing",
+        "type": "charge",
+        "weight": 0,
+        "cooldown": 0,
+        "power": 2
+      },
+      {
+        "belowHp": 0.3,
+        "name": "Hollow Cry",
+        "type": "status",
+        "weight": 0,
+        "cooldown": 0,
+        "status": {
+          "id": "fear",
+          "chance": 1
+        }
+      }
+    ],
+    "description": "It stands where the road leaves the village, and does not let anyone pass."
   }
 ]

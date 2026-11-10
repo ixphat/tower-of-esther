@@ -39,6 +39,7 @@
   "bondGift": 5,
   "bondLikedGift": 10,
   "giftsPerVisit": 1,
+  "trackedQuests": 3,
   "maxChoices": 4,
   "healItemsPerFight": 2,
   "heroPartCap": 0.5,

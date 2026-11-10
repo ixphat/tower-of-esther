@@ -36,14 +36,16 @@
         "speaker": "The Tower",
         "text": "Gift accepted.",
         "effects": {
-          "setFlag": "gift-accepted"
+          "setFlag": "gift-accepted",
+          "exp": 27
         }
       },
       "refuse": {
         "speaker": "The Tower",
         "text": "Gift refused. The Tower does not ask twice.",
         "effects": {
-          "setFlag": "gift-refused"
+          "setFlag": "gift-refused",
+          "exp": 27
         }
       }
     }
@@ -71,7 +73,8 @@
         "speaker": "The Tower",
         "text": "The Status window shows what you are. Open it.",
         "effects": {
-          "setFlag": "heard-basics"
+          "setFlag": "heard-basics",
+          "exp": 27
         }
       }
     }
@@ -84,9 +87,14 @@
         "speaker": "The Tower",
         "text": "Floor master: present.",
         "effects": {
-          "setFlag": "tower-named-master"
+          "setFlag": "tower-named-master",
+          "exp": 27
         }
       }
+    },
+    "location": "gate",
+    "condition": {
+      "notFlag": "tower-named-master"
     }
   },
   {
@@ -147,9 +155,14 @@
         "speaker": "Chalk on the board",
         "text": "Under the words, a small river is drawn.",
         "effects": {
-          "setFlag": "found-school-clue"
+          "setFlag": "found-school-clue",
+          "exp": 9
         }
       }
+    },
+    "location": "schoolhouse",
+    "condition": {
+      "notFlag": "found-school-clue"
     }
   },
   {
@@ -250,7 +263,8 @@
         "speaker": "The Keeper",
         "text": "I only keep the house.",
         "effects": {
-          "setFlag": "keeper-denied-master"
+          "setFlag": "keeper-denied-master",
+          "exp": 9
         }
       }
     }
@@ -360,11 +374,81 @@
     }
   },
   {
+    "id": "keeper-tidy-done",
+    "npc": "keeper",
+    "condition": {
+      "flag": "offered-tidy",
+      "notFlag": "tidy-done",
+      "hasItems": [
+        {
+          "id": "straw-thread",
+          "count": 5
+        }
+      ]
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "Five bundles. That will keep the fields quiet for a while.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "Thank you. Here, for your trouble.",
+        "effects": {
+          "setFlag": "tidy-done",
+          "bond": 15,
+          "exp": 18,
+          "coins": 50,
+          "take": [
+            {
+              "id": "straw-thread",
+              "count": 5
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-belongings-done",
+    "npc": "keeper",
+    "condition": {
+      "flag": "belongings-done",
+      "notFlag": "belongings-thanked"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "You put them back. Each in its place.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "They will find them where they left them. That matters.",
+        "effects": {
+          "setFlag": "belongings-thanked",
+          "bond": 15,
+          "exp": 18,
+          "coins": 50
+        }
+      }
+    }
+  },
+  {
     "id": "keeper-table-done",
     "npc": "keeper",
     "condition": {
-      "flag": "table-set",
-      "notFlag": "keeper-told-who"
+      "flag": "offered-table",
+      "notFlag": "table-set",
+      "hasItems": [
+        {
+          "id": "plate",
+          "count": 3
+        }
+      ]
     },
     "start": "a",
     "nodes": {
@@ -392,7 +476,22 @@
         "speaker": "The Keeper",
         "text": "Take the lamp oil. It burns longer than it should.",
         "effects": {
-          "setFlag": "keeper-told-who"
+          "setFlag": "table-set",
+          "bond": 20,
+          "exp": 18,
+          "coins": 50,
+          "take": [
+            {
+              "id": "plate",
+              "count": 3
+            }
+          ],
+          "give": [
+            {
+              "id": "lamp-oil",
+              "count": 1
+            }
+          ]
         }
       }
     }
@@ -457,14 +556,21 @@
         "speaker": "The Keeper",
         "text": "Like this. One thing at a time, and never in a hurry.",
         "effects": {
-          "setFlag": "keeper-close-done"
+          "setFlag": "keeper-close-done",
+          "learnSkill": "tidy-up"
         }
       },
       "key": {
         "speaker": "The Keeper",
         "text": "It opens the house. Come in whenever you like.",
         "effects": {
-          "setFlag": "keeper-close-done"
+          "setFlag": "keeper-close-done",
+          "give": [
+            {
+              "id": "keepers-spare-key",
+              "count": 1
+            }
+          ]
         }
       }
     }
@@ -605,6 +711,180 @@
       "c": {
         "speaker": "The Keeper",
         "text": "Mind the step on your way out."
+      }
+    }
+  },
+  {
+    "id": "look-riverbank",
+    "location": "riverbank",
+    "condition": {
+      "flag": "offered-belongings",
+      "notFlag": "found-horse"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "You",
+        "text": "A small wooden horse in the reeds. One leg is chipped.",
+        "effects": {
+          "setFlag": "found-horse",
+          "give": [
+            {
+              "id": "wooden-horse",
+              "count": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "look-schoolhouse",
+    "location": "schoolhouse",
+    "condition": {
+      "flag": "offered-belongings",
+      "notFlag": "found-glasses"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "You",
+        "text": "Reading glasses, folded, on the school steps.",
+        "effects": {
+          "setFlag": "found-glasses",
+          "give": [
+            {
+              "id": "reading-glasses",
+              "count": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "look-fields",
+    "location": "fields",
+    "condition": {
+      "flag": "offered-belongings",
+      "notFlag": "found-knife"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "You",
+        "text": "A bread knife in the furrow, as if someone set it down to rest.",
+        "effects": {
+          "setFlag": "found-knife",
+          "give": [
+            {
+              "id": "bread-knife",
+              "count": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "look-fields-flower",
+    "location": "fields",
+    "condition": {
+      "notFlag": "picked-flower"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "You",
+        "text": "Wildflowers along the fence. You pick one.",
+        "effects": {
+          "setFlag": "picked-flower",
+          "give": [
+            {
+              "id": "wildflower",
+              "count": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "look-houses-return",
+    "location": "houses",
+    "condition": {
+      "allFlags": [
+        "found-horse",
+        "found-glasses",
+        "found-knife"
+      ],
+      "notFlag": "belongings-done",
+      "hasItems": [
+        {
+          "id": "wooden-horse",
+          "count": 1
+        },
+        {
+          "id": "reading-glasses",
+          "count": 1
+        },
+        {
+          "id": "bread-knife",
+          "count": 1
+        }
+      ]
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "You",
+        "text": "The horse goes on a child's shelf. The glasses by a bed. The knife in a kitchen drawer.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "You",
+        "text": "The houses look a little less empty.",
+        "effects": {
+          "setFlag": "belongings-done",
+          "take": [
+            {
+              "id": "wooden-horse",
+              "count": 1
+            },
+            {
+              "id": "reading-glasses",
+              "count": 1
+            },
+            {
+              "id": "bread-knife",
+              "count": 1
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "id": "look-houses-plates",
+    "location": "houses",
+    "condition": {
+      "flag": "offered-table",
+      "notFlag": "took-plates"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "You",
+        "text": "One plate from each house. They are clean, and stacked as if for guests.",
+        "effects": {
+          "setFlag": "took-plates",
+          "give": [
+            {
+              "id": "plate",
+              "count": 3
+            }
+          ]
+        }
       }
     }
   }

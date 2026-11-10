@@ -114,7 +114,8 @@
       ],
       "enemies": [
         "gate-scarecrow"
-      ]
+      ],
+      "enterFlag": "seen-gate-mark"
     }
   ]
 }

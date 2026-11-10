@@ -3,6 +3,7 @@ import climberData from '../../data/climber.json';
 import { expToNext, maxHp, type OwnedSkills, type Worn } from './climber';
 import { itemById, npcById, sceneById, skillById, type Enemy, type Floor } from './data';
 import { lineId } from './dialogue';
+import { questBoard } from './quests';
 
 export interface Rewards {
   exp: number;
@@ -30,12 +31,15 @@ export interface RunState {
   flags: string[]; // story facts
   seen: string[]; // dialogue lines and choices already met, for skip and once-only rewards
   giftedThisVisit: string[]; // NPCs given a gift since arriving here
+  tracked: string[]; // side quests shown in the tracker, besides the main quest
+  met: string[]; // enemy ids, for the Bestiary
 }
 
 export type RunAction =
   | { type: 'move'; to: string }
   | { type: 'rest' }
-  | { type: 'fightStart' }
+  | { type: 'fightStart'; foes: string[] }
+  | { type: 'toggleTrack'; quest: string }
   | { type: 'spendItem'; item: string }
   | { type: 'useItem'; item: string }
   | { type: 'buy'; item: string }
@@ -70,6 +74,8 @@ export function newRun(floor: Floor): RunState {
     flags: [],
     seen: [],
     giftedThisVisit: [],
+    tracked: [],
+    met: [],
   };
 }
 
@@ -128,20 +134,23 @@ function gainProficiency(owned: OwnedSkills, used: string[], gained: number): Ow
   return next;
 }
 
-function winFight(state: RunState, hp: number, rewards: Rewards, used: string[]): RunState {
+// Level-ups restore full HP at the new level.
+function gainExp(state: RunState, gained: number): RunState {
   let { level } = state;
-  let exp = state.exp + rewards.exp;
+  let exp = state.exp + gained;
   while (exp >= expToNext(level)) {
     exp -= expToNext(level);
     level += 1;
   }
+  return { ...state, level, exp, hp: level > state.level ? maxHp(level) : state.hp };
+}
+
+function winFight(state: RunState, hp: number, rewards: Rewards, used: string[]): RunState {
+  const grown = gainExp({ ...state, hp }, rewards.exp);
   let carried = state.items;
   for (const [item, amount] of Object.entries(rewards.drops)) carried = withItem(carried, item, amount);
   return {
-    ...state,
-    level,
-    exp,
-    hp: level > state.level ? maxHp(level) : hp,
+    ...grown,
     inFight: false,
     items: carried,
     cleared: [...state.cleared, state.locationId],
@@ -165,13 +174,16 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
   switch (action.type) {
     case 'move': {
       if (!find(floor, state.locationId).exits.includes(action.to)) throw new Error(`No exit to ${action.to}`);
-      const safePoint = find(floor, action.to).rest ? action.to : state.safePoint;
+      const place = find(floor, action.to);
+      const safePoint = place.rest ? action.to : state.safePoint;
+      const noticed = place.enterFlag && !state.flags.includes(place.enterFlag) ? [place.enterFlag] : [];
       return {
         ...state,
         locationId: action.to,
         safePoint,
         cleared: state.cleared.filter((id) => id !== action.to),
         giftedThisVisit: [],
+        flags: [...state.flags, ...noticed],
       };
     }
     case 'rest':
@@ -211,9 +223,17 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
       const id = lineId(action.scene, action.node);
       if (state.seen.includes(id)) return state; // effects happen once
       let next: RunState = { ...state, seen: [...state.seen, id] };
-      const { setFlag, firstTalk } = node.effects ?? {};
+      const { setFlag, firstTalk, bond, exp, coins, take, give, learnSkill } = node.effects ?? {};
       if (setFlag && !next.flags.includes(setFlag)) next = { ...next, flags: [...next.flags, setFlag] };
       if (firstTalk && scene.npc) next = raiseBond(next, scene.npc, balance.bondFirstTalk);
+      if (bond && scene.npc) next = raiseBond(next, scene.npc, bond);
+      if (coins) next = { ...next, coins: next.coins + coins };
+      for (const { id: item, count } of take ?? []) next = { ...next, items: withItem(next.items, item, -count) };
+      for (const { id: item, count } of give ?? []) next = { ...next, items: withItem(next.items, item, count) };
+      if (learnSkill && !next.skills[learnSkill]) {
+        next = { ...next, skills: { ...next.skills, [learnSkill]: { stage: 0, level: 1, proficiency: 0 } } };
+      }
+      if (exp) next = gainExp(next, exp);
       return next;
     }
     case 'choose': {
@@ -250,7 +270,15 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
       }
       return { ...state, stance: action.skill };
     case 'fightStart':
-      return { ...state, inFight: true };
+      return { ...state, inFight: true, met: [...new Set([...state.met, ...action.foes])] };
+    case 'toggleTrack': {
+      if (state.tracked.includes(action.quest)) return { ...state, tracked: state.tracked.filter((id) => id !== action.quest) };
+      // finished quests leave the tracker, so they stop holding a slot
+      const open = new Set(questBoard(state).side.map((quest) => quest.id));
+      const tracked = state.tracked.filter((id) => open.has(id));
+      if (tracked.length >= balance.trackedQuests) throw new Error(`Track up to ${balance.trackedQuests}`);
+      return { ...state, tracked: [...tracked, action.quest] };
+    }
     case 'fightEnd':
       if (action.outcome === 'lost') return defeat(state);
       if (action.outcome === 'fled') return { ...state, hp: action.hp, inFight: false }; // no rewards

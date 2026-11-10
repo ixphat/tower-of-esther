@@ -9,7 +9,7 @@
 
   interface Props {
     run: RunState;
-    npc: string;
+    npc?: string; // none for the Tower's voice and found writing
     scene: string;
     textSpeed: TextSpeed;
     onAction: (action: RunAction) => RunState;
@@ -20,7 +20,7 @@
   const MS_PER_CHAR: Record<TextSpeed, number> = { Normal: 30, Fast: 10, Instant: 0 };
 
   // svelte-ignore state_referenced_locally -- the scene is fixed while this box is open
-  const person = npcById(npc)!;
+  const person = npc ? npcById(npc) : undefined;
   // svelte-ignore state_referenced_locally
   const sceneStart = sceneById(scene)!.start;
   let nodeId = $state('');
@@ -41,11 +41,14 @@
     Object.entries(run.items).filter(([id, count]) => count > 0 && itemById(id)!.kind !== 'equipment'),
   );
   const giftedHere = $derived(run.giftedThisVisit.filter((id) => id === npc).length >= balance.giftsPerVisit);
+  const speaker = $derived(node?.speaker ?? person?.name ?? '');
 
   // Every action that can change the bond goes through here, so the note reflects it.
   function act(action: RunAction) {
-    const before = run.bonds[npc] ?? 0;
-    const after = onAction(action).bonds[npc] ?? 0;
+    const before = npc ? (run.bonds[npc] ?? 0) : 0; // read before the action changes the run
+    const next = onAction(action);
+    if (!npc || !person) return;
+    const after = next.bonds[npc] ?? 0;
     if (after > before) {
       const level = bondLevel(after);
       note = `${person.name}: bond +${after - before}${level > bondLevel(before) ? `, now ${balance.bondLevels[level]}` : ''}`;
@@ -89,10 +92,10 @@
   onDestroy(() => clearInterval(timer));
 </script>
 
-<section bind:this={box} class="box" aria-label="Talking with {person.name}">
+<section bind:this={box} class="box" aria-label={person ? `Talking with ${person.name}` : 'Scene'}>
   <header>
-    <strong>{node?.speaker}</strong>
-    <BondPips points={run.bonds[npc]} />
+    <strong>{speaker}</strong>
+    {#if npc}<BondPips points={run.bonds[npc]} />{/if}
     <button aria-pressed={showLog} onclick={() => (showLog = !showLog)}>Log</button>
   </header>
 
@@ -119,17 +122,19 @@
   </div>
 
   <div class="row">
+    {#if npc}
     <button aria-expanded={giving} disabled={giftedHere} onclick={() => (giving = !giving)}>
       Give gift{giftedHere ? ' (gift limit reached)' : ''}
     </button>
+    {/if}
     <button class="leave" onclick={onLeave}>Leave{ended ? '' : ' now'}</button>
   </div>
 
-  {#if giving && !giftedHere}
+  {#if npc && giving && !giftedHere}
     <div class="row" role="group" aria-label="Gifts">
       {#if gifts.length === 0}<span>Nothing to give.</span>{/if}
       {#each gifts as [id, count] (id)}
-        <button onclick={() => { act({ type: 'gift', npc, item: id }); giving = false; }}>
+        <button onclick={() => { act({ type: 'gift', npc: npc!, item: id }); giving = false; }}>
           Give {itemById(id)!.name} ×{count}
         </button>
       {/each}

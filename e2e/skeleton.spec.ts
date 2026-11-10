@@ -233,6 +233,57 @@ test('talking, liked choices, bonds, gifts, text speed and skip', async ({ page 
   await expect(page.getByRole('dialog', { name: 'Status' }).getByRole('img', { name: 'Bond Acquaintance' })).toBeVisible();
 });
 
+test('side quest from the Keeper, looking around, tracker, Journal and secrets', async ({ page }) => {
+  const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
+  const talkTo = async () => {
+    await page.getByRole('navigation', { name: 'Talk to' }).getByRole('button', { name: /The Keeper/ }).click();
+    const box = page.getByRole('region', { name: 'Talking with The Keeper' });
+    while (await box.getByRole('button', { name: 'Next' }).isVisible()) await box.getByRole('button', { name: 'Next' }).click();
+    const choice = box.locator('.talk button').first();
+    if (await choice.isVisible()) await choice.click();
+    while (await box.getByRole('button', { name: 'Next' }).isVisible()) await box.getByRole('button', { name: 'Next' }).click();
+    await box.getByRole('button', { name: /^Leave/ }).click();
+  };
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('radio', { name: 'Instant' }).check();
+  await page.getByRole('button', { name: 'Close' }).click();
+
+  const tracker = page.getByRole('region', { name: 'Tracked quests' });
+  await expect(tracker).toContainText('Main: The Tower is waiting');
+
+  await go('Riverbank');
+  await go('Schoolhouse');
+  await page.getByRole('button', { name: 'Look around' }).click();
+  const scene = page.getByRole('region', { name: 'Scene' });
+  await expect(scene).toContainText('Lesson for whoever comes late.');
+  await scene.getByRole('button', { name: 'Next' }).click();
+  await scene.getByRole('button', { name: 'Leave' }).click();
+  await expect(page.getByRole('button', { name: 'Look around' })).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Journal' }).click();
+  await expect(page.getByRole('dialog', { name: 'Journal' })).toContainText('Notes in one hand');
+  await page.getByRole('button', { name: 'Close' }).click();
+  await page.getByRole('button', { name: 'Quests' }).click();
+  const quests = page.getByRole('dialog', { name: 'Quests' });
+  await quests.getByRole('button', { name: 'Found secrets' }).click();
+  await expect(quests).toContainText('Chalk on the schoolhouse board');
+  await expect(quests).not.toContainText('A floor without a master');
+  await page.getByRole('button', { name: 'Close' }).click();
+
+  await go('Riverbank');
+  await go('Village Square');
+  await go("Keeper's House");
+  for (let talk = 0; talk < 3; talk++) await talkTo(); // first meeting, the chair, then the straw request
+  await page.getByRole('button', { name: 'Quests' }).click();
+  await quests.getByRole('button', { name: 'Side' }).click();
+  await expect(quests).toContainText('Loose Straw');
+  await quests.getByRole('button', { name: 'Track Loose Straw' }).click();
+  await page.getByRole('button', { name: 'Close' }).click();
+  await expect(tracker).toContainText('Loose Straw: Gather five bundles');
+});
+
 test('reloading mid-fight counts as a defeat', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'New game' }).click();
