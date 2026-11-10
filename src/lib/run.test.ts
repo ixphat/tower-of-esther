@@ -81,7 +81,7 @@ describe('rewards and respawn', () => {
   });
 
   it('adds up the rewards of every foe', () => {
-    const foe = { id: 'a', name: 'A', tier: 'normal' as const, moves: [], hp: 1, attack: 1, def: 0, agility: 0, exp: 1, monsterPoints: 2, mind: 2, drops: { 'straw-thread': 1 } };
+    const foe = { id: 'a', name: 'A', description: '', tier: 'normal' as const, moves: [], hp: 1, attack: 1, def: 0, agility: 0, exp: 1, monsterPoints: 2, mind: 2, drops: { 'straw-thread': 1 } };
     expect(fightRewards([foe, foe])).toEqual({ exp: 2, monsterPoints: 4, drops: { 'straw-thread': 2 } });
   });
 
@@ -196,12 +196,12 @@ describe('skills', () => {
 
 describe('leaving a fight unfinished', () => {
   it('counts as a defeat when the run resumes', () => {
-    const started = applyAction(run({ locationId: 'field', exp: 200 }), floor, { type: 'fightStart' });
+    const started = applyAction(run({ locationId: 'field', exp: 200 }), floor, { type: 'fightStart', foes: [] });
     expect(resumeRun(started, floor)).toMatchObject({ locationId: 'gate', hp: full, exp: 180, memoriesLost: 1, inFight: false });
   });
 
   it('costs nothing once the fight has ended', () => {
-    const started = applyAction(run({ hp: 90 }), floor, { type: 'fightStart' });
+    const started = applyAction(run({ hp: 90 }), floor, { type: 'fightStart', foes: [] });
     const ended = applyAction(started, floor, { type: 'fightEnd', outcome: 'won', hp: 40, rewards: rewards(), used: [] as string[] });
     expect(resumeRun(ended, floor)).toEqual({ ...run(), hp: 40, cleared: ['gate'] });
   });

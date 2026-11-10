@@ -4,7 +4,7 @@ import { maxHp } from './climber';
 import type { RunState } from './run';
 
 const KEY = 'tower-of-esther.save';
-const VERSION = 7;
+const VERSION = 8;
 
 type Reader = Pick<Storage, 'getItem'>;
 type Writer = Pick<Storage, 'setItem'>;
@@ -57,6 +57,8 @@ function isRun(value: unknown, floor: Floor): value is RunState {
     isStringList(run.flags) &&
     isStringList(run.seen) &&
     isStringList(run.giftedThisVisit) &&
+    isStringList(run.tracked) &&
+    isStringList(run.met) &&
     isPlainObject(run.skills) &&
     Object.entries(run.skills).every(([id, skill]) => skillById(id) && isOwnedSkill(skill)) &&
     Array.isArray(run.pins) &&

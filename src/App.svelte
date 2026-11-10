@@ -6,8 +6,11 @@
   import StallWindow from './StallWindow.svelte';
   import BondPips from './BondPips.svelte';
   import DialogueBox from './DialogueBox.svelte';
+  import JournalWindow from './JournalWindow.svelte';
+  import QuestsWindow from './QuestsWindow.svelte';
   import SkillsWindow from './SkillsWindow.svelte';
-  import { sceneFor } from './lib/dialogue';
+  import { questBoard } from './lib/quests';
+  import { sceneAt, sceneFor } from './lib/dialogue';
   import { loadSettings, saveSettings, TEXT_SPEEDS, type Settings } from './lib/settings';
   import StatusWindow from './StatusWindow.svelte';
   import { expToNext, maxHp } from './lib/climber';
@@ -21,7 +24,7 @@
   let run = $state.raw<RunState | null>(null);
   let windowTitle = $state('');
   let foes = $state<Enemy[] | null>(null);
-  let talk = $state<{ npc: string; scene: string } | null>(null);
+  let talk = $state<{ npc?: string; scene: string } | null>(null);
   let settings = $state<Settings>(loadSettings(localStorage));
   let heading = $state<HTMLHeadingElement>();
   let dialog = $state<HTMLDialogElement>();
@@ -52,6 +55,10 @@
     talk = { npc, scene: sceneFor(npc, run!).id };
   }
 
+  const lookScene = $derived(run && location ? sceneAt(location.id, run) : undefined);
+  const board = $derived(run ? questBoard(run) : null);
+  const trackedQuests = $derived(board ? board.side.filter((quest) => run!.tracked.includes(quest.id)) : []);
+
   function endTalk() {
     talk = null;
     return focusScene();
@@ -70,7 +77,7 @@
   }
 
   function startFight(here: Enemy[]) {
-    commit({ type: 'fightStart' });
+    commit({ type: 'fightStart', foes: here.map((foe) => foe.id) });
     foes = here;
   }
 
@@ -118,6 +125,13 @@
       <progress max={expToNext(run.level)} value={run.exp} aria-hidden="true"></progress>
     </section>
 
+    <section class="tracker" aria-label="Tracked quests">
+      {#if board?.main}<button class="quiet" onclick={() => openWindow('Quests')}>Main: {board.main.step}</button>{/if}
+      {#each trackedQuests as quest (quest.id)}
+        <button class="quiet" onclick={() => openWindow('Quests')}>{quest.title}: {quest.step}</button>
+      {/each}
+    </section>
+
     <main class="scene">
       <h2 bind:this={heading} tabindex="-1">{location.name}</h2>
       <p>{location.description}</p>
@@ -146,6 +160,10 @@
           <button onclick={() => startTalk(id)}>{npcById(id)!.name} <BondPips points={run.bonds[id]} /></button>
         {/each}
       </nav>
+    {/if}
+
+    {#if lookScene}
+      <div class="row"><button onclick={() => (talk = { scene: lookScene.id })}>Look around</button></div>
     {/if}
 
     {#if location.rest || location.shop}
@@ -178,6 +196,10 @@
           </label>
         {/each}
       </fieldset>
+    {:else if windowTitle === 'Quests'}
+      <QuestsWindow {run} onAction={commit} />
+    {:else if windowTitle === 'Journal'}
+      <JournalWindow {run} />
     {:else if windowTitle === 'Skills'}
       <SkillsWindow {run} onAction={commit} />
     {:else if windowTitle === 'Bag'}
@@ -200,6 +222,21 @@
 {/if}
 
 <style>
+  .tracker {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .quiet {
+    min-height: 2rem;
+    border-color: transparent;
+    background: none;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
   .top {
     justify-content: space-between;
   }

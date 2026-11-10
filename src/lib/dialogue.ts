@@ -9,6 +9,9 @@ export function meets(condition: Condition | undefined, run: RunState, npc?: str
   if (condition.bondAtLeast !== undefined && (!npc || bondLevel(run.bonds[npc]) < condition.bondAtLeast)) return false;
   if (condition.flag && !run.flags.includes(condition.flag)) return false;
   if (condition.notFlag && run.flags.includes(condition.notFlag)) return false;
+  if (condition.anyFlag && !condition.anyFlag.some((flag) => run.flags.includes(flag))) return false;
+  if (condition.allFlags && !condition.allFlags.every((flag) => run.flags.includes(flag))) return false;
+  if (condition.hasItems && !condition.hasItems.every(({ id, count }) => (run.items[id] ?? 0) >= count)) return false;
   return true;
 }
 
@@ -17,6 +20,11 @@ export function sceneFor(npc: string, run: RunState): Scene {
   const scene = scenes.find((s) => s.npc === npc && meets(s.condition, run, npc));
   if (!scene) throw new Error(`No scene for ${npc}`);
   return scene;
+}
+
+// The scene Look around offers here, if any.
+export function sceneAt(location: string, run: RunState): Scene | undefined {
+  return scenes.find((s) => s.location === location && meets(s.condition, run));
 }
 
 export function nodeAt(scene: string, node: string): SceneNode {

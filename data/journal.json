@@ -1,0 +1,23 @@
+[
+  {
+    "id": "note-school",
+    "section": "notes",
+    "flag": "found-school-clue",
+    "title": "The schoolhouse board",
+    "text": "Lesson for whoever comes late. What would you keep, if keeping it cost someone else? Do not write your answer on my board. I could not write mine."
+  },
+  {
+    "id": "order-chair",
+    "section": "order",
+    "flag": "asked-chair",
+    "title": "An empty chair",
+    "text": "At the head of the Keeper's table. Someone asked him to keep it ready."
+  },
+  {
+    "id": "order-gate",
+    "section": "order",
+    "flag": "seen-gate-mark",
+    "title": "A mark on the gate",
+    "text": "A small empty chair, scratched into the village gate."
+  }
+]
