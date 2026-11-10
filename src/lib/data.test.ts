@@ -5,6 +5,8 @@ const floor = (over: Partial<Floor> = {}): Floor => ({
   id: 1,
   name: 'Test',
   recommendedGrade: 'F',
+  recommendedLevel: 1,
+  rule: { label: 'None', text: '' },
   start: 'a',
   locations: [
     { id: 'a', name: 'A', description: '', exits: ['b'] },

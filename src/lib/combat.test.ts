@@ -124,7 +124,7 @@ describe('fight flow', () => {
   it('heals a share of max HP, capped at max, and costs the turn', () => {
     const start = startFight(climber({ hp: 100 }), [enemy()], miss);
     const { state, events } = act(start.state, { type: 'heal', fraction: 0.2 }, miss);
-    expect(events[0]).toEqual({ type: 'heal', target: 'Climber', amount: 200 });
+    expect(events[0]).toEqual({ type: 'heal', target: 'Climber', targetId: 'climber', amount: 200 });
     expect(events[1]).toMatchObject({ type: 'hit', attacker: 'E' }); // the enemy replies
     expect(state.round).toBe(2);
 

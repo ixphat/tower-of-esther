@@ -11,6 +11,8 @@ const floor: Floor = {
   id: 1,
   name: 'Test',
   recommendedGrade: 'F',
+  recommendedLevel: 1,
+  rule: { label: 'None', text: '' },
   start: 'house',
   locations: [
     { id: 'house', name: 'House', description: '', exits: ['yard'], npcs: ['keeper'] },

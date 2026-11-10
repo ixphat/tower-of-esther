@@ -120,8 +120,7 @@ test('HP carries, Rest restores it, and defeat returns to the resting place', as
 });
 
 test('items, drops, respawn, stall and comparing gear', async ({ page }) => {
-  const status = page.getByRole('status', { name: 'Climber' });
-  const coins = async () => Number(/Coins (\d+)/.exec(await status.innerText())![1]);
+  const coins = async () => Number(/Coins (\d+)/.exec(await page.getByRole('banner').innerText())![1]);
   const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
   const fight = page.getByRole('button', { name: 'Fight Straw Remnant' });
   const attack = page.getByRole('button', { name: 'Weapon attack' });
@@ -411,6 +410,89 @@ test('the Gate Scarecrow, the Keeper trial, leaving through the gate and the cle
   const status = page.getByRole('dialog', { name: 'Status' });
   await status.getByRole('button', { name: 'Floor clears' }).click();
   await expect(status).toContainText(/Floor 1 · Grade/);
+});
+
+test('refusal path all the way to the clear', async ({ page }) => {
+  const goTo = page.getByRole('navigation', { name: 'Go to' });
+  const win = async (fight: string, from: string, place: string) => {
+    for (;;) {
+      await page.getByRole('button', { name: fight }).click();
+      const back = page.getByRole('button', { name: 'Return' });
+      while (!(await back.isVisible())) await page.getByRole('button', { name: 'Weapon attack' }).click();
+      const won = (await page.getByRole('log', { name: 'Combat log' }).innerText()).includes('Victory.');
+      await back.click();
+      if (won) return;
+      // defeated: back at the safe point; walk back for another try
+      await goTo.getByRole('button', { name: from }).click();
+      await goTo.getByRole('button', { name: place }).click();
+    }
+  };
+  await page.goto('./');
+  await newGame(page, 'Refuse.');
+  await goTo.getByRole('button', { name: 'Row of Houses' }).click();
+  await goTo.getByRole('button', { name: 'Back Lane' }).click();
+  await page.getByRole('button', { name: 'Look around' }).click();
+  await playScene(page);
+  await goTo.getByRole('button', { name: 'Row of Houses' }).click();
+  await goTo.getByRole('button', { name: 'Village Square' }).click();
+  await goTo.getByRole('button', { name: /^Village Gate/ }).click();
+  await playScene(page);
+  await win('Fight Gate Scarecrow', "Keeper's House", 'Village Square');
+  await page.getByRole('button', { name: 'Face the Keeper' }).click();
+  await playScene(page);
+  await playScene(page);
+  const back = page.getByRole('button', { name: 'Return' });
+  while (!(await back.isVisible())) await page.getByRole('button', { name: 'Weapon attack' }).click();
+  await back.click();
+  await page.getByRole('region', { name: 'Talking with The Keeper' }).getByRole('button', { name: /^Leave/ }).click();
+  await page.getByRole('button', { name: 'Leave through the gate' }).click();
+  await expect(page.getByRole('region', { name: 'Floor cleared' })).toContainText('Path');
+  await expect(page.getByRole('heading', { name: 'Floor 1 · First Trial cleared' })).toBeFocused();
+});
+
+test('phone layout: menu at the bottom, no sideways scrolling, windows fill the screen', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('./');
+  await newGame(page);
+  const noSideScroll = () => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+  expect(await noSideScroll()).toBe(true);
+  const menu = await page.getByRole('navigation', { name: 'Menu' }).boundingBox();
+  expect(menu!.y + menu!.height).toBeGreaterThan(800);
+
+  await page.getByRole('button', { name: 'Status' }).click();
+  const sheet = await page.getByRole('dialog', { name: 'Status' }).boundingBox();
+  expect(sheet!.height).toBeGreaterThan(800);
+  await page.getByRole('button', { name: 'Close' }).click();
+
+  await page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name: 'Fields, monsters here' }).click();
+  await page.getByRole('button', { name: 'Fight Straw Remnant' }).click();
+  await page.getByRole('button', { name: 'Weapon attack' }).click();
+  expect(await noSideScroll()).toBe(true);
+  await expect(page.locator('.float').first()).toBeAttached(); // a damage number appeared
+  const full = page.getByRole('button', { name: 'Full log' });
+  await full.click();
+  await expect(page.getByRole('button', { name: 'Short log' })).toHaveAttribute('aria-expanded', 'true');
+  const back = page.getByRole('button', { name: 'Return' });
+  while (!(await back.isVisible())) await page.getByRole('button', { name: 'Weapon attack' }).click();
+  await back.click();
+
+  await page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name: 'Village Square' }).click();
+  await page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name: "Keeper's House" }).click();
+  await page.getByRole('navigation', { name: 'Talk to' }).getByRole('button', { name: /The Keeper/ }).click();
+  await expect(page.getByRole('region', { name: 'Talking with The Keeper' })).toBeInViewport();
+  expect(await noSideScroll()).toBe(true);
+});
+
+test('the top bar shows floor, recommended level and grade, coins and the rule chip', async ({ page }) => {
+  await page.goto('./');
+  await newGame(page);
+  const top = page.getByRole('banner');
+  await expect(top).toContainText('Floor 1 · First Trial');
+  await expect(top).toContainText('Rec. Lv 1 / Grade F');
+  await expect(top).toContainText('Coins 100');
+  await expect(top).toContainText('Your grade F');
+  await top.getByRole('button', { name: 'No floor rule' }).click();
+  await expect(page.getByRole('dialog', { name: 'Floor rule' })).toContainText('Floor 1 has no special rule.');
 });
 
 test('reloading mid-fight counts as a defeat', async ({ page }) => {
