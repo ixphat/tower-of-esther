@@ -27,6 +27,12 @@
   "skillScorePerLevel": 0.05,
   "countedSkills": 12,
   "pinnedSlots": 6,
+  "enemyMoveTurns": 2,
+  "groupAttack": [1, 0.8, 0.6],
+  "fleeBase": 0.4,
+  "fleePerAgility": 0.01,
+  "fleeCap": 0.9,
+  "strongEnemyShare": 0.5,
   "healItemsPerFight": 2,
   "heroPartCap": 0.5,
   "heroGrades": [

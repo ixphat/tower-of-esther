@@ -168,6 +168,29 @@ test('pinned skills, cooldown reason, tag slots and the Skills window', async ({
   await expect(window.locator('li', { hasText: 'Straw Toss' })).toContainText('Novice Lv 1');
 });
 
+test('groups, targets, fleeing and the mini-boss', async ({ page }) => {
+  const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+
+  await go('Riverbank, monsters here');
+  await page.getByRole('button', { name: 'Fight Crow ×3' }).click();
+  await expect(page.getByRole('button', { name: /^Target Crow/ })).toHaveCount(3);
+  await page.getByRole('button', { name: 'Target Crow 3' }).click();
+  await expect(page.getByRole('button', { name: 'Target Crow 3' })).toHaveAttribute('aria-pressed', 'true');
+
+  const back = page.getByRole('button', { name: 'Return' });
+  while (!(await back.isVisible())) await page.getByRole('button', { name: 'Flee' }).click();
+  await expect(page.getByRole('log', { name: 'Combat log' })).toContainText(/Fled\.|Defeated\./);
+  await back.click();
+
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+  await go('Village Gate, monsters here');
+  await page.getByRole('button', { name: 'Fight Gate Scarecrow' }).click();
+  await expect(page.getByRole('button', { name: 'Flee (Cannot flee this fight)' })).toBeDisabled();
+});
+
 test('reloading mid-fight counts as a defeat', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'New game' }).click();

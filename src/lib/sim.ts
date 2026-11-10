@@ -2,12 +2,12 @@
 import balance from '../../data/balance.json';
 import climberData from '../../data/climber.json';
 import { statsAt } from './climber';
-import { act, climberCombatant, createRng, enemyCombatant, startFight } from './combat';
-import { enemies, type Enemy } from './data';
+import { act, climberCombatant, createRng, enemyCombatant, enemyGroup, startFight, TIERS, type Tier } from './combat';
+import { enemies, floors, groupName } from './data';
 
 export interface SimRow {
   enemy: string;
-  tier: Enemy['tier'];
+  tier: Tier; // the strongest foe in the encounter
   runs: number;
   winRate: number;
   avgTurns: number; // climber actions per fight
@@ -19,15 +19,18 @@ export interface SimRow {
 export function simulate(seed: number, runs: number, level = 1, floor = 1): SimRow[] {
   const climber = climberCombatant(statsAt(level, { weapon: climberData.startingWeapon }));
 
-  return enemies.map((enemy, index) => {
-    const rng = createRng(seed + index * 0x9e3779b9); // own stream per enemy, so rows stay stable as data grows
+  const encounters = floors.find((f) => f.id === floor)!.locations.filter((l) => l.enemies);
+  return encounters.map((location, index) => {
+    const rng = createRng(seed + index * 0x9e3779b9); // own stream per encounter, so rows stay stable as data grows
+    const foes = location.enemies!.map((id) => enemies.find((e) => e.id === id)!);
+    const tier = foes.map((foe) => foe.tier).sort((a, b) => TIERS.indexOf(b) - TIERS.indexOf(a))[0];
     let wins = 0;
     let turns = 0;
     let hpLeft = 0;
     for (let run = 0; run < runs; run++) {
-      let { state } = startFight(climber, [enemyCombatant(enemy, 0)], rng);
+      let { state } = startFight(climber, enemyGroup(foes.map(enemyCombatant)), rng);
       while (state.outcome === 'ongoing') {
-        ({ state } = act(state, { type: 'attack', target: 0 }, rng));
+        ({ state } = act(state, { type: 'attack', target: state.enemies.findIndex((e) => e.hp > 0) }, rng));
         turns += 1;
       }
       if (state.outcome === 'won') {
@@ -36,12 +39,12 @@ export function simulate(seed: number, runs: number, level = 1, floor = 1): SimR
       }
     }
     return {
-      enemy: enemy.name,
-      tier: enemy.tier,
+      enemy: `${location.name}: ${groupName(foes.map((foe) => foe.name))}`,
+      tier,
       runs,
       winRate: wins / runs,
       avgTurns: turns / runs,
-      target: enemy.tier === 'floorMaster' ? balance.targetTurns.floorMaster[String(floor) as '1'] : balance.targetTurns[enemy.tier],
+      target: tier === 'floorMaster' ? balance.targetTurns.floorMaster[String(floor) as '1'] : balance.targetTurns[tier],
       avgHpLeft: wins ? hpLeft / wins : 0,
     };
   });

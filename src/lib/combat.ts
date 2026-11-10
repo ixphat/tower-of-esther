@@ -11,6 +11,29 @@ export interface Combatant {
   agility: number;
   mind: number;
   statuses: ActiveStatus[];
+  tier?: Tier;
+  moves?: EnemyMove[];
+  scripted?: ScriptedMove[];
+  triggered?: number[]; // scripted moves already used
+  turns?: number; // own turns taken, for move cooldowns
+  readyOn?: Record<string, number>;
+}
+
+export const TIERS = ['normal', 'tough', 'elite', 'miniBoss', 'floorMaster'] as const;
+export type Tier = (typeof TIERS)[number];
+
+export interface EnemyMove {
+  name: string;
+  type: 'attack' | 'guard' | 'status' | 'charge';
+  weight: number;
+  cooldown: number;
+  power?: number; // share of Attack for attack, or the released hit for charge
+  value?: number; // extra Guard share for guard
+  status?: { id: string; chance: number; turns?: number; value?: number };
+}
+
+export interface ScriptedMove extends EnemyMove {
+  belowHp: number; // share of max HP that triggers it once
 }
 
 export interface ActiveStatus {
@@ -48,7 +71,7 @@ export interface ClimberStats {
   armorWard: number;
 }
 
-export type Outcome = 'ongoing' | 'won' | 'lost';
+export type Outcome = 'ongoing' | 'won' | 'lost' | 'fled';
 
 export interface FightState {
   climber: Combatant;
@@ -68,6 +91,7 @@ export interface FightState {
 export type Action =
   | { type: 'attack'; target: number }
   | { type: 'heal'; fraction: number }
+  | { type: 'flee' }
   | { type: 'skill'; skill: string; target: number };
 
 export type FightEvent =
@@ -80,7 +104,9 @@ export type FightEvent =
   | { type: 'tick'; target: string; status: string; damage: number }
   | { type: 'stunned'; actor: string }
   | { type: 'fail'; actor: string }
-  | { type: 'end'; outcome: 'won' | 'lost' };
+  | { type: 'charge'; actor: string }
+  | { type: 'fleeFailed'; actor: string }
+  | { type: 'end'; outcome: 'won' | 'lost' | 'fled' };
 
 export type Rng = () => number;
 
@@ -116,8 +142,24 @@ export function climberCombatant(stats: ClimberStats): Combatant {
   };
 }
 
-export function enemyCombatant({ id, name, hp, attack, def, agility, mind }: Enemy, index: number): Combatant {
-  return { id: `${id}-${index}`, name, hp, maxHp: hp, attack, guard: def, agility, mind, statuses: [] };
+export function enemyCombatant(enemy: Enemy, index: number): Combatant {
+  const { id, name, hp, attack, def, agility, mind, tier, moves, scripted } = enemy;
+  return { id: `${id}-${index}`, name, hp, maxHp: hp, attack, guard: def, agility, mind, statuses: [], tier, moves, scripted };
+}
+
+// Each enemy hits softer in a pair or a three.
+export function enemyGroup(foes: Combatant[]): Combatant[] {
+  const share = balance.groupAttack[foes.length - 1];
+  return foes.map((foe) => ({ ...foe, attack: foe.attack * share }));
+}
+
+export const fleeChance = (agility: number): number =>
+  Math.min(balance.fleeBase + agility * balance.fleePerAgility, balance.fleeCap);
+
+export const isStrong = (c: Combatant) => c.tier === 'elite' || c.tier === 'miniBoss' || c.tier === 'floorMaster';
+
+export function fleeBlock(state: FightState): string | null {
+  return state.enemies.some((e) => e.tier === 'miniBoss' || e.tier === 'floorMaster') ? 'Cannot flee this fight' : null;
 }
 
 export const evasionChance = (agility: number): number =>
@@ -142,10 +184,11 @@ export function applyStatus(
   options: { turns?: number; value?: number; attempt?: { chance: number; roll: number } } = {},
 ): FightEvent | null {
   if (id === 'stun' && has(target, STUN_IMMUNE)) return null;
-  if (options.attempt && options.attempt.roll >= options.attempt.chance - target.mind * balance.statusResistPerMind) {
+  const halved = id === 'stun' && isStrong(target) ? balance.strongEnemyShare : 1;
+  if (options.attempt && options.attempt.roll >= options.attempt.chance * halved - target.mind * balance.statusResistPerMind) {
     return null;
   }
-  const turns = options.turns ?? balance.statuses[id as keyof typeof balance.statuses].turns;
+  const turns = options.turns ?? balance.statuses[id as keyof typeof balance.statuses]?.turns;
   const status: ActiveStatus = options.value === undefined ? { id, turns } : { id, turns, value: options.value };
   target.statuses = [...target.statuses.filter((s) => s.id !== id), status];
   return { type: 'status', target: target.name, status: id };
@@ -159,7 +202,7 @@ function strike(state: FightState, attacker: Combatant, target: Combatant, rng: 
   const stance = activeStance(state);
   const stanceOn = (c: Combatant, bonus?: number) =>
     c === state.climber && stance && bonus ? 1 + (bonus > 0 ? bonus * stance.scale : bonus) : 1;
-  const guard = target.guard * stanceOn(target, stance?.guardBonus);
+  const guard = target.guard * stanceOn(target, stance?.guardBonus) * (1 + (has(target, 'guarding')?.value ?? 0));
   const dealt = stanceOn(attacker, stance?.damageBonus) * (has(attacker, 'fear') ? balance.statuses.fear.damage : 1);
 
   const critChance = Math.min(balance.critBase + effectiveAgility(attacker) * balance.critPerAgility, balance.critCap);
@@ -179,7 +222,8 @@ function strike(state: FightState, attacker: Combatant, target: Combatant, rng: 
 function startTurn(state: FightState, c: Combatant, events: FightEvent[]): boolean {
   for (const id of ['poison', 'burn'] as const) {
     if (!has(c, id)) continue;
-    const damage = Math.max(balance.minDamage, Math.round(c.maxHp * balance.statuses[id].hpShare));
+    const share = balance.statuses[id].hpShare * (isStrong(c) ? balance.strongEnemyShare : 1);
+    const damage = Math.max(balance.minDamage, Math.round(c.maxHp * share));
     c.hp = Math.max(0, c.hp - damage);
     events.push({ type: 'tick', target: c.name, status: id, damage });
   }
@@ -209,9 +253,58 @@ function roundOrder(state: FightState): string[] {
 }
 
 function checkEnd(state: FightState, events: FightEvent[]): void {
+  if (events.some((event) => event.type === 'end')) return; // already ended in this step
+  if (state.outcome === 'fled') {
+    events.push({ type: 'end', outcome: 'fled' });
+    return;
+  }
   if (state.climber.hp === 0) state.outcome = 'lost';
   else if (state.enemies.every((e) => e.hp === 0)) state.outcome = 'won';
   if (state.outcome !== 'ongoing') events.push({ type: 'end', outcome: state.outcome });
+}
+
+function pickMove(enemy: Combatant, rng: Rng): EnemyMove {
+  const triggered = enemy.triggered ?? [];
+  const due = (enemy.scripted ?? []).findIndex(
+    (move, index) => !triggered.includes(index) && enemy.hp / enemy.maxHp < move.belowHp,
+  );
+  if (due !== -1) {
+    enemy.triggered = [...triggered, due];
+    return enemy.scripted![due];
+  }
+  const ready = enemy.moves!.filter((move) => (enemy.readyOn?.[move.name] ?? 0) <= enemy.turns!);
+  let roll = rng() * ready.reduce((sum, move) => sum + move.weight, 0);
+  return ready.find((move) => (roll -= move.weight) < 0) ?? ready[ready.length - 1];
+}
+
+function enemyMove(state: FightState, enemy: Combatant, rng: Rng, events: FightEvent[]): void {
+  const charging = has(enemy, 'charging');
+  if (charging) {
+    enemy.statuses = enemy.statuses.filter((s) => s !== charging);
+    events.push(strike(state, enemy, state.climber, rng, charging.value));
+    return checkEnd(state, events);
+  }
+  if (!enemy.moves) {
+    events.push(strike(state, enemy, state.climber, rng));
+    return checkEnd(state, events);
+  }
+  enemy.turns = (enemy.turns ?? 0) + 1;
+  const move = pickMove(enemy, rng);
+  enemy.readyOn = { ...enemy.readyOn, [move.name]: enemy.turns + move.cooldown };
+  events.push({ type: 'skill', actor: enemy.name, skill: move.name });
+
+  if (move.type === 'attack') events.push(strike(state, enemy, state.climber, rng, move.power));
+  if (move.type === 'guard') applyStatus(enemy, 'guarding', { turns: balance.enemyMoveTurns, value: move.value }); // lasts through the climber's turn
+  if (move.type === 'charge') {
+    applyStatus(enemy, 'charging', { turns: balance.enemyMoveTurns, value: move.power });
+    events.push({ type: 'charge', actor: enemy.name });
+  }
+  if (move.type === 'status' && move.status) {
+    const { id, chance, turns, value } = move.status;
+    const event = applyStatus(state.climber, id, { turns, value, attempt: { chance, roll: rng() } });
+    if (event) events.push(event);
+  }
+  checkEnd(state, events);
 }
 
 // Enemies choose only when they act, so no upcoming move exists in the state to reveal.
@@ -229,7 +322,8 @@ function runEnemies(state: FightState, rng: Rng, events: FightEvent[]): void {
 
     if (actor.hp > 0 && startTurn(state, actor, events)) {
       if (isClimber) return;
-      events.push(moveFails(actor, rng) ? { type: 'fail', actor: actor.name } : strike(state, actor, state.climber, rng));
+      if (moveFails(actor, rng)) events.push({ type: 'fail', actor: actor.name });
+      else enemyMove(state, actor, rng, events);
       checkEnd(state, events);
       endTurn(actor);
     }
@@ -305,6 +399,13 @@ function useSkill(state: FightState, id: string, targetIndex: number, rng: Rng, 
 
 function perform(state: FightState, action: Action, rng: Rng, events: FightEvent[]): void {
   if (action.type === 'skill') return useSkill(state, action.skill, action.target, rng, events);
+  if (action.type === 'flee') {
+    const block = fleeBlock(state);
+    if (block) throw new Error(block);
+    if (rng() < fleeChance(effectiveAgility(state.climber))) state.outcome = 'fled';
+    else events.push({ type: 'fleeFailed', actor: state.climber.name });
+    return;
+  }
   if (action.type === 'heal') {
     if (state.healsUsed >= balance.healItemsPerFight) throw new Error('Healing item limit reached');
     state.healsUsed += 1;

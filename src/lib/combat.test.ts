@@ -4,6 +4,9 @@ import {
   applyStatus,
   climberCombatant,
   createRng,
+  enemyGroup,
+  fleeBlock,
+  fleeChance,
   skillBlock,
   skillScale,
   startFight,
@@ -303,5 +306,93 @@ describe('statuses (04 Systems)', () => {
     const target = enemy({ mind: 20 }); // 30% becomes 20%
     expect(applyStatus(target, 'fear', { attempt: { chance: 0.3, roll: 0.21 } })).toBeNull();
     expect(applyStatus(target, 'fear', { attempt: { chance: 0.3, roll: 0.19 } })).toMatchObject({ type: 'status' });
+  });
+});
+
+describe('enemy moves and fleeing', () => {
+  const pass = () => 0.99;
+  const attack = { type: 'attack', target: 0 } as const;
+  const lash = { name: 'Lash', type: 'attack', weight: 1, cooldown: 0, power: 1 } as const;
+  const hide = { name: 'Hide', type: 'guard', weight: 1, cooldown: 3, value: 0.5 } as const;
+
+  it('cuts each enemy Attack to x0.8 in a pair and x0.6 in a three', () => {
+    const one = enemy({ attack: 10 });
+    expect(enemyGroup([one]).map((e) => e.attack)).toEqual([10]);
+    expect(enemyGroup([one, one]).map((e) => e.attack)).toEqual([8, 8]);
+    expect(enemyGroup([one, one, one]).map((e) => e.attack)).toEqual([6, 6, 6]);
+  });
+
+  it('picks a move by weight and respects its cooldown', () => {
+    const e = enemy({ moves: [lash, hide] });
+    // a draw under 0.5 picks Lash, 0.5 or more picks Hide
+    const first = act(startFight(climber(), [e], pass).state, attack, script(0.99, 0.99, 0.5, 0.6));
+    expect(first.events).toContainEqual({ type: 'skill', actor: 'E', skill: 'Hide' });
+    // Hide is cooling down, so the only usable move is Lash even on a high draw
+    const second = act(first.state, attack, script(0.99, 0.99, 0.5, 0.9, 0.99, 0.99, 0.5));
+    expect(second.events).toContainEqual({ type: 'skill', actor: 'E', skill: 'Lash' });
+  });
+
+  it('guarding raises Guard until the end of its next turn', () => {
+    const e = enemy({ moves: [{ ...hide, cooldown: 0 }] });
+    const { state } = act(startFight(climber(), [e], pass).state, attack, script(0.99, 0.99, 0.5, 0));
+    // 18 * 100 / (100 + 3 * 1.5) = 17.22
+    expect(act(state, attack, script(0.99, 0.99, 0.5)).events[0]).toMatchObject({ damage: 17 });
+  });
+
+  it('a charge winds up, then releases a stronger hit next turn', () => {
+    const windUp = { name: 'Overhead', type: 'charge', weight: 1, cooldown: 0, power: 2 } as const;
+    const e = enemy({ attack: 10, moves: [windUp] });
+    let step = act(startFight(climber({ guard: 0 }), [e], pass).state, attack, script(0.99, 0.99, 0.5, 0));
+    expect(step.events.some((ev) => ev.type === 'hit' && ev.attacker === 'E')).toBe(false);
+    step = act(step.state, attack, script(0.99, 0.99, 0.5, 0.99, 0.99, 0.5));
+    expect(step.events.find((ev) => ev.type === 'hit' && ev.attacker === 'E')).toMatchObject({ damage: 20 });
+  });
+
+  it('a status move rolls against the climber Mind', () => {
+    const caw = { name: 'Caw', type: 'status', weight: 1, cooldown: 0, status: { id: 'fear', chance: 0.5 } } as const;
+    const e = enemy({ moves: [caw] });
+    const hit = act(startFight(climber({ mind: 20 }), [e], pass).state, attack, script(0.99, 0.99, 0.5, 0, 0.39));
+    expect(hit.state.climber.statuses.map((s) => s.id)).toEqual(['fear']);
+    const resisted = act(startFight(climber({ mind: 20 }), [e], pass).state, attack, script(0.99, 0.99, 0.5, 0, 0.41));
+    expect(resisted.state.climber.statuses).toEqual([]);
+  });
+
+  it('uses a scripted move once when HP falls below its threshold', () => {
+    const roar = { belowHp: 0.5, name: 'Roar', type: 'guard', weight: 0, cooldown: 0, value: 0.5 } as const;
+    const e = enemy({ hp: 400, maxHp: 1000, moves: [lash], scripted: [roar] });
+    let step = act(startFight(climber(), [e], pass).state, attack, pass);
+    expect(step.events).toContainEqual({ type: 'skill', actor: 'E', skill: 'Roar' });
+    step = act(step.state, attack, pass);
+    expect(step.events).not.toContainEqual({ type: 'skill', actor: 'E', skill: 'Roar' });
+  });
+
+  it('halves damage over time on elites and stronger', () => {
+    const strong = enemy({ tier: 'elite', statuses: [{ id: 'poison', turns: 3 }] });
+    const step = act(startFight(climber(), [strong], pass).state, attack, pass);
+    expect(step.events).toContainEqual({ type: 'tick', target: 'E', status: 'poison', damage: 15 }); // 3% of 1000, halved
+  });
+
+  it('flees at 40% + 1% per Agility, costing the turn', () => {
+    const c = climber({ agility: 10 }); // 50%
+    expect(act(startFight(c, [enemy()], pass).state, { type: 'flee' }, script(0.49)).state.outcome).toBe('fled');
+    const failed = act(startFight(c, [enemy()], pass).state, { type: 'flee' }, script(0.51));
+    expect(failed.state.outcome).toBe('ongoing');
+    expect(failed.events[0]).toEqual({ type: 'fleeFailed', actor: 'Climber' });
+  });
+
+  it('logs the end of a fight once when an enemy move defeats the climber', () => {
+    const e = enemy({ attack: 5000, moves: [lash] });
+    const { events } = act(startFight(climber({ hp: 1 }), [e], pass).state, attack, script(0.99, 0.99, 0.5, 0, 0.99, 0.99, 0.5));
+    expect(events.filter((ev) => ev.type === 'end')).toHaveLength(1);
+  });
+
+  it('caps flee chance at 90%', () => {
+    expect(fleeChance(500)).toBe(0.9);
+  });
+
+  it('cannot flee a mini-boss', () => {
+    const state = startFight(climber(), [enemy({ tier: 'miniBoss' })], pass).state;
+    expect(fleeBlock(state)).toBe('Cannot flee this fight');
+    expect(() => act(state, { type: 'flee' }, pass)).toThrow('Cannot flee this fight');
   });
 });

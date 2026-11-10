@@ -7,9 +7,87 @@
     "attack": 4,
     "def": 3,
     "agility": 3,
+    "mind": 2,
     "exp": 1,
     "monsterPoints": 1,
+    "drops": { "straw-thread": 1 },
+    "moves": [
+      { "name": "Straw Lash", "type": "attack", "weight": 3, "cooldown": 0, "power": 1 },
+      { "name": "Hunker Down", "type": "guard", "weight": 1, "cooldown": 3, "value": 0.5 }
+    ]
+  },
+  {
+    "id": "crow",
+    "name": "Crow",
+    "tier": "normal",
+    "hp": 45,
+    "attack": 4,
+    "def": 1,
+    "agility": 9,
     "mind": 2,
-    "drops": { "straw-thread": 1 }
+    "exp": 1,
+    "monsterPoints": 1,
+    "drops": { "straw-thread": 1 },
+    "moves": [
+      { "name": "Peck", "type": "attack", "weight": 3, "cooldown": 0, "power": 1 },
+      { "name": "Wing Flurry", "type": "status", "weight": 1, "cooldown": 3, "status": { "id": "accuracyDown", "chance": 0.6, "turns": 1, "value": 0.1 } }
+    ]
+  },
+  {
+    "id": "rusted-tool-remnant",
+    "name": "Rusted-Tool Remnant",
+    "tier": "tough",
+    "hp": 117,
+    "attack": 5,
+    "def": 5,
+    "agility": 1,
+    "mind": 2,
+    "exp": 2,
+    "monsterPoints": 2,
+    "drops": { "straw-thread": 2 },
+    "moves": [
+      { "name": "Rusted Swing", "type": "attack", "weight": 2, "cooldown": 0, "power": 1 },
+      { "name": "Overhead", "type": "charge", "weight": 1, "cooldown": 3, "power": 1.8 }
+    ]
+  },
+  {
+    "id": "overgrown-scarecrow",
+    "name": "Overgrown Scarecrow",
+    "tier": "elite",
+    "hp": 233,
+    "attack": 4.8,
+    "def": 4,
+    "agility": 3,
+    "mind": 2,
+    "exp": 8,
+    "monsterPoints": 8,
+    "drops": { "straw-thread": 6 },
+    "moves": [
+      { "name": "Vine Lash", "type": "attack", "weight": 3, "cooldown": 0, "power": 1 },
+      { "name": "Root Grip", "type": "status", "weight": 1, "cooldown": 3, "status": { "id": "restrain", "chance": 0.5 } }
+    ],
+    "scripted": [{ "belowHp": 0.5, "name": "Shed Straw", "type": "guard", "weight": 0, "cooldown": 0, "value": 0.5 }]
+  },
+  {
+    "id": "gate-scarecrow",
+    "name": "Gate Scarecrow",
+    "tier": "miniBoss",
+    "hp": 327,
+    "attack": 5.2,
+    "def": 5,
+    "agility": 3,
+    "mind": 2,
+    "exp": 20,
+    "monsterPoints": 20,
+    "drops": { "straw-thread": 15 },
+    "moves": [
+      { "name": "Gate Bar", "type": "attack", "weight": 3, "cooldown": 0, "power": 1 },
+      { "name": "Rusted Nail", "type": "status", "weight": 1, "cooldown": 3, "status": { "id": "poison", "chance": 0.6 } },
+      { "name": "Brace the Gate", "type": "guard", "weight": 1, "cooldown": 3, "value": 0.5 }
+    ],
+    "scripted": [
+      { "belowHp": 0.6, "name": "Creaking Swing", "type": "charge", "weight": 0, "cooldown": 0, "power": 2 },
+      { "belowHp": 0.3, "name": "Hollow Cry", "type": "status", "weight": 0, "cooldown": 0, "status": { "id": "fear", "chance": 1 } }
+    ]
   }
 ]
