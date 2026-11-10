@@ -217,6 +217,7 @@ test('groups, targets, fleeing and the mini-boss', async ({ page }) => {
   await page.goto('./');
   await newGame(page);
   await go('Village Gate, monsters here');
+  await playScene(page); // the Tower speaks on arrival
   await page.getByRole('button', { name: 'Fight Gate Scarecrow' }).click();
   await expect(page.getByRole('button', { name: 'Flee (Cannot flee this fight)' })).toBeDisabled();
 });
@@ -369,6 +370,47 @@ test('accepting the gift keeps the Back Lane hidden', async ({ page }) => {
   await newGame(page);
   await page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name: 'Row of Houses' }).click();
   await expect(page.getByRole('button', { name: 'Back Lane' })).toHaveCount(0);
+});
+
+test('the Gate Scarecrow, the Keeper trial, leaving through the gate and the clear grade', async ({ page }) => {
+  const goTo = page.getByRole('navigation', { name: 'Go to' });
+  const fightToEnd = async () => {
+    const back = page.getByRole('button', { name: 'Return' });
+    while (!(await back.isVisible())) await page.getByRole('button', { name: 'Weapon attack' }).click();
+    const log = await page.getByRole('log', { name: 'Combat log' }).innerText();
+    await back.click();
+    return log;
+  };
+  await page.goto('./');
+  await newGame(page);
+  await goTo.getByRole('button', { name: 'Village Gate, monsters here' }).click();
+  await playScene(page); // the Tower speaks on arrival: Floor master: present.
+  await page.getByRole('button', { name: 'Fight Gate Scarecrow' }).click();
+  expect(await fightToEnd()).toContain('Victory.');
+
+  await page.getByRole('button', { name: 'Face the Keeper' }).click();
+  await playScene(page); // the Keeper
+  await playScene(page); // the Tower: fleeing is not possible
+  await expect(page.getByRole('button', { name: 'Flee (Cannot flee this fight)' })).toBeDisabled();
+  const log = await fightToEnd();
+  expect(log).toContain('The Keeper yields.');
+  expect(log).not.toContain('Defeated.');
+  await expect(page.getByRole('region', { name: 'Talking with The Keeper' })).toContainText('Enough. Enough.');
+  const box = page.getByRole('region', { name: 'Talking with The Keeper' });
+  while (await box.getByRole('button', { name: 'Next' }).isVisible()) await box.getByRole('button', { name: 'Next' }).click();
+  await box.getByRole('button', { name: /^Leave/ }).click();
+
+  await page.getByRole('button', { name: 'Leave through the gate' }).click();
+  const clear = page.getByRole('region', { name: 'Floor cleared' });
+  await expect(clear).toContainText(/Grade [FEDCBAS]+ · \d+ points/);
+  await expect(clear).toContainText('Secrets0/25');
+  await expect(clear).toContainText('end of the Floor 1 slice');
+  await clear.getByRole('button', { name: 'Continue' }).click();
+
+  await page.getByRole('button', { name: 'Status' }).click();
+  const status = page.getByRole('dialog', { name: 'Status' });
+  await status.getByRole('button', { name: 'Floor clears' }).click();
+  await expect(status).toContainText(/Floor 1 · Grade/);
 });
 
 test('reloading mid-fight counts as a defeat', async ({ page }) => {

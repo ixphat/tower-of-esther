@@ -59,7 +59,14 @@
     {/each}
   </ul>
 {:else}
-  <p>No floor cleared yet.</p>
+  {#if !run.clears[floor.id]}<p>No floor cleared yet.</p>{/if}
+  {#each Object.entries(run.clears) as [id, clear] (id)}
+    <details>
+      <summary>Floor {id} · Grade {clear.grade}</summary>
+      <p>Path {clear.factors.path} · Content {clear.factors.content} · Secrets {clear.factors.secrets}/{clear.factors.secretsMax} · Style {clear.factors.style}</p>
+      {#each [...clear.missing.path, ...clear.missing.content, ...clear.missing.style] as line (line)}<p>{line}</p>{/each}
+    </details>
+  {/each}
 {/if}
 
 <style>

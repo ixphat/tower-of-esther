@@ -7,6 +7,7 @@
   import BondPips from './BondPips.svelte';
   import DialogueBox from './DialogueBox.svelte';
   import JournalWindow from './JournalWindow.svelte';
+  import ClearScreen from './ClearScreen.svelte';
   import Portrait from './Portrait.svelte';
   import climberData from '../data/climber.json';
   import QuestsWindow from './QuestsWindow.svelte';
@@ -26,6 +27,8 @@
   let run = $state.raw<RunState | null>(null);
   let windowTitle = $state('');
   let foes = $state<Enemy[] | null>(null);
+  let fightMeta = $state<{ winFlag?: string; trial: boolean; after?: string }>({ trial: false });
+  let showClear = $state(false);
   let talk = $state<{ npc?: string; scene: string } | null>(null);
   let creating = $state(false);
   let newName = $state('');
@@ -67,7 +70,13 @@
   const trackedQuests = $derived(board ? board.side.filter((quest) => run!.tracked.includes(quest.id)) : []);
 
   function endTalk() {
-    const followedBy = talk && sceneById(talk.scene)?.followedBy;
+    const left = talk && sceneById(talk.scene);
+    if (left?.fight) {
+      talk = null;
+      const { enemies: ids, winFlag, trial, after } = left.fight;
+      return startFight(foesAt(ids), { winFlag, trial, after });
+    }
+    const followedBy = left?.followedBy;
     talk = followedBy ? { scene: followedBy } : null;
     return focusScene();
   }
@@ -105,13 +114,16 @@
     return focusScene();
   }
 
-  function startFight(here: Enemy[]) {
+  function startFight(here: Enemy[], meta: typeof fightMeta = { winFlag: location?.winFlag, trial: false }) {
     commit({ type: 'fightStart', foes: here.map((foe) => foe.id) });
+    fightMeta = meta;
     foes = here;
   }
 
   function move(to: string) {
-    commit({ type: 'move', to });
+    const arrived = commit({ type: 'move', to });
+    const arrival = sceneAt(to, arrived);
+    if (arrival?.auto) talk = { scene: arrival.id };
     return focusScene();
   }
 
@@ -119,14 +131,19 @@
     return ids.map((id) => enemies.find((e) => e.id === id)!); // the data check guarantees it exists
   }
 
-  function finishFight(outcome: 'won' | 'lost' | 'fled', hp: number, rewards: Rewards, used: string[]) {
-    if (outcome === 'won') commit({ type: 'fightEnd', outcome, hp, rewards, used });
+  function finishFight(outcome: 'won' | 'lost' | 'fled', hp: number, rewards: Rewards, used: string[], trial: { turns: number; hitsTaken: number }) {
+    if (outcome === 'won') {
+      commit({ type: 'fightEnd', outcome, hp, rewards, used, winFlag: fightMeta.winFlag, trial: fightMeta.trial ? trial : undefined });
+    }
     else if (outcome === 'fled') commit({ type: 'fightEnd', outcome, hp });
     else commit({ type: 'fightEnd', outcome });
   }
 
   function endFight() {
     foes = null;
+    if (fightMeta.after && run?.flags.includes(fightMeta.winFlag ?? '')) {
+      talk = { npc: sceneById(fightMeta.after)!.npc, scene: fightMeta.after };
+    }
     return focusScene();
   }
 
@@ -162,6 +179,10 @@
         <button class="quiet" onclick={() => openWindow('Quests')}>{quest.title}: {quest.step}</button>
       {/each}
     </section>
+
+    {#if showClear && run.clears[floor.id]}
+      <ClearScreen floorName={`Floor ${floor.id} · ${floor.name}`} endText={floor.clear!.endText} record={run.clears[floor.id]} onClose={() => { showClear = false; focusScene(); }} />
+    {/if}
 
     <main class="scene">
       <h2 bind:this={heading} tabindex="-1">{location.name}</h2>
@@ -200,7 +221,13 @@
     {/if}
 
     {#if lookScene}
-      <div class="row"><button onclick={() => (talk = { scene: lookScene.id })}>Look around</button></div>
+      <div class="row"><button onclick={() => (talk = { scene: lookScene.id })}>{lookScene.prompt ?? 'Look around'}</button></div>
+    {/if}
+
+    {#if location.id === floor.exit && floor.clear && run.flags.includes(floor.clear.requires)}
+      <div class="row">
+        <button onclick={() => { commit({ type: 'leaveGate' }); showClear = true; }}>Leave through the gate</button>
+      </div>
     {/if}
 
     {#if location.rest || location.shop}

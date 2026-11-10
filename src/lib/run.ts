@@ -3,12 +3,22 @@ import climberData from '../../data/climber.json';
 import { expToNext, maxHp, type OwnedSkills, type Worn } from './climber';
 import { classById, itemById, npcById, sceneById, skillById, type Enemy, type Floor } from './data';
 import { lineId, meets } from './dialogue';
+import { gradeClear, gradeMultiplier, isBetter } from './clear';
 import { questBoard } from './quests';
 
 export interface Rewards {
   exp: number;
   monsterPoints: number; // earns skill proficiency
   drops: Record<string, number>;
+}
+
+export interface ClearRecord {
+  grade: string;
+  total: number;
+  exp: number; // clear EXP paid so far
+  coins: number; // clear coins paid so far
+  factors: { path: number; content: number; secrets: number; secretsMax: number; style: number };
+  missing: { path: string[]; content: string[]; style: string[] };
 }
 
 export interface RunState {
@@ -37,6 +47,8 @@ export interface RunState {
   giftedThisVisit: string[]; // NPCs given a gift since arriving here
   tracked: string[]; // side quests shown in the tracker, besides the main quest
   met: string[]; // enemy ids, for the Bestiary
+  trial: { turns: number; unhit: boolean } | null; // the floor master fight
+  clears: Record<number, ClearRecord>; // best clear per floor
 }
 
 export type RunAction =
@@ -53,7 +65,16 @@ export type RunAction =
   | { type: 'choose'; scene: string; node: string; choice: number }
   | { type: 'gift'; npc: string; item: string }
   | { type: 'setStance'; skill: string | null }
-  | { type: 'fightEnd'; outcome: 'won'; hp: number; rewards: Rewards; used: string[] }
+  | {
+      type: 'fightEnd';
+      outcome: 'won';
+      hp: number;
+      rewards: Rewards;
+      used: string[];
+      winFlag?: string;
+      trial?: { turns: number; hitsTaken: number };
+    }
+  | { type: 'leaveGate' }
   | { type: 'fightEnd'; outcome: 'lost' }
   | { type: 'fightEnd'; outcome: 'fled'; hp: number };
 
@@ -88,6 +109,8 @@ export function newRun(floor: Floor, start: Start): RunState {
     giftedThisVisit: [],
     tracked: [],
     met: [],
+    trial: null,
+    clears: {},
   };
 }
 
@@ -295,6 +318,24 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
       const given = { ...state, items: withItem(state.items, action.item, -1), giftedThisVisit: [...state.giftedThisVisit, action.npc] };
       return raiseBond(given, action.npc, npc.likes.includes(action.item) ? balance.bondLikedGift : balance.bondGift);
     }
+    case 'leaveGate': {
+      if (state.locationId !== floor.exit || !state.flags.includes(floor.clear!.requires)) throw new Error('The gate is shut');
+      const result = gradeClear(state, floor);
+      const multiplier = gradeMultiplier(result.grade);
+      const previous = state.clears[floor.id];
+      const exp = Math.max(previous?.exp ?? 0, Math.round(floor.clear!.exp * multiplier));
+      const coins = Math.max(previous?.coins ?? 0, Math.round(floor.clear!.coinsPerFloor * floor.id * multiplier));
+      // only the best grade is kept, and a replay pays only the difference
+      const best = previous && !isBetter(result, previous) ? previous : null;
+      const { path, content, secrets, secretsMax, style, total, grade, missing } = result;
+      const record: ClearRecord = best ?? { grade, total, exp, coins, factors: { path, content, secrets, secretsMax, style }, missing };
+      const paid = gainExp({ ...state, coins: state.coins + coins - (previous?.coins ?? 0) }, exp - (previous?.exp ?? 0));
+      return {
+        ...paid,
+        clears: { ...state.clears, [floor.id]: { ...record, exp, coins } },
+        flags: paid.flags.includes('floor-cleared') ? paid.flags : [...paid.flags, 'floor-cleared'],
+      };
+    }
     case 'togglePin': {
       if (!state.skills[action.skill]) throw new Error(`${action.skill} is not learned`);
       if (state.pins.includes(action.skill)) {
@@ -322,7 +363,16 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
     case 'fightEnd':
       if (action.outcome === 'lost') return defeat(state);
       if (action.outcome === 'fled') return { ...state, hp: action.hp, inFight: false }; // no rewards
-      return winFight(state, action.hp, action.rewards, action.used);
+      {
+        let won = winFight(state, action.hp, action.rewards, action.used);
+        if (action.winFlag && !won.flags.includes(action.winFlag)) won = { ...won, flags: [...won.flags, action.winFlag] };
+        if (action.trial) {
+          const unhit = action.trial.hitsTaken === 0;
+          won = { ...won, trial: { turns: action.trial.turns, unhit } };
+          if (unhit && !won.flags.includes('trial-unhit')) won = { ...won, flags: [...won.flags, 'trial-unhit'] };
+        }
+        return won;
+      }
   }
 }
 

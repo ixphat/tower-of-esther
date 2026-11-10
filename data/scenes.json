@@ -104,7 +104,8 @@
     "location": "gate",
     "condition": {
       "notFlag": "tower-named-master"
-    }
+    },
+    "auto": true
   },
   {
     "id": "tower-trial",
@@ -119,6 +120,14 @@
         "speaker": "The Tower",
         "text": "Fleeing is not possible."
       }
+    },
+    "fight": {
+      "enemies": [
+        "keeper"
+      ],
+      "winFlag": "trial-passed",
+      "trial": true,
+      "after": "keeper-yield"
     }
   },
   {
@@ -661,9 +670,8 @@
   },
   {
     "id": "keeper-trial",
-    "npc": "keeper",
     "condition": {
-      "flag": "keeper-at-gate",
+      "flag": "gate-scarecrow-beaten",
       "notFlag": "trial-passed"
     },
     "start": "a",
@@ -682,7 +690,10 @@
         "speaker": "The Keeper",
         "text": "The kettle can wait."
       }
-    }
+    },
+    "location": "gate",
+    "prompt": "Face the Keeper",
+    "followedBy": "tower-trial"
   },
   {
     "id": "keeper-yield",
