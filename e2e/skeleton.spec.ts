@@ -222,12 +222,10 @@ test('talking, liked choices, bonds, gifts, text speed and skip', async ({ page 
   await box.getByRole('button', { name: 'Leave' }).click();
 
   await talk.getByRole('button', { name: /The Keeper/ }).click();
-  await expect(box).toContainText('The kettle is warm.');
-  await box.getByRole('button', { name: 'Tell me about the village.' }).click();
-  await box.getByRole('button', { name: 'Leave' }).click();
-  await talk.getByRole('button', { name: /The Keeper/ }).click();
+  await expect(box).toContainText('That chair? Leave it, please.');
+  await box.getByRole('button', { name: 'Next' }).click();
   await expect(box.getByRole('button', { name: 'Skip' })).toHaveCount(0); // a choice line has no skip
-  await expect(box.getByRole('button', { name: 'Tell me about the village.' })).toBeFocused();
+  await expect(box.getByRole('button', { name: 'Ready for whom?' })).toBeFocused();
   await box.getByRole('button', { name: 'Leave now' }).click();
 
   await page.getByRole('button', { name: 'Status' }).click();

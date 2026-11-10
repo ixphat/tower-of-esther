@@ -16,9 +16,16 @@ const floor: Floor = {
 const run = (over: Partial<RunState> = {}): RunState => ({ ...newRun(floor), ...over });
 
 describe('scenes from data', () => {
-  it('opens the first meeting until the flag is set, then the chat', () => {
+  it('opens the first meeting until the flag is set, then the next scene', () => {
     expect(sceneFor('keeper', run()).id).toBe('keeper-first');
-    expect(sceneFor('keeper', run({ flags: ['met-keeper'] })).id).toBe('keeper-chat');
+    expect(sceneFor('keeper', run({ flags: ['met-keeper'] })).id).toBe('keeper-chair');
+  });
+
+  it('opens bond-gated scenes once the bond is high enough', () => {
+    const met = { flags: ['met-keeper', 'asked-chair', 'offered-tidy', 'offered-belongings'] };
+    expect(sceneFor('keeper', run(met)).id).toBe('keeper-chat');
+    expect(sceneFor('keeper', run({ ...met, bonds: { keeper: 30 } })).id).toBe('keeper-friendly');
+    expect(sceneFor('keeper', run({ ...met, bonds: { keeper: 60 }, flags: [...met.flags, 'keeper-friendly-done'] })).id).toBe('keeper-trusted');
   });
 
   it('shows up to 4 choices without revealing which one is liked', () => {

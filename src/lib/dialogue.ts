@@ -1,11 +1,12 @@
 import type { Condition, Scene, SceneNode } from './data';
 import { sceneById, scenes } from './data';
-import type { RunState } from './run';
+import { bondLevel, type RunState } from './run';
 
 export const lineId = (scene: string, node: string) => `${scene}:${node}`;
 
-export function meets(condition: Condition | undefined, run: RunState): boolean {
+export function meets(condition: Condition | undefined, run: RunState, npc?: string): boolean {
   if (!condition) return true;
+  if (condition.bondAtLeast !== undefined && (!npc || bondLevel(run.bonds[npc]) < condition.bondAtLeast)) return false;
   if (condition.flag && !run.flags.includes(condition.flag)) return false;
   if (condition.notFlag && run.flags.includes(condition.notFlag)) return false;
   return true;
@@ -13,7 +14,7 @@ export function meets(condition: Condition | undefined, run: RunState): boolean 
 
 // The first scene of the NPC whose condition holds.
 export function sceneFor(npc: string, run: RunState): Scene {
-  const scene = scenes.find((s) => s.npc === npc && meets(s.condition, run));
+  const scene = scenes.find((s) => s.npc === npc && meets(s.condition, run, npc));
   if (!scene) throw new Error(`No scene for ${npc}`);
   return scene;
 }

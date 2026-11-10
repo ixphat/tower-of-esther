@@ -1,0 +1,73 @@
+[
+  {
+    "id": "first-trial",
+    "kind": "main",
+    "title": "First Trial",
+    "steps": [
+      {
+        "id": "gift",
+        "text": "The Tower is waiting for an answer about its gift."
+      },
+      {
+        "id": "basics",
+        "text": "Learn how things work here: move, fight, use a skill, open your status window."
+      },
+      {
+        "id": "cross",
+        "text": "Cross the village. The gate is past the square, at the end of the road."
+      },
+      {
+        "id": "trial",
+        "text": "The Keeper is waiting at the gate. Pass his trial."
+      }
+    ]
+  },
+  {
+    "id": "tidy-village",
+    "kind": "side",
+    "giver": "keeper",
+    "title": "Loose Straw",
+    "steps": [
+      {
+        "id": "gather",
+        "text": "Gather five bundles of loose straw. The Remnants in the fields shed it."
+      },
+      {
+        "id": "bring",
+        "text": "Bring the straw to the Keeper's house."
+      }
+    ]
+  },
+  {
+    "id": "belongings",
+    "kind": "side",
+    "giver": "keeper",
+    "title": "Left Behind",
+    "steps": [
+      {
+        "id": "find",
+        "text": "Find what was left behind: a toy by the river, glasses on the school steps, a knife out in the fields."
+      },
+      {
+        "id": "return",
+        "text": "Each belongs to a house on the row. Put them back where they were."
+      }
+    ]
+  },
+  {
+    "id": "set-the-table",
+    "kind": "side",
+    "giver": "keeper",
+    "title": "Set the Table",
+    "steps": [
+      {
+        "id": "plates",
+        "text": "Bring a plate from each house on the row."
+      },
+      {
+        "id": "lay",
+        "text": "Lay the table with the Keeper. Every place, the head of the table too."
+      }
+    ]
+  }
+]

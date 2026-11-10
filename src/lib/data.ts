@@ -3,6 +3,7 @@ import climberData from '../../data/climber.json';
 import enemyData from '../../data/enemies.json';
 import itemData from '../../data/items.json';
 import npcData from '../../data/npcs.json';
+import questData from '../../data/quests.json';
 import sceneData from '../../data/scenes.json';
 import skillData from '../../data/skills.json';
 import type { EnemyMove, FightSkill, ScriptedMove, Tier } from './combat';
@@ -13,7 +14,7 @@ export type Slot = (typeof SLOTS)[number];
 export interface Item {
   id: string;
   name: string;
-  kind: 'consumable' | 'material' | 'equipment' | 'gift';
+  kind: 'consumable' | 'material' | 'equipment' | 'gift' | 'key';
   price?: number;
   heal?: number; // share of max HP
   outsideFightOnly?: boolean;
@@ -77,6 +78,7 @@ export interface Npc {
 export interface Condition {
   flag?: string;
   notFlag?: string;
+  bondAtLeast?: number; // bond level with the scene's NPC
 }
 
 export interface SceneNode {
@@ -89,14 +91,23 @@ export interface SceneNode {
 
 export interface Scene {
   id: string;
-  npc: string;
+  npc?: string; // none for the Tower's voice and found writing
   condition?: Condition;
   start: string;
   nodes: Record<string, SceneNode>;
 }
 
 export const npcs = npcData as Npc[];
-export const scenes = sceneData as Scene[];
+export const scenes = sceneData as unknown as Scene[]; // JSON infers each scene's own node keys
+export interface Quest {
+  id: string;
+  kind: 'main' | 'side';
+  giver?: string;
+  title: string;
+  steps: { id: string; text: string }[]; // directions in words, no markers
+}
+
+export const quests = questData as Quest[];
 export const npcById = (id: string): Npc | undefined => npcs.find((npc) => npc.id === id);
 export const sceneById = (id: string): Scene | undefined => scenes.find((scene) => scene.id === id);
 export const skills = skillData as SkillData[];
@@ -144,7 +155,7 @@ export function validateGameData(): string[] {
     const nodes = Object.entries(scene.nodes);
     const targets = [scene.start, ...nodes.flatMap(([, node]) => [node.next, ...(node.choices ?? []).map((c) => c.next)])];
     return [
-      ...(npcById(scene.npc) ? [] : [`${scene.id}: npc "${scene.npc}" does not exist`]),
+      ...(!scene.npc || npcById(scene.npc) ? [] : [`${scene.id}: npc "${scene.npc}" does not exist`]),
       ...targets.filter((id) => id && !scene.nodes[id]).map((id) => `${scene.id}: node "${id}" does not exist`),
       ...nodes
         .filter(([, node]) => (node.choices?.length ?? 0) > balance.maxChoices)
