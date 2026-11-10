@@ -3,6 +3,9 @@ import type { Floor } from './data';
 import { newRun } from './run';
 import { readSave, writeSave } from './save';
 
+const START = { name: 'Ash', portrait: 1, giftClass: 'vanguard' };
+const VANGUARD = { classId: 'vanguard', hp: 151, worn: { weapon: 'worn-sword' }, items: { 'basic-salve': 3 }, skills: Object.fromEntries(['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up'].map((id) => [id, { stage: 0, level: 1, proficiency: 0 }])), pins: ['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up', null, null] };
+
 const floor: Floor = {
   id: 1,
   name: 'Test',
@@ -26,12 +29,12 @@ describe('save', () => {
 
   it('round-trips the run', () => {
     const storage = fakeStorage();
-    const run = { ...newRun(floor), hp: 40, coins: 7, cleared: ['a'], memoriesLost: 2, bonds: { keeper: 30 }, lastBond: 'keeper' };
+    const run = { ...newRun(floor, START), hp: 40, coins: 7, cleared: ['a'], memoriesLost: 2, bonds: { keeper: 30 }, lastBond: 'keeper' };
     writeSave(storage, run);
     expect(readSave(storage, floor)).toEqual(run);
   });
 
-  const saved = (over: object) => JSON.stringify({ version: 8, run: { ...newRun(floor), ...over } });
+  const saved = (over: object) => JSON.stringify({ version: 8, run: { ...newRun(floor, START), ...VANGUARD, ...over } });
 
   it.each([
     ['corrupt JSON', '{oops'],
@@ -51,6 +54,10 @@ describe('save', () => {
     ['a pin of an unowned skill', saved({ pins: ['ghost', null, null, null, null, null] })],
     ['a Stance that is not one', saved({ stance: 'whistle' })],
     ['flags that are not a list', saved({ flags: 'met' })],
+    ['an empty name', saved({ name: ' ' })],
+    ['a portrait out of range', saved({ portrait: 5 })],
+    ['an unknown class', saved({ classId: 'wizard' })],
+    ['a hidden class as the gift', saved({ giftClass: 'none' })],
     ['a level below 1', saved({ level: 0 })],
     ['a negative counter', saved({ memoriesLost: -1 })],
     ['bonds that are a list', saved({ bonds: [] })],

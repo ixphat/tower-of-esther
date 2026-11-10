@@ -52,7 +52,7 @@
         {item.name} ×{count} · heals {item.heal! * 100}% of max HP
         <button
           aria-label="Use {item.name}"
-          disabled={run.hp >= maxHp(run.level)}
+          disabled={run.hp >= maxHp(run.level, run.classId)}
           onclick={() => onAction({ type: 'useItem', item: item.id })}>Use</button
         >
       </li>

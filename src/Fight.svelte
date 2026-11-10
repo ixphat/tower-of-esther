@@ -12,6 +12,8 @@
     foes: Enemy[];
     hp: number;
     level: number;
+    classId: string;
+    name: string;
     worn: Worn;
     items: Record<string, number>;
     skills: OwnedSkills;
@@ -22,7 +24,7 @@
     onReturn: () => void;
   }
 
-  const { floor, foes, hp, level, worn, items, skills, pins, stance, onSpendItem, onFinish, onReturn }: Props = $props();
+  const { floor, foes, hp, level, classId, name, worn, items, skills, pins, stance, onSpendItem, onFinish, onReturn }: Props = $props();
 
   const LOG_LINES = 5;
   const TAGS = ['Stance', 'Charge', 'Form', 'Aura'];
@@ -54,7 +56,7 @@
 
   const rng = createRng(crypto.getRandomValues(new Uint32Array(1))[0]);
   // svelte-ignore state_referenced_locally -- foes are fixed for the life of this fight
-  const start = startFight({ ...climberCombatant(statsAt(level, worn)), hp }, enemyGroup(foes.map(enemyCombatant)), rng, fightLoadout(skills, stance));
+  const start = startFight({ ...climberCombatant(statsAt(level, worn, classId)), name, hp }, enemyGroup(foes.map(enemyCombatant)), rng, fightLoadout(skills, stance));
 
   let fight = $state(start.state);
   let log = $state(start.events.map(describe));

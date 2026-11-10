@@ -1,7 +1,6 @@
 import balance from '../../data/balance.json';
-import climberData from '../../data/climber.json';
 import { climberCombatant, skillScale, type ClimberStats, type Loadout } from './combat';
-import { itemById, skillById, type Slot } from './data';
+import { classById, itemById, skillById, type Slot } from './data';
 
 export interface OwnedSkill {
   stage: number;
@@ -20,10 +19,11 @@ const CORE = ['vitality', 'power', 'agility', 'mind'] as const;
 
 export const expToNext = (level: number): number => balance.expPerLevel * level;
 
-export function statsAt(level: number, worn: Worn): ClimberStats {
-  const total = CORE.reduce((sum, stat) => sum + climberData[stat], 0);
+export function statsAt(level: number, worn: Worn, classId: string): ClimberStats {
+  const base = classById(classId)!; // save and data checks guarantee it exists
+  const total = CORE.reduce((sum, stat) => sum + base[stat], 0);
   const statPoints = (level - 1) * balance.statPointsPerLevel;
-  const shares = CORE.map((stat) => (statPoints * climberData[stat]) / total);
+  const shares = CORE.map((stat) => (statPoints * base[stat]) / total);
   const gains = shares.map(Math.floor);
 
   // Whole points only: leftovers go to the largest remainders, earlier stats first on ties.
@@ -34,7 +34,7 @@ export function statsAt(level: number, worn: Worn): ClimberStats {
     .slice(0, leftover)
     .forEach(({ index }) => (gains[index] += 1));
 
-  const [vitality, power, agility, mind] = CORE.map((stat, index) => climberData[stat] + gains[index]);
+  const [vitality, power, agility, mind] = CORE.map((stat, index) => base[stat] + gains[index]);
   return {
     level,
     vitality,
@@ -47,7 +47,7 @@ export function statsAt(level: number, worn: Worn): ClimberStats {
   };
 }
 
-export const maxHp = (level: number): number => climberCombatant(statsAt(level, {})).maxHp;
+export const maxHp = (level: number, classId: string): number => climberCombatant(statsAt(level, {}, classId)).maxHp;
 
 export interface HeroParts {
   stats: number;
@@ -68,8 +68,8 @@ export function fightLoadout(owned: OwnedSkills, stance: string | null): Loadout
   return { skills, stance };
 }
 
-export function heroParts(level: number, worn: Worn, owned: OwnedSkills): HeroParts {
-  const { vitality, power, agility, mind } = statsAt(level, worn);
+export function heroParts(level: number, worn: Worn, owned: OwnedSkills, classId: string): HeroParts {
+  const { vitality, power, agility, mind } = statsAt(level, worn, classId);
   const gear = wornItems(worn).reduce(
     (sum, item) => sum + balance.gearGradePoints[item.grade as keyof typeof balance.gearGradePoints],
     0,

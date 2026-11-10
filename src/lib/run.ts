@@ -1,7 +1,7 @@
 import balance from '../../data/balance.json';
 import climberData from '../../data/climber.json';
 import { expToNext, maxHp, type OwnedSkills, type Worn } from './climber';
-import { itemById, npcById, sceneById, skillById, type Enemy, type Floor } from './data';
+import { classById, itemById, npcById, sceneById, skillById, type Enemy, type Floor } from './data';
 import { lineId } from './dialogue';
 import { questBoard } from './quests';
 
@@ -12,6 +12,10 @@ export interface Rewards {
 }
 
 export interface RunState {
+  name: string;
+  portrait: number;
+  classId: string; // 'none' until the gift is accepted
+  giftClass: string; // the class the Tower offers
   locationId: string;
   safePoint: string;
   hp: number;
@@ -53,11 +57,19 @@ export type RunAction =
   | { type: 'fightEnd'; outcome: 'lost' }
   | { type: 'fightEnd'; outcome: 'fled'; hp: number };
 
-export function newRun(floor: Floor): RunState {
+export interface Start {
+  name: string;
+  portrait: number;
+  giftClass: string;
+}
+
+export function newRun(floor: Floor, start: Start): RunState {
   return {
+    ...start,
+    classId: 'none',
     locationId: floor.start,
     safePoint: floor.start,
-    hp: maxHp(1),
+    hp: maxHp(1, 'none'),
     level: 1,
     exp: 0,
     bonds: {},
@@ -65,11 +77,11 @@ export function newRun(floor: Floor): RunState {
     memoriesLost: 0,
     inFight: false,
     coins: climberData.startingCoins,
-    items: { ...climberData.startingItems },
-    worn: { weapon: climberData.startingWeapon },
+    items: {},
+    worn: {},
     cleared: [],
-    skills: Object.fromEntries(climberData.startingSkills.map((id) => [id, { stage: 0, level: 1, proficiency: 0 }])),
-    pins: Array.from({ length: balance.pinnedSlots }, (_, slot) => climberData.startingSkills[slot] ?? null),
+    skills: {},
+    pins: Array.from({ length: balance.pinnedSlots }, () => null),
     stance: null,
     flags: [],
     seen: [],
@@ -81,6 +93,32 @@ export function newRun(floor: Floor): RunState {
 
 export const bondLevel = (points = 0): number =>
   balance.bondThresholds.filter((threshold) => threshold <= points).length - 1;
+
+// New skills fill the first free pin.
+function learnSkill(state: RunState, id: string): RunState {
+  if (state.skills[id]) return state;
+  const slot = state.pins.indexOf(null);
+  return {
+    ...state,
+    skills: { ...state.skills, [id]: { stage: 0, level: 1, proficiency: 0 } },
+    pins: slot === -1 ? state.pins : state.pins.map((pin, index) => (index === slot ? id : pin)),
+  };
+}
+
+// Accepting sets the class; refusing keeps the climber classless. Both get the starting kit.
+function takeGift(state: RunState, classId: string): RunState {
+  if (state.flags.includes('gift-accepted') || state.flags.includes('gift-refused')) return state; // offered once
+  let items = state.items;
+  for (const [id, count] of Object.entries(climberData.startingItems)) items = withItem(items, id, count);
+  return {
+    ...state,
+    classId,
+    items,
+    worn: { weapon: classById(classId)!.weapon },
+    hp: maxHp(state.level, classId),
+    flags: [...state.flags, classId === 'none' ? 'gift-refused' : 'gift-accepted'],
+  };
+}
 
 function raiseBond(state: RunState, npc: string, points: number): RunState {
   const max = balance.bondThresholds[balance.bondThresholds.length - 1];
@@ -142,7 +180,7 @@ function gainExp(state: RunState, gained: number): RunState {
     exp -= expToNext(level);
     level += 1;
   }
-  return { ...state, level, exp, hp: level > state.level ? maxHp(level) : state.hp };
+  return { ...state, level, exp, hp: level > state.level ? maxHp(level, state.classId) : state.hp };
 }
 
 function winFight(state: RunState, hp: number, rewards: Rewards, used: string[]): RunState {
@@ -162,7 +200,7 @@ function defeat(state: RunState): RunState {
   return {
     ...state,
     locationId: state.safePoint,
-    hp: maxHp(state.level),
+    hp: maxHp(state.level, state.classId),
     exp: state.exp - Math.ceil((state.exp * balance.defeatExpLossPercent) / 100),
     bonds: lowerLastBond(state),
     memoriesLost: state.memoriesLost + 1,
@@ -188,13 +226,13 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
     }
     case 'rest':
       if (!find(floor, state.locationId).rest) throw new Error('No resting place here');
-      return { ...state, hp: maxHp(state.level) };
+      return { ...state, hp: maxHp(state.level, state.classId) };
     case 'spendItem':
       return { ...state, items: withItem(state.items, action.item, -1) };
     case 'useItem': {
       const heal = itemById(action.item)?.heal;
       if (!heal) throw new Error(`${action.item} does not heal`);
-      const hp = Math.min(maxHp(state.level), state.hp + Math.round(maxHp(state.level) * heal));
+      const hp = Math.min(maxHp(state.level, state.classId), state.hp + Math.round(maxHp(state.level, state.classId) * heal));
       return { ...state, hp, items: withItem(state.items, action.item, -1) };
     }
     case 'buy': {
@@ -223,16 +261,15 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
       const id = lineId(action.scene, action.node);
       if (state.seen.includes(id)) return state; // effects happen once
       let next: RunState = { ...state, seen: [...state.seen, id] };
-      const { setFlag, firstTalk, bond, exp, coins, take, give, learnSkill } = node.effects ?? {};
+      const { setFlag, firstTalk, bond, exp, coins, take, give, learn, acceptGift, refuseGift } = node.effects ?? {};
       if (setFlag && !next.flags.includes(setFlag)) next = { ...next, flags: [...next.flags, setFlag] };
       if (firstTalk && scene.npc) next = raiseBond(next, scene.npc, balance.bondFirstTalk);
       if (bond && scene.npc) next = raiseBond(next, scene.npc, bond);
       if (coins) next = { ...next, coins: next.coins + coins };
       for (const { id: item, count } of take ?? []) next = { ...next, items: withItem(next.items, item, -count) };
       for (const { id: item, count } of give ?? []) next = { ...next, items: withItem(next.items, item, count) };
-      if (learnSkill && !next.skills[learnSkill]) {
-        next = { ...next, skills: { ...next.skills, [learnSkill]: { stage: 0, level: 1, proficiency: 0 } } };
-      }
+      for (const id of learn ?? []) next = learnSkill(next, id);
+      if (acceptGift || refuseGift) next = takeGift(next, acceptGift ? next.giftClass : 'none');
       if (exp) next = gainExp(next, exp);
       return next;
     }

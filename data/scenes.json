@@ -20,7 +20,7 @@
       },
       "d": {
         "speaker": "The Tower",
-        "text": "The Tower offers a gift.",
+        "text": "The Tower offers a gift: the {gift} class.",
         "choices": [
           {
             "text": "Accept the gift.",
@@ -36,7 +36,7 @@
         "speaker": "The Tower",
         "text": "Gift accepted.",
         "effects": {
-          "setFlag": "gift-accepted",
+          "acceptGift": true,
           "exp": 27
         }
       },
@@ -44,11 +44,12 @@
         "speaker": "The Tower",
         "text": "Gift refused. The Tower does not ask twice.",
         "effects": {
-          "setFlag": "gift-refused",
+          "refuseGift": true,
           "exp": 27
         }
       }
-    }
+    },
+    "followedBy": "tower-basics"
   },
   {
     "id": "tower-basics",
@@ -66,8 +67,16 @@
       },
       "c": {
         "speaker": "The Tower",
-        "text": "Skills grow with use. Pin the ones you use most.",
-        "next": "d"
+        "text": "Skills grow with use. Here are four to start. Pin the ones you use most.",
+        "next": "d",
+        "effects": {
+          "learn": [
+            "whistle",
+            "stubborn-lean",
+            "straw-toss",
+            "sweep-up"
+          ]
+        }
       },
       "d": {
         "speaker": "The Tower",
@@ -557,7 +566,9 @@
         "text": "Like this. One thing at a time, and never in a hurry.",
         "effects": {
           "setFlag": "keeper-close-done",
-          "learnSkill": "tidy-up"
+          "learn": [
+            "tidy-up"
+          ]
         }
       },
       "key": {

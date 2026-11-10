@@ -1,4 +1,5 @@
 import balance from '../../data/balance.json';
+import classData from '../../data/classes.json';
 import climberData from '../../data/climber.json';
 import enemyData from '../../data/enemies.json';
 import itemData from '../../data/items.json';
@@ -8,6 +9,20 @@ import questData from '../../data/quests.json';
 import sceneData from '../../data/scenes.json';
 import skillData from '../../data/skills.json';
 import type { EnemyMove, FightSkill, ScriptedMove, Tier } from './combat';
+
+export interface ClassData {
+  id: string;
+  name: string;
+  hidden?: boolean; // not offered as the gift
+  vitality: number;
+  power: number;
+  agility: number;
+  mind: number;
+  weapon: string; // class-style F weapon given with the class
+}
+
+export const classes = classData as ClassData[];
+export const classById = (id: string): ClassData | undefined => classes.find((c) => c.id === id);
 
 export const SLOTS = ['weapon', 'head', 'body', 'gloves', 'boots', 'accessory'] as const;
 export type Slot = (typeof SLOTS)[number];
@@ -105,7 +120,9 @@ export interface SceneNode {
     coins?: number;
     take?: ItemCount[];
     give?: ItemCount[];
-    learnSkill?: string;
+    learn?: string[];
+    acceptGift?: boolean;
+    refuseGift?: boolean;
   };
 }
 
@@ -113,6 +130,7 @@ export interface Scene {
   id: string;
   npc?: string; // none for the Tower's voice and found writing
   location?: string; // offered by Look around there
+  followedBy?: string; // scene that opens when this one is left
   condition?: Condition;
   start: string;
   nodes: Record<string, SceneNode>;
@@ -177,11 +195,12 @@ export function validateGameData(): string[] {
   const refs = [
     ...enemies.flatMap((enemy) => Object.keys(enemy.drops).map((id) => [`${enemy.id} drop`, id])),
     ...Object.keys(climberData.startingItems).map((id) => ['starting item', id]),
-    ['starting weapon', climberData.startingWeapon],
+    ...classes.map((c) => [`${c.id} weapon`, c.weapon]),
   ];
-  const missingSkills = climberData.startingSkills
+  const missingSkills = scenes
+    .flatMap((scene) => Object.values(scene.nodes).flatMap((node) => node.effects?.learn ?? []))
     .filter((id) => !skillById(id))
-    .map((id) => `starting skill: "${id}" does not exist`);
+    .map((id) => `learned skill: "${id}" does not exist`);
   const npcLikes = npcs.flatMap((npc) => npc.likes.map((id) => [`${npc.id} likes`, id]));
   const sceneErrors = scenes.flatMap((scene) => {
     const nodes = Object.entries(scene.nodes);

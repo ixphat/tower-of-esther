@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { compareGear, expToNext, fightLoadout, heroParts, heroPower, maxHp, skillScore, statsAt } from './climber';
 
 const core = (level: number) => {
-  const { vitality, power, agility, mind } = statsAt(level, {});
+  const { vitality, power, agility, mind } = statsAt(level, {}, 'vanguard');
   return [vitality, power, agility, mind];
 };
 
@@ -30,8 +30,8 @@ describe('growth (04 Systems, placeholder Vanguard start 8/5/3/4)', () => {
   });
 
   it('raises max HP with level', () => {
-    expect(maxHp(1)).toBe(151); // 50 + 96 + 5
-    expect(maxHp(2)).toBe(168); // 50 + 108 + 10
+    expect(maxHp(1, 'vanguard')).toBe(151); // 50 + 96 + 5
+    expect(maxHp(2, 'vanguard')).toBe(168); // 50 + 108 + 10
   });
 });
 
@@ -57,8 +57,8 @@ describe('Hero power cap rule', () => {
 describe('worn gear', () => {
   it('feeds weapon attack, armor and gear points', () => {
     const worn = { weapon: 'worn-sword', body: 'plain-coat', head: 'plain-cap' };
-    expect(statsAt(1, worn)).toMatchObject({ weaponAttack: 8, armorGuard: 4, armorWard: 4 });
-    expect(heroParts(1, worn, {}).gear).toBe(3);
+    expect(statsAt(1, worn, 'vanguard')).toMatchObject({ weaponAttack: 8, armorGuard: 4, armorWard: 4 });
+    expect(heroParts(1, worn, {}, 'vanguard').gear).toBe(3);
   });
 
   it('compares a piece with what is worn in that slot', () => {

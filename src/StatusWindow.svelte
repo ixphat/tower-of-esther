@@ -2,7 +2,8 @@
   import { expToNext, heroParts, heroPower, statsAt } from './lib/climber';
   import { climberCombatant, evasionChance } from './lib/combat';
   import BondPips from './BondPips.svelte';
-  import { npcById, type Floor } from './lib/data';
+  import Portrait from './Portrait.svelte';
+  import { classById, npcById, type Floor } from './lib/data';
   import type { RunState } from './lib/run';
 
   const { run, floor }: { run: RunState; floor: Floor } = $props();
@@ -10,8 +11,8 @@
   const tabs = ['Overview', 'Titles', 'Bonds', 'Floor clears'];
   let tab = $state('Overview');
 
-  const stats = $derived(statsAt(run.level, run.worn));
-  const parts = $derived(heroParts(run.level, run.worn, run.skills));
+  const stats = $derived(statsAt(run.level, run.worn, run.classId));
+  const parts = $derived(heroParts(run.level, run.worn, run.skills, run.classId));
   const hero = $derived(heroPower(parts));
   const bars = $derived([
     ['Stats', parts.stats],
@@ -27,6 +28,7 @@
 </div>
 
 {#if tab === 'Overview'}
+  <p><Portrait index={run.portrait} /> {run.name} · {classById(run.classId)!.name}</p>
   <p>Lv {run.level} · EXP {run.exp} / {expToNext(run.level)}</p>
   <progress max={expToNext(run.level)} value={run.exp} aria-hidden="true"></progress>
   <ul>

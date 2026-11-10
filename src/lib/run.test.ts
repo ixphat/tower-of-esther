@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import type { Floor } from './data';
+import { maxHp } from './climber';
 import { applyAction, fightRewards, newRun, resumeRun, type RunState } from './run';
+
+const START = { name: 'Ash', portrait: 1, giftClass: 'vanguard' };
+const VANGUARD = { classId: 'vanguard', hp: 151, worn: { weapon: 'worn-sword' }, items: { 'basic-salve': 3 }, skills: Object.fromEntries(['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up'].map((id) => [id, { stage: 0, level: 1, proficiency: 0 }])), pins: ['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up', null, null] };
 
 const floor: Floor = {
   id: 1,
@@ -14,15 +18,15 @@ const floor: Floor = {
   ],
 };
 
-const full = newRun(floor).hp;
-const run = (over: Partial<RunState> = {}): RunState => ({ ...newRun(floor), ...over });
+const full = 151; // Lv 1 Vanguard
+const run = (over: Partial<RunState> = {}): RunState => ({ ...newRun(floor, START), ...VANGUARD, ...over });
 const lose = { type: 'fightEnd', outcome: 'lost' } as const;
 const rewards = (exp = 0, drops = {}) => ({ exp, monsterPoints: 0, drops });
 const win = (exp: number, hp = 40) => ({ type: 'fightEnd', outcome: 'won', hp, rewards: rewards(exp), used: [] as string[] }) as const;
 
 describe('HP between fights', () => {
   it('starts full at the floor start, with the start as safe point', () => {
-    expect(newRun(floor)).toMatchObject({ locationId: 'gate', safePoint: 'gate', memoriesLost: 0 });
+    expect(newRun(floor, START)).toMatchObject({ locationId: 'gate', safePoint: 'gate', memoriesLost: 0 });
   });
 
   it('keeps the HP a won fight ended on, through moves', () => {
@@ -103,10 +107,6 @@ describe('rewards and respawn', () => {
 describe('items', () => {
   const inn = { locationId: 'inn' };
 
-  it('starts with 100 coins, 3 Basic Salves and the starting weapon worn', () => {
-    expect(newRun(floor)).toMatchObject({ coins: 100, items: { 'basic-salve': 3 }, worn: { weapon: 'worn-sword' } });
-  });
-
   it('spends one item in a fight without healing here', () => {
     const state = applyAction(run({ hp: 10 }), floor, { type: 'spendItem', item: 'basic-salve' });
     expect(state).toMatchObject({ hp: 10, items: { 'basic-salve': 2 } });
@@ -144,12 +144,6 @@ describe('items', () => {
 describe('skills', () => {
   const after = (points: number, used: string[]) => ({ type: 'fightEnd', outcome: 'won', hp: 40, rewards: { exp: 0, monsterPoints: points, drops: {} }, used }) as const;
   const skill = (stage: number, level: number, skillPoints: number) => ({ whistle: { stage, level, proficiency: skillPoints } });
-
-  it('starts with the four scrap skills at Novice Lv 1, pinned', () => {
-    const start = newRun(floor);
-    expect(start.skills.whistle).toEqual({ stage: 0, level: 1, proficiency: 0 });
-    expect(start.pins).toEqual(['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up', null, null]);
-  });
 
   it('gains the fight total once per used skill, not per use', () => {
     const state = applyAction(run(), floor, after(3, ['whistle']));
@@ -240,5 +234,45 @@ describe('defeat (04 Systems)', () => {
   it('counts a memory lost and changes nothing else', () => {
     const before = run({ exp: 0, memoriesLost: 2, bonds: { keeper: 0 }, lastBond: 'keeper' });
     expect(applyAction(before, floor, lose)).toEqual({ ...before, memoriesLost: 3 });
+  });
+});
+
+describe('opening and the gift', () => {
+  const fresh = (giftClass: string) => newRun(floor, { name: 'Ash', portrait: 2, giftClass });
+  const accept = { type: 'seeLine', scene: 'tower-wake', node: 'accept' } as const;
+  const refuse = { type: 'seeLine', scene: 'tower-wake', node: 'refuse' } as const;
+
+  it('starts classless with a name, a portrait, 100 coins and nothing else', () => {
+    expect(fresh('ranger')).toMatchObject({ name: 'Ash', portrait: 2, classId: 'none', coins: 100, items: {}, worn: {}, skills: {} });
+  });
+
+  it.each([
+    ['vanguard', 'worn-sword-and-shield', 151],
+    ['duelist', 'worn-sword', 103],
+    ['arcanist', 'worn-staff', 91],
+    ['ranger', 'worn-bow', 103],
+    ['mender', 'worn-mace', 127],
+    ['trickster', 'worn-cards', 103],
+  ])('accepting gives %s its weapon, 3 Basic Salves and full HP', (giftClass, weapon, hp) => {
+    const state = applyAction(fresh(giftClass), floor, accept);
+    expect(state).toMatchObject({ classId: giftClass, worn: { weapon }, items: { 'basic-salve': 3 }, hp });
+    expect(state.flags).toContain('gift-accepted');
+  });
+
+  it('refusing keeps the climber classless with a plain sword and the Salves', () => {
+    const state = applyAction(fresh('duelist'), floor, refuse);
+    expect(state).toMatchObject({ classId: 'none', worn: { weapon: 'worn-sword' }, items: { 'basic-salve': 3 }, hp: 103 });
+    expect(state.flags).toContain('gift-refused');
+  });
+
+  it('gives the kit only once', () => {
+    const once = applyAction(fresh('vanguard'), floor, accept);
+    expect(applyAction(once, floor, refuse)).toMatchObject({ classId: 'vanguard', items: { 'basic-salve': 3 } });
+  });
+
+  it('the Tower teaches the four Floor 1 scrap skills and pins them', () => {
+    const state = applyAction(fresh('vanguard'), floor, { type: 'seeLine', scene: 'tower-basics', node: 'c' });
+    expect(state.skills.whistle).toEqual({ stage: 0, level: 1, proficiency: 0 });
+    expect(state.pins).toEqual(['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up', null, null]);
   });
 });
