@@ -860,7 +860,7 @@ In floors 1 to 9 the weak-early classes trail by no more than 3 points, which ke
 
 ## Combat formulas (draft)
 
-Checked with a throwaway simulator that assumes skills average 130% of attack and leaves out healing, statuses, cooldowns and floor rules. Real play must confirm them. The build's simulator (`npm run sim -- [seed] [runs] [level] [class]`) runs the real engine and data;
+Checked with a throwaway simulator that assumes skills average 130% of attack and leaves out healing, statuses, cooldowns and floor rules. Real play must confirm them. The build's simulator (`npm run sim -- [seed] [runs] [level] [class]`) runs the real engine and data. First play test (Phat, Nov 10, 2026): rounds feel very short and the Floor 1 balance feels fair, so the numbers stay as they are, although the simulator puts every Floor 1 fight above its turn target (for example the Straw Remnant at 3.8–5.6 turns against 3, the Gate Scarecrow at 16–25 against 14). Real seconds per round were not timed; the 20 s target for a normal fight stays a draft.
 
 | Part | Formula |
 | --- | --- |
