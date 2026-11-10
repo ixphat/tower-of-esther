@@ -127,7 +127,8 @@
       "enemies": [
         "gate-scarecrow"
       ],
-      "enterFlag": "seen-gate-mark"
+      "enterFlag": "seen-gate-mark",
+      "winFlag": "gate-scarecrow-beaten"
     }
   ],
   "secrets": [
@@ -135,5 +136,60 @@
       "flag": "found-school-clue",
       "points": 25
     }
-  ]
+  ],
+  "clear": {
+    "path": [
+      {
+        "when": {
+          "allFlags": [
+            "gift-refused",
+            "read-seeker-letter"
+          ]
+        },
+        "points": 30
+      },
+      {
+        "when": {
+          "flag": "gift-refused"
+        },
+        "points": 15
+      },
+      {
+        "when": {
+          "flag": "gift-accepted"
+        },
+        "points": 15
+      }
+    ],
+    "content": {
+      "quests": {
+        "tidy-village": 5,
+        "belongings": 5
+      },
+      "bond": {
+        "npc": "keeper",
+        "points": 15
+      }
+    },
+    "style": {
+      "points": 20,
+      "full": 8,
+      "half": 12
+    },
+    "sss": {
+      "allFlags": [
+        "gift-refused",
+        "read-seeker-letter",
+        "found-school-clue",
+        "trial-unhit"
+      ],
+      "bondAtLeast": 4,
+      "npc": "keeper"
+    },
+    "exp": 30,
+    "requires": "trial-passed",
+    "coinsPerFloor": 100,
+    "endText": "This is the end of the Floor 1 slice. Thank you for climbing."
+  },
+  "exit": "gate"
 }

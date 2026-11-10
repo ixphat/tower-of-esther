@@ -207,5 +207,47 @@
       }
     ],
     "description": "It stands where the road leaves the village, and does not let anyone pass."
+  },
+  {
+    "id": "keeper",
+    "name": "The Keeper",
+    "tier": "floorMaster",
+    "description": "The last one left in the village. He keeps the house, and tests you because the Tower asks.",
+    "hp": 280,
+    "attack": 4.8,
+    "def": 3,
+    "agility": 3,
+    "mind": 2,
+    "exp": 0,
+    "monsterPoints": 40,
+    "drops": {},
+    "yieldBelow": 0.2,
+    "spare": true,
+    "moves": [
+      {
+        "name": "Broom Sweep",
+        "type": "attack",
+        "weight": 3,
+        "cooldown": 0,
+        "power": 1
+      },
+      {
+        "name": "Tidy Stance",
+        "type": "guard",
+        "weight": 1,
+        "cooldown": 3,
+        "value": 0.5
+      }
+    ],
+    "scripted": [
+      {
+        "belowHp": 0.5,
+        "name": "Steady Breath",
+        "type": "charge",
+        "weight": 0,
+        "cooldown": 0,
+        "power": 1.5
+      }
+    ]
   }
 ]

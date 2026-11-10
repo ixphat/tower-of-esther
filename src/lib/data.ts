@@ -48,6 +48,8 @@ export interface Enemy {
   tier: Tier;
   moves: EnemyMove[];
   scripted?: ScriptedMove[];
+  yieldBelow?: number;
+  spare?: boolean;
   hp: number;
   attack: number;
   def: number;
@@ -69,6 +71,7 @@ export interface Location {
   enemies?: string[];
   rest?: boolean;
   enterFlag?: string; // noticed on arrival
+  winFlag?: string; // set when this place's fight is won
   condition?: Condition; // hidden until it holds, like a secret path
   shop?: string[];
   npcs?: string[];
@@ -79,6 +82,8 @@ export interface Floor {
   name: string;
   recommendedGrade: string;
   secrets?: { flag: string; points: number }[]; // Secrets factor of the clear grade
+  exit?: string; // where the climber leaves the floor
+  clear?: ClearRules;
   start: string;
   locations: Location[];
 }
@@ -93,6 +98,17 @@ export interface Npc {
   id: string;
   name: string;
   likes: string[]; // item ids worth a liked gift
+}
+
+export interface ClearRules {
+  requires: string; // flag needed to leave, such as passing the floor master
+  path: { when: Condition; points: number }[]; // first match wins, best path first
+  content: { quests: Record<string, number>; bond: { npc: string; points: number } };
+  style: { points: number; full: number; half: number }; // floor master fight turns
+  sss: Condition & { npc: string };
+  exp: number; // floor clear EXP at grade F
+  coinsPerFloor: number; // floor clear coins at grade F = this x floor number
+  endText: string;
 }
 
 export interface ItemCount {
@@ -134,6 +150,9 @@ export interface Scene {
   npc?: string; // none for the Tower's voice and found writing
   location?: string; // offered by Look around there
   followedBy?: string; // scene that opens when this one is left
+  prompt?: string; // button text for a place scene, instead of Look around
+  auto?: boolean; // a place scene that plays on arrival
+  fight?: { enemies: string[]; winFlag: string; trial: boolean; after: string }; // starts when the scene is left
   condition?: Condition;
   start: string;
   nodes: Record<string, SceneNode>;

@@ -19,6 +19,9 @@ export interface Combatant {
   readyOn?: Record<string, number>;
   planned?: EnemyMove; // committed early by Scan, shown to the climber
   scanned?: boolean;
+  yieldBelow?: number; // gives up the fight at this share of max HP
+  yielded?: boolean;
+  spare?: boolean; // never takes the climber below 1 HP
 }
 
 export const TIERS = ['normal', 'tough', 'elite', 'miniBoss', 'floorMaster'] as const;
@@ -91,6 +94,7 @@ export interface FightState {
   climberTurn: number;
   stance: string | null;
   used: string[]; // skills that earn proficiency from this fight
+  hitsTaken: number; // hits that landed on the climber
 }
 
 export type Action =
@@ -111,6 +115,7 @@ export type FightEvent =
   | { type: 'fail'; actor: string }
   | { type: 'charge'; actor: string }
   | { type: 'fleeFailed'; actor: string }
+  | { type: 'yield'; actor: string }
   | { type: 'end'; outcome: 'won' | 'lost' | 'fled' };
 
 export type Rng = () => number;
@@ -148,8 +153,8 @@ export function climberCombatant(stats: ClimberStats): Combatant {
 }
 
 export function enemyCombatant(enemy: Enemy, index: number): Combatant {
-  const { id, name, hp, attack, def, agility, mind, tier, moves, scripted } = enemy;
-  return { id: `${id}-${index}`, name, hp, maxHp: hp, attack, guard: def, agility, mind, statuses: [], tier, moves, scripted };
+  const { id, name, hp, attack, def, agility, mind, tier, moves, scripted, yieldBelow, spare } = enemy;
+  return { id: `${id}-${index}`, name, hp, maxHp: hp, attack, guard: def, agility, mind, statuses: [], tier, moves, scripted, yieldBelow, spare };
 }
 
 // Each enemy hits softer in a pair or a three.
@@ -218,8 +223,12 @@ function strike(state: FightState, attacker: Combatant, target: Combatant, rng: 
     (crit ? balance.critMultiplier : 1) *
     dealt *
     roll;
-  const damage = Math.max(balance.minDamage, Math.round(raw));
+  const rolled = Math.max(balance.minDamage, Math.round(raw));
+  // a sparing attacker never kills the climber, and a yielding enemy gives up before it falls
+  const holdsOn = (attacker.spare && target === state.climber) || target.yieldBelow !== undefined;
+  const damage = holdsOn ? Math.min(rolled, Math.max(0, target.hp - 1)) : rolled;
   target.hp = Math.max(0, target.hp - damage);
+  if (target === state.climber) state.hitsTaken += 1;
   return { type: 'hit', ...names, damage, crit };
 }
 
@@ -263,8 +272,14 @@ function checkEnd(state: FightState, events: FightEvent[]): void {
     events.push({ type: 'end', outcome: 'fled' });
     return;
   }
+  for (const e of state.enemies) {
+    if (e.yieldBelow && !e.yielded && e.hp > 0 && e.hp / e.maxHp <= e.yieldBelow) {
+      e.yielded = true;
+      events.push({ type: 'yield', actor: e.name });
+    }
+  }
   if (state.climber.hp === 0) state.outcome = 'lost';
-  else if (state.enemies.every((e) => e.hp === 0)) state.outcome = 'won';
+  else if (state.enemies.every((e) => e.hp === 0 || e.yielded)) state.outcome = 'won';
   if (state.outcome !== 'ongoing') events.push({ type: 'end', outcome: state.outcome });
 }
 
@@ -363,6 +378,7 @@ export function startFight(
     climberTurn: 0,
     stance: loadout.stance,
     used: loadout.stance ? [loadout.stance] : [],
+    hitsTaken: 0,
   };
   state.turnOrder = roundOrder(state);
   const events: FightEvent[] = [];

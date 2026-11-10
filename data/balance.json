@@ -1,4 +1,15 @@
 {
+  "clearGrades": [
+    { "grade": "F", "min": 0, "multiplier": 1 },
+    { "grade": "E", "min": 20, "multiplier": 1.25 },
+    { "grade": "D", "min": 35, "multiplier": 1.5 },
+    { "grade": "C", "min": 50, "multiplier": 1.75 },
+    { "grade": "B", "min": 65, "multiplier": 2 },
+    { "grade": "A", "min": 75, "multiplier": 2.25 },
+    { "grade": "S", "min": 85, "multiplier": 2.5 },
+    { "grade": "SS", "min": 95, "multiplier": 2.75 },
+    { "grade": "SSS", "min": 95, "multiplier": 3 }
+  ],
   "targetTurns": { "normal": 3, "tough": 5, "elite": 10, "miniBoss": 14, "floorMaster": { "1": 12 } },
   "expPerLevel": 100,
   "statPointsPerLevel": 3,

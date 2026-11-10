@@ -20,7 +20,7 @@
     pins: (string | null)[];
     stance: string | null;
     onSpendItem: (item: string) => void; // saved at once, a used item stays used
-    onFinish: (outcome: 'won' | 'lost' | 'fled', hp: number, rewards: Rewards, used: string[]) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
+    onFinish: (outcome: 'won' | 'lost' | 'fled', hp: number, rewards: Rewards, used: string[], trial: { turns: number; hitsTaken: number }) => void; // the moment the fight ends, so a reload on the result screen cannot undo it
     onReturn: () => void;
   }
 
@@ -48,6 +48,7 @@
     if (event.type === 'tick') return `${event.target} takes ${event.damage} from ${STATUS_NAMES[event.status]}.`;
     if (event.type === 'stunned') return `${event.actor} is stunned.`;
     if (event.type === 'charge') return `${event.actor} winds up.`;
+    if (event.type === 'yield') return `${event.actor} yields.`;
     if (event.type === 'fleeFailed') return `${event.actor} fails to flee.`;
     if (event.type === 'fail') return `${event.actor}'s move fails.`;
     if (event.type === 'heal') return `${event.target} recovers ${event.amount} HP.`;
@@ -73,7 +74,7 @@
       const drops = Object.entries(rewards.drops).map(([id, amount]) => `${itemById(id)!.name} ×${amount}`);
       log = [...log, `Gained ${[`${rewards.exp} EXP`, ...drops].join(', ')}.`];
     }
-    onFinish(state.outcome, state.climber.hp, rewards, state.used);
+    onFinish(state.outcome, state.climber.hp, rewards, state.used, { turns: state.climberTurn, hitsTaken: state.hitsTaken });
   }
 
   onMount(() => reportEnd(start.state)); // a faster enemy can end the fight before the first action

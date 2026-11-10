@@ -431,3 +431,36 @@ describe('Seeker skills', () => {
     expect(skillBlock(startFight(climber(), [enemy()], pass, { skills: [room], stance: null }).state, 'room')).toBe('Not for fights');
   });
 });
+
+describe('the Keeper trial', () => {
+  const pass = () => 0.99;
+  const attack = { type: 'attack', target: 0 } as const;
+
+  it('he yields at low HP, which wins the fight', () => {
+    const keeper = enemy({ hp: 210, maxHp: 1000, yieldBelow: 0.2 });
+    const { state, events } = act(startFight(climber({ attack: 18 }), [keeper], pass).state, attack, script(0.99, 0.99, 0.5));
+    expect(events).toContainEqual({ type: 'yield', actor: 'E' });
+    expect(state.outcome).toBe('won');
+    expect(state.enemies[0].hp).toBeGreaterThan(0);
+  });
+
+  it('a single big hit still ends in a yield, not a kill', () => {
+    const keeper = enemy({ hp: 300, maxHp: 1000, yieldBelow: 0.2 });
+    const { state } = act(startFight(climber({ attack: 9000 }), [keeper], pass).state, attack, script(0.99, 0.99, 0.5));
+    expect(state.enemies[0]).toMatchObject({ hp: 1, yielded: true });
+  });
+
+  it('he never takes the climber below 1 HP', () => {
+    const keeper = enemy({ attack: 5000, spare: true });
+    const { state } = act(startFight(climber({ hp: 10 }), [keeper], pass).state, attack, pass);
+    expect(state.climber.hp).toBe(1);
+    expect(state.outcome).toBe('ongoing');
+  });
+
+  it('counts hits taken by the climber', () => {
+    let { state } = startFight(climber(), [enemy()], pass);
+    state = act(state, attack, pass).state;
+    state = act(state, attack, pass).state;
+    expect(state.hitsTaken).toBe(2);
+  });
+});
