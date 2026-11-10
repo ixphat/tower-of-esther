@@ -67,6 +67,15 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 progress {
   width: 100%;
   accent-color: var(--gold);

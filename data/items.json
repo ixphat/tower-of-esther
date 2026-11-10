@@ -2,6 +2,7 @@
   { "id": "basic-salve", "name": "Basic Salve", "kind": "consumable", "heal": 0.2, "price": 30 },
   { "id": "herb-draught", "name": "Herb Draught", "kind": "consumable", "heal": 0.4, "price": 100 },
   { "id": "ration", "name": "Ration", "kind": "consumable", "heal": 0.3, "price": 20, "outsideFightOnly": true },
+  { "id": "wildflower", "name": "Wildflower", "kind": "gift" },
   { "id": "straw-thread", "name": "Straw Thread", "kind": "material", "floor": 1 },
   { "id": "worn-sword", "name": "Worn Sword", "kind": "equipment", "slot": "weapon", "grade": "F", "attack": 8 },
   { "id": "plain-sword", "name": "Plain Sword", "kind": "equipment", "slot": "weapon", "grade": "F", "attack": 8, "price": 50 },

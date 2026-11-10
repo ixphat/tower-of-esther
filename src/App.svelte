@@ -1,10 +1,14 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import Fight from './Fight.svelte';
-  import { enemies, floors, groupName, type Enemy } from './lib/data';
+  import { enemies, floors, groupName, npcById, type Enemy } from './lib/data';
   import BagWindow from './BagWindow.svelte';
   import StallWindow from './StallWindow.svelte';
+  import BondPips from './BondPips.svelte';
+  import DialogueBox from './DialogueBox.svelte';
   import SkillsWindow from './SkillsWindow.svelte';
+  import { sceneFor } from './lib/dialogue';
+  import { loadSettings, saveSettings, TEXT_SPEEDS, type Settings } from './lib/settings';
   import StatusWindow from './StatusWindow.svelte';
   import { expToNext, maxHp } from './lib/climber';
   import { applyAction, newRun, resumeRun, type Rewards, type RunAction, type RunState } from './lib/run';
@@ -17,6 +21,8 @@
   let run = $state.raw<RunState | null>(null);
   let windowTitle = $state('');
   let foes = $state<Enemy[] | null>(null);
+  let talk = $state<{ npc: string; scene: string } | null>(null);
+  let settings = $state<Settings>(loadSettings(localStorage));
   let heading = $state<HTMLHeadingElement>();
   let dialog = $state<HTMLDialogElement>();
 
@@ -36,9 +42,24 @@
     return focusScene();
   }
 
-  function commit(action: RunAction) {
+  function commit(action: RunAction): RunState {
     run = applyAction(run!, floor, action);
     writeSave(localStorage, run);
+    return run;
+  }
+
+  function startTalk(npc: string) {
+    talk = { npc, scene: sceneFor(npc, run!).id };
+  }
+
+  function endTalk() {
+    talk = null;
+    return focusScene();
+  }
+
+  function setTextSpeed(textSpeed: Settings['textSpeed']) {
+    settings = { textSpeed };
+    saveSettings(localStorage, settings);
   }
 
   function continueRun(titleScreenSave: RunState) {
@@ -83,7 +104,10 @@
   <Fight {floor} {foes} hp={run!.hp} level={run!.level} worn={run!.worn} items={run!.items} skills={run!.skills} pins={run!.pins} stance={run!.stance} onSpendItem={(item) => commit({ type: 'spendItem', item })} onFinish={finishFight} onReturn={endFight} />
 {:else if location && run}
   <div class="screen">
-    <header><h1>Floor {floor.id} · {floor.name}</h1></header>
+    <header class="row top">
+      <h1>Floor {floor.id} · {floor.name}</h1>
+      <button onclick={() => openWindow('Settings')}>Settings</button>
+    </header>
 
     <section class="vitals" role="status" aria-label="Climber">
       <span>Lv {run.level}</span>
@@ -103,6 +127,9 @@
       {/if}
     </main>
 
+    {#if talk}
+      <DialogueBox {run} npc={talk.npc} scene={talk.scene} textSpeed={settings.textSpeed} onAction={commit} onLeave={endTalk} />
+    {:else}
     <nav aria-label="Go to" class="row">
       <span aria-hidden="true">Go to</span>
       {#each location.exits.map(locationById) as exit (exit.id)}
@@ -112,11 +139,22 @@
       {/each}
     </nav>
 
+    {#if location.npcs}
+      <nav aria-label="Talk to" class="row">
+        <span aria-hidden="true">Talk to</span>
+        {#each location.npcs as id (id)}
+          <button onclick={() => startTalk(id)}>{npcById(id)!.name} <BondPips points={run.bonds[id]} /></button>
+        {/each}
+      </nav>
+    {/if}
+
     {#if location.rest || location.shop}
       <div class="row">
         {#if location.rest}<button onclick={() => commit({ type: 'rest' })}>Rest</button>{/if}
         {#if location.shop}<button onclick={() => openWindow('Stall')}>Stall</button>{/if}
       </div>
+    {/if}
+
     {/if}
 
     <nav aria-label="Menu" class="row menu">
@@ -130,6 +168,16 @@
     <h2 id="window-title">{windowTitle}</h2>
     {#if windowTitle === 'Status'}
       <StatusWindow {run} {floor} />
+    {:else if windowTitle === 'Settings'}
+      <fieldset>
+        <legend>Text speed</legend>
+        {#each TEXT_SPEEDS as speed (speed)}
+          <label>
+            <input type="radio" name="text-speed" checked={settings.textSpeed === speed} onchange={() => setTextSpeed(speed)} />
+            {speed}
+          </label>
+        {/each}
+      </fieldset>
     {:else if windowTitle === 'Skills'}
       <SkillsWindow {run} onAction={commit} />
     {:else if windowTitle === 'Bag'}
@@ -152,6 +200,14 @@
 {/if}
 
 <style>
+  .top {
+    justify-content: space-between;
+  }
+
+  fieldset {
+    border: 1px solid var(--gold);
+  }
+
   .vitals {
     display: flex;
     align-items: center;

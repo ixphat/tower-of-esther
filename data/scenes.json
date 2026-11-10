@@ -1,0 +1,46 @@
+[
+  {
+    "id": "keeper-first",
+    "npc": "keeper",
+    "condition": { "notFlag": "met-keeper" },
+    "start": "a",
+    "nodes": {
+      "a": { "speaker": "The Keeper", "text": "Oh. A guest.", "next": "b" },
+      "b": { "speaker": "The Keeper", "text": "Come in. The kettle is still warm. It always is.", "next": "c" },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "I keep the house for the people who live here. They will be back.",
+        "choices": [
+          { "text": "Who lives here?", "next": "d" },
+          { "text": "It's a good house.", "liked": true, "next": "e" },
+          { "text": "There's no one left.", "next": "f" }
+        ]
+      },
+      "d": { "speaker": "The Keeper", "text": "Everyone. Each chair has someone.", "next": "g" },
+      "e": { "speaker": "The Keeper", "text": "It is. I sweep it every morning.", "next": "g" },
+      "f": { "speaker": "The Keeper", "text": "Still. Someone might come.", "next": "g" },
+      "g": {
+        "speaker": "The Keeper",
+        "text": "Rest here when you are tired. The bed is made.",
+        "effects": { "setFlag": "met-keeper", "firstTalk": true }
+      }
+    }
+  },
+  {
+    "id": "keeper-chat",
+    "npc": "keeper",
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "The kettle is warm.",
+        "choices": [
+          { "text": "Tell me about the village.", "next": "b" },
+          { "text": "Nothing. Thank you.", "next": "c" }
+        ]
+      },
+      "b": { "speaker": "The Keeper", "text": "Fields, a river, a school. Everyone worked. Everyone came home." },
+      "c": { "speaker": "The Keeper", "text": "Mind the step on your way out." }
+    }
+  }
+]

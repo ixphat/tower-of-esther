@@ -191,6 +191,50 @@ test('groups, targets, fleeing and the mini-boss', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Flee (Cannot flee this fight)' })).toBeDisabled();
 });
 
+test('talking, liked choices, bonds, gifts, text speed and skip', async ({ page }) => {
+  const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('radio', { name: 'Instant' }).check();
+  await page.getByRole('button', { name: 'Close' }).click();
+
+  await go("Keeper's House");
+  const talk = page.getByRole('navigation', { name: 'Talk to' });
+  await expect(talk.getByRole('img', { name: 'Bond Stranger' })).toBeVisible();
+  await talk.getByRole('button', { name: /The Keeper/ }).click();
+
+  const box = page.getByRole('region', { name: 'Talking with The Keeper' });
+  await expect(box).toContainText('Oh. A guest.');
+  await expect(box.getByRole('button', { name: 'Skip' })).toBeDisabled();
+  await box.getByRole('button', { name: 'Next' }).click();
+  await box.getByRole('button', { name: 'Next' }).click();
+  await expect(box.getByRole('button', { name: "It's a good house." })).toBeVisible();
+  await expect(box).not.toContainText(/liked/i);
+  await box.getByRole('button', { name: "It's a good house." }).click();
+  await expect(box.getByRole('status')).toContainText('The Keeper: bond +5');
+  await box.getByRole('button', { name: 'Next' }).click();
+  await expect(box.getByRole('status')).toContainText('bond +10, now Acquaintance');
+
+  await box.getByRole('button', { name: 'Give gift' }).click();
+  await box.getByRole('button', { name: /Give Basic Salve/ }).click();
+  await expect(box.getByRole('button', { name: 'Give gift (gift limit reached)' })).toBeDisabled();
+  await box.getByRole('button', { name: 'Leave' }).click();
+
+  await talk.getByRole('button', { name: /The Keeper/ }).click();
+  await expect(box).toContainText('The kettle is warm.');
+  await box.getByRole('button', { name: 'Tell me about the village.' }).click();
+  await box.getByRole('button', { name: 'Leave' }).click();
+  await talk.getByRole('button', { name: /The Keeper/ }).click();
+  await expect(box.getByRole('button', { name: 'Skip' })).toHaveCount(0); // a choice line has no skip
+  await expect(box.getByRole('button', { name: 'Tell me about the village.' })).toBeFocused();
+  await box.getByRole('button', { name: 'Leave now' }).click();
+
+  await page.getByRole('button', { name: 'Status' }).click();
+  await page.getByRole('dialog', { name: 'Status' }).getByRole('button', { name: 'Bonds' }).click();
+  await expect(page.getByRole('dialog', { name: 'Status' }).getByRole('img', { name: 'Bond Acquaintance' })).toBeVisible();
+});
+
 test('reloading mid-fight counts as a defeat', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'New game' }).click();

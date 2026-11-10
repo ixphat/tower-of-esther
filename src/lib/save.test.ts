@@ -31,7 +31,7 @@ describe('save', () => {
     expect(readSave(storage, floor)).toEqual(run);
   });
 
-  const saved = (over: object) => JSON.stringify({ version: 6, run: { ...newRun(floor), ...over } });
+  const saved = (over: object) => JSON.stringify({ version: 7, run: { ...newRun(floor), ...over } });
 
   it.each([
     ['corrupt JSON', '{oops'],
@@ -50,6 +50,7 @@ describe('save', () => {
     ['too few pin slots', saved({ pins: [null] })],
     ['a pin of an unowned skill', saved({ pins: ['ghost', null, null, null, null, null] })],
     ['a Stance that is not one', saved({ stance: 'whistle' })],
+    ['flags that are not a list', saved({ flags: 'met' })],
     ['a level below 1', saved({ level: 0 })],
     ['a negative counter', saved({ memoriesLost: -1 })],
     ['bonds that are a list', saved({ bonds: [] })],

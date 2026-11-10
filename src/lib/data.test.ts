@@ -43,6 +43,12 @@ describe('floor data', () => {
     expect(validateFloor(broken)).toEqual(['a: shop item "straw-thread" has no price']);
   });
 
+  it('reports an NPC that does not exist', () => {
+    const broken = floor();
+    broken.locations[0].npcs = ['ghost'];
+    expect(validateFloor(broken)).toEqual(['a: npc "ghost" does not exist']);
+  });
+
   it('resolves every enemy drop, starting item and worn piece', () => {
     expect(validateGameData()).toEqual([]);
   });
