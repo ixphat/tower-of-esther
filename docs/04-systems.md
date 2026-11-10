@@ -149,7 +149,7 @@ Bonds are the relationship between the climber and named NPCs (floor masters, to
 | Part | Design |
 | --- | --- |
 | Levels | 5 levels: 1 Stranger, 2 Acquaintance, 3 Friendly, 4 Trusted, 5 Close. Points needed to reach each (draft): 0, 10, 30, 60, 100. Points never decay |
-| Raising | A first conversation (+10, reaching Acquaintance), finishing a quest for them (+10 to +20), giving gifts (+5, or +10 for a liked gift, limited per visit), and choosing the option they like in a scene (+5) |
+| Raising | A first conversation (+10, reaching Acquaintance), finishing a quest for them (+10 to +20), giving gifts (+5, or +10 for a liked gift, limited per visit), and choosing the option they like in a scene (+5). Claude's choices: one gift per NPC per visit (a visit ends when the climber moves), any item but gear can be given, and each liked option pays once ever |
 | What each level unlocks | Acquaintance: rumors and basic information. Friendly: a special scene, and a 5% shop discount if they run a shop. Trusted: their own quest, a 10% shop discount, a secret clue, and one rare crafting item. Close: a closing scene and a choice of a small unique skill or another rare crafting item |
 | Kind of rewards | Items, crafting materials and small skills (scrap level or Novice), never permanent stat bonuses. The same rewards for every class. Skills follow the normal rules for the power score, so they only count if they are among the climber's strongest |
 | Nothing is required | No floor needs a bond to be cleared. Bonds add depth, rewards and access to some teachers (see Wandering masters) |

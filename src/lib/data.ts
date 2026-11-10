@@ -1,6 +1,9 @@
+import balance from '../../data/balance.json';
 import climberData from '../../data/climber.json';
 import enemyData from '../../data/enemies.json';
 import itemData from '../../data/items.json';
+import npcData from '../../data/npcs.json';
+import sceneData from '../../data/scenes.json';
 import skillData from '../../data/skills.json';
 import type { EnemyMove, FightSkill, ScriptedMove, Tier } from './combat';
 
@@ -10,7 +13,7 @@ export type Slot = (typeof SLOTS)[number];
 export interface Item {
   id: string;
   name: string;
-  kind: 'consumable' | 'material' | 'equipment';
+  kind: 'consumable' | 'material' | 'equipment' | 'gift';
   price?: number;
   heal?: number; // share of max HP
   outsideFightOnly?: boolean;
@@ -48,6 +51,7 @@ export interface Location {
   enemies?: string[];
   rest?: boolean;
   shop?: string[];
+  npcs?: string[];
 }
 
 export interface Floor {
@@ -63,6 +67,38 @@ const modules = import.meta.glob<Floor>('/data/floors/*.json', { eager: true, im
 export const floors: Floor[] = Object.values(modules);
 export const enemies = enemyData as Enemy[];
 export const items = itemData as Item[];
+
+export interface Npc {
+  id: string;
+  name: string;
+  likes: string[]; // item ids worth a liked gift
+}
+
+export interface Condition {
+  flag?: string;
+  notFlag?: string;
+}
+
+export interface SceneNode {
+  speaker: string;
+  text: string;
+  next?: string;
+  choices?: { text: string; next?: string; liked?: boolean; condition?: Condition }[];
+  effects?: { setFlag?: string; firstTalk?: boolean }; // firstTalk raises the scene NPC's bond
+}
+
+export interface Scene {
+  id: string;
+  npc: string;
+  condition?: Condition;
+  start: string;
+  nodes: Record<string, SceneNode>;
+}
+
+export const npcs = npcData as Npc[];
+export const scenes = sceneData as Scene[];
+export const npcById = (id: string): Npc | undefined => npcs.find((npc) => npc.id === id);
+export const sceneById = (id: string): Scene | undefined => scenes.find((scene) => scene.id === id);
 export const skills = skillData as SkillData[];
 export const skillById = (id: string): SkillData | undefined => skills.find((skill) => skill.id === id);
 
@@ -83,6 +119,9 @@ export function validateFloor(floor: Floor): string[] {
     for (const enemy of location.enemies ?? []) {
       if (!enemies.some((e) => e.id === enemy)) errors.push(`${location.id}: enemy "${enemy}" does not exist`);
     }
+    for (const npc of location.npcs ?? []) {
+      if (!npcById(npc)) errors.push(`${location.id}: npc "${npc}" does not exist`);
+    }
     for (const item of location.shop ?? []) {
       if (!itemById(item)) errors.push(`${location.id}: shop item "${item}" does not exist`);
       else if (itemById(item)!.price === undefined) errors.push(`${location.id}: shop item "${item}" has no price`);
@@ -100,9 +139,22 @@ export function validateGameData(): string[] {
   const missingSkills = climberData.startingSkills
     .filter((id) => !skillById(id))
     .map((id) => `starting skill: "${id}" does not exist`);
+  const npcLikes = npcs.flatMap((npc) => npc.likes.map((id) => [`${npc.id} likes`, id]));
+  const sceneErrors = scenes.flatMap((scene) => {
+    const nodes = Object.entries(scene.nodes);
+    const targets = [scene.start, ...nodes.flatMap(([, node]) => [node.next, ...(node.choices ?? []).map((c) => c.next)])];
+    return [
+      ...(npcById(scene.npc) ? [] : [`${scene.id}: npc "${scene.npc}" does not exist`]),
+      ...targets.filter((id) => id && !scene.nodes[id]).map((id) => `${scene.id}: node "${id}" does not exist`),
+      ...nodes
+        .filter(([, node]) => (node.choices?.length ?? 0) > balance.maxChoices)
+        .map(([id]) => `${scene.id}:${id}: more than ${balance.maxChoices} choices`),
+    ];
+  });
   return [
-    ...refs.filter(([, id]) => !itemById(id)).map(([owner, id]) => `${owner}: "${id}" does not exist`),
+    ...[...refs, ...npcLikes].filter(([, id]) => !itemById(id)).map(([owner, id]) => `${owner}: "${id}" does not exist`),
     ...missingSkills,
+    ...sceneErrors,
   ];
 }
 

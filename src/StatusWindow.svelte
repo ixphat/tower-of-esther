@@ -1,7 +1,8 @@
 <script lang="ts">
   import { expToNext, heroParts, heroPower, statsAt } from './lib/climber';
   import { climberCombatant, evasionChance } from './lib/combat';
-  import type { Floor } from './lib/data';
+  import BondPips from './BondPips.svelte';
+  import { npcById, type Floor } from './lib/data';
   import type { RunState } from './lib/run';
 
   const { run, floor }: { run: RunState; floor: Floor } = $props();
@@ -49,7 +50,12 @@
 {:else if tab === 'Titles'}
   <p>No titles yet.</p>
 {:else if tab === 'Bonds'}
-  <p>No bonds yet.</p>
+  {#if Object.keys(run.bonds).length === 0}<p>No bonds yet.</p>{/if}
+  <ul>
+    {#each Object.entries(run.bonds) as [id, points] (id)}
+      <li>{npcById(id)?.name} <BondPips {points} /></li>
+    {/each}
+  </ul>
 {:else}
   <p>No floor cleared yet.</p>
 {/if}

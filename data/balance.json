@@ -33,6 +33,13 @@
   "fleePerAgility": 0.01,
   "fleeCap": 0.9,
   "strongEnemyShare": 0.5,
+  "bondFirstTalk": 10,
+  "bondLevels": ["Stranger", "Acquaintance", "Friendly", "Trusted", "Close"],
+  "bondLikedChoice": 5,
+  "bondGift": 5,
+  "bondLikedGift": 10,
+  "giftsPerVisit": 1,
+  "maxChoices": 4,
   "healItemsPerFight": 2,
   "heroPartCap": 0.5,
   "heroGrades": [

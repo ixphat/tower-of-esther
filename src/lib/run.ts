@@ -1,7 +1,8 @@
 import balance from '../../data/balance.json';
 import climberData from '../../data/climber.json';
 import { expToNext, maxHp, type OwnedSkills, type Worn } from './climber';
-import { itemById, skillById, type Enemy, type Floor } from './data';
+import { itemById, npcById, sceneById, skillById, type Enemy, type Floor } from './data';
+import { lineId } from './dialogue';
 
 export interface Rewards {
   exp: number;
@@ -26,6 +27,9 @@ export interface RunState {
   skills: OwnedSkills;
   pins: (string | null)[];
   stance: string | null; // chosen free before a fight
+  flags: string[]; // story facts
+  seen: string[]; // dialogue lines and choices already met, for skip and once-only rewards
+  giftedThisVisit: string[]; // NPCs given a gift since arriving here
 }
 
 export type RunAction =
@@ -37,6 +41,9 @@ export type RunAction =
   | { type: 'buy'; item: string }
   | { type: 'equip'; item: string }
   | { type: 'togglePin'; skill: string }
+  | { type: 'seeLine'; scene: string; node: string }
+  | { type: 'choose'; scene: string; node: string; choice: number }
+  | { type: 'gift'; npc: string; item: string }
   | { type: 'setStance'; skill: string | null }
   | { type: 'fightEnd'; outcome: 'won'; hp: number; rewards: Rewards; used: string[] }
   | { type: 'fightEnd'; outcome: 'lost' }
@@ -60,7 +67,18 @@ export function newRun(floor: Floor): RunState {
     skills: Object.fromEntries(climberData.startingSkills.map((id) => [id, { stage: 0, level: 1, proficiency: 0 }])),
     pins: Array.from({ length: balance.pinnedSlots }, (_, slot) => climberData.startingSkills[slot] ?? null),
     stance: null,
+    flags: [],
+    seen: [],
+    giftedThisVisit: [],
   };
+}
+
+export const bondLevel = (points = 0): number =>
+  balance.bondThresholds.filter((threshold) => threshold <= points).length - 1;
+
+function raiseBond(state: RunState, npc: string, points: number): RunState {
+  const max = balance.bondThresholds[balance.bondThresholds.length - 1];
+  return { ...state, bonds: { ...state.bonds, [npc]: Math.min(max, (state.bonds[npc] ?? 0) + points) }, lastBond: npc };
 }
 
 export function fightRewards(foes: Enemy[]): Rewards {
@@ -83,8 +101,8 @@ function find(floor: Floor, id: string) {
 
 function lowerLastBond({ bonds, lastBond }: RunState): Record<string, number> {
   if (lastBond === null) return bonds;
-  const bondLevel = balance.bondThresholds.filter((points) => points <= bonds[lastBond]).length - 1;
-  return bondLevel === 0 ? bonds : { ...bonds, [lastBond]: balance.bondThresholds[bondLevel - 1] };
+  const level = bondLevel(bonds[lastBond]);
+  return level === 0 ? bonds : { ...bonds, [lastBond]: balance.bondThresholds[level - 1] };
 }
 
 function withItem(carried: Record<string, number>, item: string, amount: number): Record<string, number> {
@@ -148,7 +166,13 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
     case 'move': {
       if (!find(floor, state.locationId).exits.includes(action.to)) throw new Error(`No exit to ${action.to}`);
       const safePoint = find(floor, action.to).rest ? action.to : state.safePoint;
-      return { ...state, locationId: action.to, safePoint, cleared: state.cleared.filter((id) => id !== action.to) };
+      return {
+        ...state,
+        locationId: action.to,
+        safePoint,
+        cleared: state.cleared.filter((id) => id !== action.to),
+        giftedThisVisit: [],
+      };
     }
     case 'rest':
       if (!find(floor, state.locationId).rest) throw new Error('No resting place here');
@@ -179,6 +203,37 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
         items: previous ? withItem(carried, previous, 1) : carried,
         worn: { ...state.worn, [slot]: action.item },
       };
+    }
+    case 'seeLine': {
+      const scene = sceneById(action.scene);
+      const node = scene?.nodes[action.node];
+      if (!scene || !node) throw new Error(`No line ${action.scene}:${action.node}`);
+      const id = lineId(action.scene, action.node);
+      if (state.seen.includes(id)) return state; // effects happen once
+      let next: RunState = { ...state, seen: [...state.seen, id] };
+      const { setFlag, firstTalk } = node.effects ?? {};
+      if (setFlag && !next.flags.includes(setFlag)) next = { ...next, flags: [...next.flags, setFlag] };
+      if (firstTalk) next = raiseBond(next, scene.npc, balance.bondFirstTalk);
+      return next;
+    }
+    case 'choose': {
+      const scene = sceneById(action.scene);
+      const choice = scene?.nodes[action.node]?.choices?.[action.choice];
+      if (!scene || !choice) throw new Error('No such choice');
+      const id = `${lineId(action.scene, action.node)}:${action.choice}`;
+      if (state.seen.includes(id)) return state;
+      const next = { ...state, seen: [...state.seen, id] };
+      return choice.liked ? raiseBond(next, scene.npc, balance.bondLikedChoice) : next;
+    }
+    case 'gift': {
+      const npc = npcById(action.npc);
+      if (!npc || !find(floor, state.locationId).npcs?.includes(action.npc)) throw new Error(`${action.npc} is not here`);
+      if (itemById(action.item)?.kind === 'equipment') throw new Error('Gear cannot be given');
+      if (state.giftedThisVisit.filter((id) => id === action.npc).length >= balance.giftsPerVisit) {
+        throw new Error('Gift limit reached for this visit');
+      }
+      const given = { ...state, items: withItem(state.items, action.item, -1), giftedThisVisit: [...state.giftedThisVisit, action.npc] };
+      return raiseBond(given, action.npc, npc.likes.includes(action.item) ? balance.bondLikedGift : balance.bondGift);
     }
     case 'togglePin': {
       if (!state.skills[action.skill]) throw new Error(`${action.skill} is not learned`);
