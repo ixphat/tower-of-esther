@@ -4,7 +4,7 @@ Nov 3, 2026 · @Phat
 
 ## Overview
 
-A Korean-manhwa-style tower-climbing RPG for the web: turn-based, single-player, with real players competing asynchronously. 50 floors; each floor is its own world with story, rules, quests and secrets. Status: concept design, no code yet. First goal: Arc 1 (floors 1–10) with every system in place.
+A Korean-manhwa-style tower-climbing RPG for the web: turn-based, single-player, with real players competing asynchronously. 50 floors; each floor is its own world with story, rules, quests and secrets. Status: Floor 1 playable slice built and live; Arc 1 in progress. First goal: Arc 1 (floors 1–10) with every system in place.
 
 This tab is the source of truth. If another tab conflicts with it, this tab wins.
 
@@ -82,6 +82,7 @@ This tab is the source of truth. If another tab conflicts with it, this tab wins
 - Floor 1 script (draft by Claude, shipped under Phat's standing approval of Nov 10, 2026; details in 03 Arc 1): every Floor 1 location, Keeper scene, Tower line and quest has text in the data files.
 - Dialogue and gifts (draft, Claude's choices; details in 04 Systems Bonds and 06 UI): scenes are data, liked options are unmarked and pay once, and each NPC takes one gift per visit.
 - Floor 1 encounters (draft, Claude's choices; details in 03 Arc 1): five encounters from Straw Remnants to the Gate Scarecrow, with move lists in the enemy data. The simulator puts every encounter above its turn target, to be tuned in play.
+- Floor 1 play test (decided with Phat, Nov 10, 2026; details in 04 Systems Combat formulas): rounds feel very short and the balance feels fair, so no numbers changed.
 - Balance simulator (Claude's choice, details in 04 Systems): `npm run sim` runs seeded fights through the real engine and data and compares each tier with its turn target.
 - Combat formulas (draft, decided with Phat, Nov 9, 2026; details in 04 Systems): damage uses a ratio against Guard or Ward, attack is Power × 2 plus weapon attack, fight length targets are set per tier, and enemy base values are set per floor. The First Wall master stays near a coin flip without preparation.
 - Combat rules and values (draft, Claude's choices, accepted by Phat on Nov 9, 2026; details in 04 Systems): one action per turn, no HP regeneration outside resting, fights of 1 to 3 enemies, hidden enemy intent, one weak Element per enemy, statuses, consumables and prices, 20 crafting recipes, values for class and master skills, and at most 2 healing items per fight. Floor scripts are written as build tickets, starting with floor 1 as a playable slice.
