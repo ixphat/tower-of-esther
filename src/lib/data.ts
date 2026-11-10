@@ -25,6 +25,7 @@ export interface Item {
 export interface Enemy {
   id: string;
   name: string;
+  tier: 'normal' | 'tough' | 'elite' | 'miniBoss' | 'floorMaster';
   hp: number;
   attack: number;
   def: number;
@@ -58,7 +59,7 @@ export interface Floor {
 const modules = import.meta.glob<Floor>('/data/floors/*.json', { eager: true, import: 'default' });
 
 export const floors: Floor[] = Object.values(modules);
-export const enemies: Enemy[] = enemyData;
+export const enemies = enemyData as Enemy[];
 export const items = itemData as Item[];
 export const skills = skillData as SkillData[];
 export const skillById = (id: string): SkillData | undefined => skills.find((skill) => skill.id === id);

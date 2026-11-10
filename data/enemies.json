@@ -2,6 +2,7 @@
   {
     "id": "straw-remnant",
     "name": "Straw Remnant",
+    "tier": "normal",
     "hp": 70,
     "attack": 4,
     "def": 3,
