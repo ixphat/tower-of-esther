@@ -1,0 +1,66 @@
+[
+  {
+    "id": "vanguard",
+    "name": "Vanguard",
+    "vitality": 8,
+    "power": 5,
+    "agility": 3,
+    "mind": 4,
+    "weapon": "worn-sword-and-shield"
+  },
+  {
+    "id": "duelist",
+    "name": "Duelist",
+    "vitality": 4,
+    "power": 7,
+    "agility": 7,
+    "mind": 2,
+    "weapon": "worn-sword"
+  },
+  {
+    "id": "arcanist",
+    "name": "Arcanist",
+    "vitality": 3,
+    "power": 6,
+    "agility": 3,
+    "mind": 5,
+    "weapon": "worn-staff"
+  },
+  {
+    "id": "ranger",
+    "name": "Ranger",
+    "vitality": 4,
+    "power": 6,
+    "agility": 6,
+    "mind": 3,
+    "weapon": "worn-bow"
+  },
+  {
+    "id": "mender",
+    "name": "Mender",
+    "vitality": 6,
+    "power": 3,
+    "agility": 3,
+    "mind": 5,
+    "weapon": "worn-mace"
+  },
+  {
+    "id": "trickster",
+    "name": "Trickster",
+    "vitality": 4,
+    "power": 4,
+    "agility": 6,
+    "mind": 3,
+    "weapon": "worn-cards"
+  },
+  {
+    "id": "none",
+    "name": "No class",
+    "hidden": true,
+    "vitality": 4,
+    "power": 4,
+    "agility": 4,
+    "mind": 4,
+    "weapon": "worn-sword"
+  }
+]

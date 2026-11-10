@@ -1,10 +1,6 @@
 {
-  "vitality": 8,
-  "power": 5,
-  "agility": 3,
-  "mind": 4,
   "startingCoins": 100,
-  "startingSkills": ["whistle", "stubborn-lean", "straw-toss", "sweep-up"],
-  "startingWeapon": "worn-sword",
-  "startingItems": { "basic-salve": 3 }
+  "startingItems": { "basic-salve": 3 },
+  "portraits": 4,
+  "nameMaxLength": 20
 }

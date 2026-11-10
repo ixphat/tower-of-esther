@@ -3,7 +3,7 @@
   import balance from '../data/balance.json';
   import BondPips from './BondPips.svelte';
   import { canSkip, nodeAt, skipTarget, visibleChoices } from './lib/dialogue';
-  import { itemById, npcById, sceneById } from './lib/data';
+  import { classById, itemById, npcById, sceneById } from './lib/data';
   import { bondLevel, type RunAction, type RunState } from './lib/run';
   import type { TextSpeed } from './lib/settings';
 
@@ -33,7 +33,9 @@
   let timer: ReturnType<typeof setInterval> | undefined;
   let box = $state<HTMLElement>();
 
-  const node = $derived(nodeId ? nodeAt(scene, nodeId) : null);
+  const rawNode = $derived(nodeId ? nodeAt(scene, nodeId) : null);
+  // {gift} names the class the Tower offers
+  const node = $derived(rawNode && { ...rawNode, text: rawNode.text.replace('{gift}', classById(run.giftClass)!.name) });
   const typing = $derived(node !== null && shown < node.text.length);
   const choices = $derived(node && !typing ? visibleChoices(node, run) : []);
   const ended = $derived(node !== null && !typing && !node.next && !node.choices);
@@ -60,7 +62,7 @@
     wasSeen = canSkip(scene, id, run);
     nodeId = id;
     act({ type: 'seeLine', scene, node: id });
-    const { text } = nodeAt(scene, id);
+    const text = nodeAt(scene, id).text.replace('{gift}', classById(run.giftClass)!.name);
     log = [...log, text];
     shown = MS_PER_CHAR[textSpeed] ? 0 : text.length;
     if (shown < text.length) timer = setInterval(() => (shown < text.length ? (shown += 1) : clearInterval(timer)), MS_PER_CHAR[textSpeed]);

@@ -1,9 +1,8 @@
 // Balance simulator: runs real fights through the game's own engine and data.
 import balance from '../../data/balance.json';
-import climberData from '../../data/climber.json';
 import { statsAt } from './climber';
 import { act, climberCombatant, createRng, enemyCombatant, enemyGroup, startFight, TIERS, type Tier } from './combat';
-import { enemies, floors, groupName } from './data';
+import { classById, enemies, floors, groupName } from './data';
 
 export interface SimRow {
   enemy: string;
@@ -16,8 +15,8 @@ export interface SimRow {
 }
 
 // The climber only uses weapon attacks; skill and item policies come when tuning needs them.
-export function simulate(seed: number, runs: number, level = 1, floor = 1): SimRow[] {
-  const climber = climberCombatant(statsAt(level, { weapon: climberData.startingWeapon }));
+export function simulate(seed: number, runs: number, level = 1, classId = 'vanguard', floor = 1): SimRow[] {
+  const climber = climberCombatant(statsAt(level, { weapon: classById(classId)!.weapon }, classId));
 
   const encounters = floors.find((f) => f.id === floor)!.locations.filter((l) => l.enemies);
   return encounters.map((location, index) => {

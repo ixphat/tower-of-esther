@@ -1,10 +1,40 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+// Pin the random source: the gift is the first class (Vanguard) and fights are repeatable.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    crypto.getRandomValues = <T extends ArrayBufferView | null>(array: T) => {
+      if (array instanceof Uint32Array) array.fill(0);
+      return array;
+    };
+  });
+});
+
+async function playScene(page: Page, choice?: string) {
+  const box = page.getByRole('region', { name: 'Scene' });
+  const next = box.getByRole('button', { name: 'Next' });
+  while (await next.isVisible()) await next.click();
+  if (choice) {
+    await box.getByRole('button', { name: choice }).click();
+    while (await next.isVisible()) await next.click();
+  }
+  await box.getByRole('button', { name: /^Leave/ }).click();
+}
+
+async function newGame(page: Page, choice = 'Accept the gift.') {
+  await page.getByRole('button', { name: 'New game' }).click();
+  await page.getByRole('textbox', { name: 'Name' }).fill('Ash');
+  await page.getByRole('radio', { name: 'Portrait 2' }).check();
+  await page.getByRole('button', { name: 'Begin' }).click();
+  await playScene(page, choice); // the Tower wakes the climber and offers the gift
+  await playScene(page); // the Tower's basics
+}
 
 test('climber moves by keyboard, autosaves and continues after reload', async ({ page }) => {
   await page.goto('./');
   await expect(page.getByRole('button', { name: 'Continue' })).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
   await expect(page.getByRole('heading', { name: 'Village Square' })).toBeVisible();
 
   const goTo = page.getByRole('navigation', { name: 'Go to' });
@@ -19,7 +49,7 @@ test('climber moves by keyboard, autosaves and continues after reload', async ({
 
   // starting a new game does not touch the save until the climber moves
   await page.reload();
-  await page.getByRole('button', { name: 'New game' }).click();
+  await page.getByRole('button', { name: 'New game' }).click(); // opening the form does not touch the save
   await page.reload();
   await page.getByRole('button', { name: 'Continue' }).click();
   await expect(page.getByRole('heading', { name: 'Riverbank' })).toBeVisible();
@@ -27,7 +57,7 @@ test('climber moves by keyboard, autosaves and continues after reload', async ({
 
 test('climber fights a marked location and returns to the scene', async ({ page }) => {
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
   await page.getByRole('button', { name: 'Fields, monsters here' }).click();
   await page.getByRole('button', { name: 'Fight Straw Remnant' }).click();
 
@@ -39,7 +69,7 @@ test('climber fights a marked location and returns to the scene', async ({ page 
   await expect(page.getByRole('log', { name: 'Combat log' })).toContainText(/Victory|Defeated/);
   await back.click();
   await expect(page.getByRole('heading', { name: 'Fields' })).toBeFocused();
-  await expect(page.getByRole('status', { name: 'Climber' })).toContainText('EXP 1 / 100');
+  await expect(page.getByRole('status', { name: 'Climber' })).toContainText('EXP 55 / 100'); // 27 for the gift, 27 for the basics, 1 for the Remnant
 });
 
 test('HP carries, Rest restores it, and defeat returns to the resting place', async ({ page }) => {
@@ -56,7 +86,7 @@ test('HP carries, Rest restores it, and defeat returns to the resting place', as
   };
 
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
   const full = await hp();
   await expect(page.getByRole('button', { name: 'Rest' })).toHaveCount(0);
 
@@ -98,7 +128,7 @@ test('items, drops, respawn, stall and comparing gear', async ({ page }) => {
   const back = page.getByRole('button', { name: 'Return' });
 
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
   await go('Fields, monsters here');
   await fight.click();
 
@@ -134,7 +164,7 @@ test('items, drops, respawn, stall and comparing gear', async ({ page }) => {
 test('pinned skills, cooldown reason, tag slots and the Skills window', async ({ page }) => {
   const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
 
   await page.getByRole('button', { name: 'Skills' }).click();
   const window = page.getByRole('dialog', { name: 'Skills' });
@@ -171,7 +201,7 @@ test('pinned skills, cooldown reason, tag slots and the Skills window', async ({
 test('groups, targets, fleeing and the mini-boss', async ({ page }) => {
   const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
 
   await go('Riverbank, monsters here');
   await page.getByRole('button', { name: 'Fight Crow ×3' }).click();
@@ -185,7 +215,7 @@ test('groups, targets, fleeing and the mini-boss', async ({ page }) => {
   await back.click();
 
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
   await go('Village Gate, monsters here');
   await page.getByRole('button', { name: 'Fight Gate Scarecrow' }).click();
   await expect(page.getByRole('button', { name: 'Flee (Cannot flee this fight)' })).toBeDisabled();
@@ -194,7 +224,7 @@ test('groups, targets, fleeing and the mini-boss', async ({ page }) => {
 test('talking, liked choices, bonds, gifts, text speed and skip', async ({ page }) => {
   const go = (name: string) => page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name }).click();
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
   await page.getByRole('button', { name: 'Settings' }).click();
   await page.getByRole('radio', { name: 'Instant' }).check();
   await page.getByRole('button', { name: 'Close' }).click();
@@ -245,13 +275,13 @@ test('side quest from the Keeper, looking around, tracker, Journal and secrets',
     await box.getByRole('button', { name: /^Leave/ }).click();
   };
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
   await page.getByRole('button', { name: 'Settings' }).click();
   await page.getByRole('radio', { name: 'Instant' }).check();
   await page.getByRole('button', { name: 'Close' }).click();
 
   const tracker = page.getByRole('region', { name: 'Tracked quests' });
-  await expect(tracker).toContainText('Main: The Tower is waiting');
+  await expect(tracker).toContainText('Main: Cross the village.');
 
   await go('Riverbank');
   await go('Schoolhouse');
@@ -284,9 +314,41 @@ test('side quest from the Keeper, looking around, tracker, Journal and secrets',
   await expect(tracker).toContainText('Loose Straw: Gather five bundles');
 });
 
-test('reloading mid-fight counts as a defeat', async ({ page }) => {
+test('opening: name, portrait, the offered class, refusing', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'New game' }).click();
+  await page.getByRole('textbox', { name: 'Name' }).fill('Ash');
+  await page.getByRole('radio', { name: 'Portrait 3' }).check();
+  await page.getByRole('button', { name: 'Begin' }).click();
+  const box = page.getByRole('region', { name: 'Scene' });
+  while (await box.getByRole('button', { name: 'Next' }).isVisible()) await box.getByRole('button', { name: 'Next' }).click();
+  await expect(box).toContainText('The Tower offers a gift: the Vanguard class.');
+  await box.getByRole('button', { name: 'Refuse.' }).click();
+  while (await box.getByRole('button', { name: 'Next' }).isVisible()) await box.getByRole('button', { name: 'Next' }).click();
+  await box.getByRole('button', { name: /^Leave/ }).click();
+  await expect(box).toContainText('Go to moves you.');
+  await playScene(page);
+
+  await page.getByRole('button', { name: 'Status' }).click();
+  const status = page.getByRole('dialog', { name: 'Status' });
+  await expect(status).toContainText('Ash · No class');
+  await expect(status.getByRole('img', { name: 'Portrait 3' })).toBeVisible();
+  await expect(status).toContainText('Vitality 4');
+});
+
+test('a reload before the gift reopens it on Continue', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: 'New game' }).click();
+  await page.getByRole('textbox', { name: 'Name' }).fill('Ash');
+  await page.getByRole('button', { name: 'Begin' }).click();
+  await page.reload();
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByRole('region', { name: 'Scene' })).toContainText('Climber. You are awake.');
+});
+
+test('reloading mid-fight counts as a defeat', async ({ page }) => {
+  await page.goto('./');
+  await newGame(page);
   await page.getByRole('button', { name: 'Fields, monsters here' }).click();
   await page.getByRole('button', { name: 'Fight Straw Remnant' }).click();
   await page.getByRole('button', { name: 'Weapon attack' }).click();
@@ -298,7 +360,7 @@ test('reloading mid-fight counts as a defeat', async ({ page }) => {
 
 test('a window opens over the scene and closes back to it', async ({ page }) => {
   await page.goto('./');
-  await page.getByRole('button', { name: 'New game' }).click();
+  await newGame(page);
 
   await page.getByRole('button', { name: 'Status' }).click();
   const status = page.getByRole('dialog', { name: 'Status' });

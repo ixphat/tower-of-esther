@@ -1,10 +1,11 @@
-import { itemById, skillById, SLOTS, type Floor, type Slot } from './data';
+import climberData from '../../data/climber.json';
+import { classById, itemById, skillById, SLOTS, type Floor, type Slot } from './data';
 import balance from '../../data/balance.json';
 import { maxHp } from './climber';
 import type { RunState } from './run';
 
 const KEY = 'tower-of-esther.save';
-const VERSION = 8;
+const VERSION = 9;
 
 type Reader = Pick<Storage, 'getItem'>;
 type Writer = Pick<Storage, 'setItem'>;
@@ -37,13 +38,24 @@ function isRun(value: unknown, floor: Floor): value is RunState {
   const run = value as Partial<RunState> | null | undefined;
   const isPlace = (id: unknown) => floor.locations.some((l) => l.id === id);
   return (
-    isPlace(run?.locationId) &&
-    isPlace(run?.safePoint) &&
-    isCount(run?.level) &&
+    typeof run?.name === 'string' &&
+    run.name.trim().length > 0 &&
+    run.name.length <= climberData.nameMaxLength &&
+    isCount(run.portrait) &&
+    run.portrait >= 1 &&
+    run.portrait <= climberData.portraits &&
+    typeof run.classId === 'string' &&
+    classById(run.classId) !== undefined &&
+    typeof run.giftClass === 'string' &&
+    [false, undefined].includes(classById(run.giftClass)?.hidden) &&
+    classById(run.giftClass) !== undefined &&
+    isPlace(run.locationId) &&
+    isPlace(run.safePoint) &&
+    isCount(run.level) &&
     run.level >= 1 &&
     isCount(run.hp) &&
     run.hp > 0 &&
-    run.hp <= maxHp(run.level) &&
+    run.hp <= maxHp(run.level, run.classId!) &&
     isCount(run.exp) &&
     isCount(run.memoriesLost) &&
     typeof run.inFight === 'boolean' &&

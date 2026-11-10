@@ -2,10 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { floors } from './data';
 import { sceneAt } from './dialogue';
 import { questBoard } from './quests';
+import { maxHp } from './climber';
 import { applyAction, newRun, type RunState } from './run';
 
+const START = { name: 'Ash', portrait: 1, giftClass: 'vanguard' };
+const VANGUARD = { classId: 'vanguard', hp: 151, worn: { weapon: 'worn-sword' }, items: { 'basic-salve': 3 }, skills: Object.fromEntries(['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up'].map((id) => [id, { stage: 0, level: 1, proficiency: 0 }])), pins: ['whistle', 'stubborn-lean', 'straw-toss', 'sweep-up', null, null] };
+
 const floor = floors.find((f) => f.id === 1)!;
-const run = (over: Partial<RunState> = {}): RunState => ({ ...newRun(floor), ...over });
+const run = (over: Partial<RunState> = {}): RunState => ({ ...newRun(floor, START), ...VANGUARD, ...over });
 const see = (scene: string, node: string) => ({ type: 'seeLine', scene, node }) as const;
 
 describe('quests from data', () => {

@@ -1,12 +1,14 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import Fight from './Fight.svelte';
-  import { enemies, floors, groupName, npcById, type Enemy } from './lib/data';
+  import { classes, enemies, floors, groupName, npcById, sceneById, type Enemy } from './lib/data';
   import BagWindow from './BagWindow.svelte';
   import StallWindow from './StallWindow.svelte';
   import BondPips from './BondPips.svelte';
   import DialogueBox from './DialogueBox.svelte';
   import JournalWindow from './JournalWindow.svelte';
+  import Portrait from './Portrait.svelte';
+  import climberData from '../data/climber.json';
   import QuestsWindow from './QuestsWindow.svelte';
   import SkillsWindow from './SkillsWindow.svelte';
   import { questBoard } from './lib/quests';
@@ -25,6 +27,9 @@
   let windowTitle = $state('');
   let foes = $state<Enemy[] | null>(null);
   let talk = $state<{ npc?: string; scene: string } | null>(null);
+  let creating = $state(false);
+  let newName = $state('');
+  let newPortrait = $state(1);
   let settings = $state<Settings>(loadSettings(localStorage));
   let heading = $state<HTMLHeadingElement>();
   let dialog = $state<HTMLDialogElement>();
@@ -60,8 +65,28 @@
   const trackedQuests = $derived(board ? board.side.filter((quest) => run!.tracked.includes(quest.id)) : []);
 
   function endTalk() {
-    talk = null;
+    const followedBy = talk && sceneById(talk.scene)?.followedBy;
+    talk = followedBy ? { scene: followedBy } : null;
     return focusScene();
+  }
+
+  // The Tower picks the gift; tests can pin it through crypto.
+  function beginNewGame(event: SubmitEvent) {
+    event.preventDefault();
+    const offered = classes.filter((c) => !c.hidden);
+    const giftClass = offered[crypto.getRandomValues(new Uint32Array(1))[0] % offered.length].id;
+    creating = false;
+    run = newRun(floor, { name: newName.trim(), portrait: newPortrait, giftClass });
+    writeSave(localStorage, run);
+    talk = { scene: 'tower-wake' };
+    return focusScene();
+  }
+
+  // A reload can interrupt the opening; pick it up where it stopped.
+  function openingScene(state: RunState): string | null {
+    if (!state.flags.includes('gift-accepted') && !state.flags.includes('gift-refused')) return 'tower-wake';
+    if (!state.flags.includes('heard-basics')) return 'tower-basics';
+    return null;
   }
 
   function setTextSpeed(textSpeed: Settings['textSpeed']) {
@@ -73,6 +98,8 @@
     // another tab may have written since the title screen loaded
     run = resumeRun(readSave(localStorage, floor) ?? titleScreenSave, floor);
     writeSave(localStorage, run);
+    const pending = openingScene(run);
+    if (pending) talk = { scene: pending };
     return focusScene();
   }
 
@@ -108,7 +135,7 @@
 </script>
 
 {#if foes}
-  <Fight {floor} {foes} hp={run!.hp} level={run!.level} worn={run!.worn} items={run!.items} skills={run!.skills} pins={run!.pins} stance={run!.stance} onSpendItem={(item) => commit({ type: 'spendItem', item })} onFinish={finishFight} onReturn={endFight} />
+  <Fight {floor} {foes} hp={run!.hp} level={run!.level} classId={run!.classId} name={run!.name} worn={run!.worn} items={run!.items} skills={run!.skills} pins={run!.pins} stance={run!.stance} onSpendItem={(item) => commit({ type: 'spendItem', item })} onFinish={finishFight} onReturn={endFight} />
 {:else if location && run}
   <div class="screen">
     <header class="row top">
@@ -117,10 +144,12 @@
     </header>
 
     <section class="vitals" role="status" aria-label="Climber">
+      <Portrait index={run.portrait} />
+      <span>{run.name}</span>
       <span>Lv {run.level}</span>
       <span>Coins {run.coins}</span>
-      <span>HP {run.hp} / {maxHp(run.level)}</span>
-      <progress max={maxHp(run.level)} value={run.hp} aria-hidden="true"></progress>
+      <span>HP {run.hp} / {maxHp(run.level, run.classId)}</span>
+      <progress max={maxHp(run.level, run.classId)} value={run.hp} aria-hidden="true"></progress>
       <span>EXP {run.exp} / {expToNext(run.level)}</span>
       <progress max={expToNext(run.level)} value={run.exp} aria-hidden="true"></progress>
     </section>
@@ -142,7 +171,9 @@
     </main>
 
     {#if talk}
-      <DialogueBox {run} npc={talk.npc} scene={talk.scene} textSpeed={settings.textSpeed} onAction={commit} onLeave={endTalk} />
+      {#key talk.scene}
+        <DialogueBox {run} npc={talk.npc} scene={talk.scene} textSpeed={settings.textSpeed} onAction={commit} onLeave={endTalk} />
+      {/key}
     {:else}
     <nav aria-label="Go to" class="row">
       <span aria-hidden="true">Go to</span>
@@ -217,7 +248,23 @@
     {#if save}
       <button onclick={() => continueRun(save)}>Continue</button>
     {/if}
-    <button onclick={() => begin(newRun(floor))}>New game</button>
+    {#if creating}
+      <form onsubmit={beginNewGame}>
+        <label>Name <input required pattern={'.*\\S.*'} title="A name with at least one letter" maxlength={climberData.nameMaxLength} bind:value={newName} /></label>
+        <fieldset>
+          <legend>Portrait</legend>
+          {#each Array.from({ length: climberData.portraits }, (_, i) => i + 1) as index (index)}
+            <label>
+              <input type="radio" name="portrait" value={index} bind:group={newPortrait} />
+              <Portrait {index} />
+            </label>
+          {/each}
+        </fieldset>
+        <button>Begin</button>
+      </form>
+    {:else}
+      <button onclick={() => (creating = true)}>New game</button>
+    {/if}
   </main>
 {/if}
 
@@ -239,6 +286,20 @@
 
   .top {
     justify-content: space-between;
+  }
+
+  input:not([type='radio']) {
+    background: var(--ink);
+    border: 1px solid var(--gold);
+    color: var(--text);
+    font: inherit;
+    padding: 0.25rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   fieldset {
