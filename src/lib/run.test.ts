@@ -81,7 +81,7 @@ describe('rewards and respawn', () => {
   });
 
   it('adds up the rewards of every foe', () => {
-    const foe = { id: 'a', name: 'A', hp: 1, attack: 1, def: 0, agility: 0, exp: 1, monsterPoints: 2, mind: 2, drops: { 'straw-thread': 1 } };
+    const foe = { id: 'a', name: 'A', tier: 'normal' as const, hp: 1, attack: 1, def: 0, agility: 0, exp: 1, monsterPoints: 2, mind: 2, drops: { 'straw-thread': 1 } };
     expect(fightRewards([foe, foe])).toEqual({ exp: 2, monsterPoints: 4, drops: { 'straw-thread': 2 } });
   });
 

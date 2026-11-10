@@ -1,4 +1,5 @@
 {
+  "targetTurns": { "normal": 3, "tough": 5, "elite": 10, "miniBoss": 14, "floorMaster": { "1": 12 } },
   "expPerLevel": 100,
   "statPointsPerLevel": 3,
   "statusResistPerMind": 0.005,
