@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { fightLoadout, statsAt, type OwnedSkills } from './lib/climber';
-  import { act, climberCombatant, createRng, enemyCombatant, enemyGroup, fleeBlock, isStrong, skillBlock, startFight, type Action, type Combatant, type FightEvent, type FightSkill, type FightState } from './lib/combat';
+  import { act, climberCombatant, createRng, enemyCombatant, enemyGroup, fleeBlock, isStrong, skillBlock, startFight, type Action, type Combatant, type EnemyMove, type FightEvent, type FightSkill, type FightState } from './lib/combat';
   import { itemById, type Enemy, type Floor, type Item } from './lib/data';
   import { fightRewards, type Rewards } from './lib/run';
   import balance from '../data/balance.json';
@@ -28,6 +28,7 @@
 
   const LOG_LINES = 5;
   const TAGS = ['Stance', 'Charge', 'Form', 'Aura'];
+  const MOVE_TYPES: Record<EnemyMove['type'], string> = { attack: 'Attack', guard: 'Guard', status: 'Status', charge: 'Charge' };
   const STATUS_NAMES: Record<string, string> = {
     poison: 'Poison',
     burn: 'Burn',
@@ -144,6 +145,7 @@
         {/if}
         <progress max={combatant.maxHp} value={combatant.hp} aria-label="{combatant.name} HP"></progress>
         <p>{combatant.hp} / {combatant.maxHp}</p>
+        {#if combatant.planned}<p>Next: {MOVE_TYPES[combatant.planned.type]}</p>{/if}
         <p>
           Statuses:
           {visibleStatuses(combatant).map((s) => `${STATUS_NAMES[s.id]} ${s.turns}`).join(', ') || '-'}

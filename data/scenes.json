@@ -185,11 +185,22 @@
       },
       "b": {
         "speaker": "A letter",
-        "text": "At the bottom, a small river is drawn.",
+        "text": "At the bottom, a small river is drawn. Under it, three short lessons in the same hand: how to look, where to look, and when to strike.",
         "effects": {
-          "setFlag": "read-seeker-letter"
+          "setFlag": "read-seeker-letter",
+          "setClass": "seeker",
+          "learn": [
+            "scan",
+            "read-the-room",
+            "keen-strike"
+          ]
         }
       }
+    },
+    "location": "back-lane",
+    "condition": {
+      "flag": "gift-refused",
+      "notFlag": "read-seeker-letter"
     }
   },
   {

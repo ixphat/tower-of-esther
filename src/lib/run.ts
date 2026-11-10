@@ -2,7 +2,7 @@ import balance from '../../data/balance.json';
 import climberData from '../../data/climber.json';
 import { expToNext, maxHp, type OwnedSkills, type Worn } from './climber';
 import { classById, itemById, npcById, sceneById, skillById, type Enemy, type Floor } from './data';
-import { lineId } from './dialogue';
+import { lineId, meets } from './dialogue';
 import { questBoard } from './quests';
 
 export interface Rewards {
@@ -211,8 +211,10 @@ function defeat(state: RunState): RunState {
 export function applyAction(state: RunState, floor: Floor, action: RunAction): RunState {
   switch (action.type) {
     case 'move': {
-      if (!find(floor, state.locationId).exits.includes(action.to)) throw new Error(`No exit to ${action.to}`);
       const place = find(floor, action.to);
+      if (!find(floor, state.locationId).exits.includes(action.to) || !meets(place.condition, state)) {
+        throw new Error(`No exit to ${action.to}`);
+      }
       const safePoint = place.rest ? action.to : state.safePoint;
       const noticed = place.enterFlag && !state.flags.includes(place.enterFlag) ? [place.enterFlag] : [];
       return {
@@ -261,7 +263,7 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
       const id = lineId(action.scene, action.node);
       if (state.seen.includes(id)) return state; // effects happen once
       let next: RunState = { ...state, seen: [...state.seen, id] };
-      const { setFlag, firstTalk, bond, exp, coins, take, give, learn, acceptGift, refuseGift } = node.effects ?? {};
+      const { setFlag, firstTalk, bond, exp, coins, take, give, learn, acceptGift, refuseGift, setClass } = node.effects ?? {};
       if (setFlag && !next.flags.includes(setFlag)) next = { ...next, flags: [...next.flags, setFlag] };
       if (firstTalk && scene.npc) next = raiseBond(next, scene.npc, balance.bondFirstTalk);
       if (bond && scene.npc) next = raiseBond(next, scene.npc, bond);
@@ -269,6 +271,7 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
       for (const { id: item, count } of take ?? []) next = { ...next, items: withItem(next.items, item, -count) };
       for (const { id: item, count } of give ?? []) next = { ...next, items: withItem(next.items, item, count) };
       for (const id of learn ?? []) next = learnSkill(next, id);
+      if (setClass) next = { ...next, classId: setClass };
       if (acceptGift || refuseGift) next = takeGift(next, acceptGift ? next.giftClass : 'none');
       if (exp) next = gainExp(next, exp);
       return next;

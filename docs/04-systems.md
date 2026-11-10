@@ -1043,6 +1043,8 @@ There are two kinds. The Seeker is a full class, chosen at the start by refusing
 
 The Seeker starts weaker (16 stat points, +30 over three advancement tiers) but its information skills let it read fights and floors that other classes must learn the hard way. Hidden masters work like other masters: they run the quest, the trial and the stage-up trials for their class skills.
 
+Claude's choices for Floor 1 (draft): weaknesses do not exist yet, so Scan commits and shows the target's next move (cooldown 3), Keen Strike deals 100% damage and 30% more against a scanned target (cooldown 2), and Read the Room, like Insight, marks places in the Go to list that hold something to find. The Seeker keeps the plain sword from the refusal.
+
 ## Masters
 
 Teachers are scattered across the Tower. To learn from one, the climber takes the master's quest, proves themselves in a trial, and delivers what is asked; then the master teaches. Climbers can travel freely, so they can return to a master at any time, and higher floors have better masters who teach more advanced things. A master also runs stage-up trials for the skills they teach, up to the stage their floor allows (see Skills), except that wandering masters' skills use catalyst items (see below).

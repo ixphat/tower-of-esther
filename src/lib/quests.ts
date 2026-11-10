@@ -1,4 +1,4 @@
-import { npcById, quests, type Quest } from './data';
+import { npcById, quests, type Floor, type Quest } from './data';
 import { meets } from './dialogue';
 import type { RunState } from './run';
 
@@ -30,4 +30,8 @@ export function questBoard(run: RunState) {
     secrets: started.filter((quest) => quest.kind === 'secret').map((quest) => entry(quest, run)),
     done: started.filter((quest) => quest.kind !== 'secret' && isDone(quest, run)).map((quest) => entry(quest, run)),
   };
+}
+
+export function secretsScore(run: RunState, floor: Floor): number {
+  return (floor.secrets ?? []).filter(({ flag }) => run.flags.includes(flag)).reduce((sum, { points }) => sum + points, 0);
 }

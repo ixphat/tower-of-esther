@@ -148,5 +148,21 @@
         }
       }
     ]
+  },
+  {
+    "id": "secret-refusal",
+    "kind": "secret",
+    "title": "The gift you refused",
+    "startWhen": {
+      "flag": "read-seeker-letter"
+    },
+    "steps": [
+      {
+        "text": "Behind the houses, a letter was waiting for someone who said no.",
+        "doneWhen": {
+          "flag": "read-seeker-letter"
+        }
+      }
+    ]
   }
 ]

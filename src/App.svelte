@@ -12,7 +12,7 @@
   import QuestsWindow from './QuestsWindow.svelte';
   import SkillsWindow from './SkillsWindow.svelte';
   import { questBoard } from './lib/quests';
-  import { sceneAt, sceneFor } from './lib/dialogue';
+  import { meets, sceneAt, sceneFor } from './lib/dialogue';
   import { loadSettings, saveSettings, TEXT_SPEEDS, type Settings } from './lib/settings';
   import StatusWindow from './StatusWindow.svelte';
   import { expToNext, maxHp } from './lib/climber';
@@ -60,6 +60,8 @@
     talk = { npc, scene: sceneFor(npc, run!).id };
   }
 
+  // Read the Room (the Seeker's Insight) faintly marks places with something to find
+  const insight = $derived(run !== null && 'read-the-room' in run.skills);
   const lookScene = $derived(run && location ? sceneAt(location.id, run) : undefined);
   const board = $derived(run ? questBoard(run) : null);
   const trackedQuests = $derived(board ? board.side.filter((quest) => run!.tracked.includes(quest.id)) : []);
@@ -177,9 +179,13 @@
     {:else}
     <nav aria-label="Go to" class="row">
       <span aria-hidden="true">Go to</span>
-      {#each location.exits.map(locationById) as exit (exit.id)}
-        <button onclick={() => move(exit.id)} aria-label={exit.enemies ? `${exit.name}, monsters here` : undefined}>
-          {exit.name}{#if exit.enemies}&nbsp;⚔&#xFE0E;{/if}
+      {#each location.exits.map(locationById).filter((exit) => meets(exit.condition, run!)) as exit (exit.id)}
+        {@const marked = insight && sceneAt(exit.id, run) !== undefined}
+        <button
+          onclick={() => move(exit.id)}
+          aria-label={exit.enemies || marked ? `${exit.name}${exit.enemies ? ', monsters here' : ''}${marked ? ', something to find' : ''}` : undefined}
+        >
+          {exit.name}{#if exit.enemies}&nbsp;⚔&#xFE0E;{/if}{#if marked}&nbsp;◇{/if}
         </button>
       {/each}
     </nav>

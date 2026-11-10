@@ -17,6 +17,8 @@ export interface Combatant {
   triggered?: number[]; // scripted moves already used
   turns?: number; // own turns taken, for move cooldowns
   readyOn?: Record<string, number>;
+  planned?: EnemyMove; // committed early by Scan, shown to the climber
+  scanned?: boolean;
 }
 
 export const TIERS = ['normal', 'tough', 'elite', 'miniBoss', 'floorMaster'] as const;
@@ -53,6 +55,9 @@ export interface FightSkill {
   guardBonus?: number;
   damageBonus?: number;
   cleanse?: boolean;
+  scan?: boolean;
+  scannedBonus?: number; // extra damage share against a scanned target
+  outsideFight?: boolean;
 }
 
 export interface Loadout {
@@ -272,12 +277,19 @@ function pickMove(enemy: Combatant, rng: Rng): EnemyMove {
     enemy.triggered = [...triggered, due];
     return enemy.scripted![due];
   }
-  const ready = enemy.moves!.filter((move) => (enemy.readyOn?.[move.name] ?? 0) <= enemy.turns!);
+  const upcoming = (enemy.turns ?? 0) + 1; // picks are for the enemy's next turn, also when Scan picks early
+  const ready = enemy.moves!.filter((move) => (enemy.readyOn?.[move.name] ?? 0) <= upcoming);
   let roll = rng() * ready.reduce((sum, move) => sum + move.weight, 0);
   return ready.find((move) => (roll -= move.weight) < 0) ?? ready[ready.length - 1];
 }
 
 function enemyMove(state: FightState, enemy: Combatant, rng: Rng, events: FightEvent[]): void {
+  actEnemy(state, enemy, rng, events);
+  // a scanned enemy commits its next move now, so the climber can read it
+  if (enemy.scanned && enemy.moves && enemy.hp > 0 && !has(enemy, 'charging')) enemy.planned = pickMove(enemy, rng);
+}
+
+function actEnemy(state: FightState, enemy: Combatant, rng: Rng, events: FightEvent[]): void {
   const charging = has(enemy, 'charging');
   if (charging) {
     enemy.statuses = enemy.statuses.filter((s) => s !== charging);
@@ -288,8 +300,9 @@ function enemyMove(state: FightState, enemy: Combatant, rng: Rng, events: FightE
     events.push(strike(state, enemy, state.climber, rng));
     return checkEnd(state, events);
   }
+  const move = enemy.planned ?? pickMove(enemy, rng);
+  enemy.planned = undefined;
   enemy.turns = (enemy.turns ?? 0) + 1;
-  const move = pickMove(enemy, rng);
   enemy.readyOn = { ...enemy.readyOn, [move.name]: enemy.turns + move.cooldown };
   events.push({ type: 'skill', actor: enemy.name, skill: move.name });
 
@@ -363,6 +376,7 @@ const removableStatus = (c: Combatant) => c.statuses.find((status) => balance.we
 export function skillBlock(state: FightState, id: string): string | null {
   const skill = state.skills.find((s) => s.id === id);
   if (!skill) return 'Not learned';
+  if (skill.outsideFight) return 'Not for fights';
   const wait = (state.readyOn[id] ?? 0) - state.climberTurn;
   if (wait > 0) return `Cooldown ${wait}`;
   if (skill.tag === 'Stance' && state.stance === id) return 'Stance active';
@@ -388,7 +402,13 @@ function useSkill(state: FightState, id: string, targetIndex: number, rng: Rng, 
   const target = state.enemies[targetIndex];
   if (skill.damage !== undefined) {
     if (!target || target.hp === 0) throw new Error(`Invalid target ${targetIndex}`);
-    events.push(strike(state, state.climber, target, rng, skill.damage * skill.scale));
+    const bonus = target.scanned ? 1 + (skill.scannedBonus ?? 0) : 1;
+    events.push(strike(state, state.climber, target, rng, skill.damage * skill.scale * bonus));
+  }
+  if (skill.scan) {
+    if (!target || target.hp === 0) throw new Error(`Invalid target ${targetIndex}`);
+    target.scanned = true;
+    if (target.moves && !has(target, 'charging')) target.planned = pickMove(target, rng);
   }
   if (skill.enemyStatus && target?.hp > 0) {
     const { id: status, turns, value } = skill.enemyStatus;
