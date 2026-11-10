@@ -10,6 +10,8 @@ const floor: Floor = {
   id: 1,
   name: 'Test',
   recommendedGrade: 'F',
+  recommendedLevel: 1,
+  rule: { label: 'None', text: '' },
   start: 'gate',
   locations: [
     { id: 'gate', name: 'Gate', description: '', exits: ['inn', 'field'] },

@@ -81,6 +81,8 @@ export interface Floor {
   id: number;
   name: string;
   recommendedGrade: string;
+  recommendedLevel: number;
+  rule: { label: string; text: string }; // shown as the rule chip
   secrets?: { flag: string; points: number }[]; // Secrets factor of the clear grade
   exit?: string; // where the climber leaves the floor
   clear?: ClearRules;

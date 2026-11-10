@@ -9,6 +9,8 @@
   import JournalWindow from './JournalWindow.svelte';
   import ClearScreen from './ClearScreen.svelte';
   import Portrait from './Portrait.svelte';
+  import Bar from './Bar.svelte';
+  import { fade } from 'svelte/transition';
   import climberData from '../data/climber.json';
   import QuestsWindow from './QuestsWindow.svelte';
   import SkillsWindow from './SkillsWindow.svelte';
@@ -16,7 +18,7 @@
   import { meets, sceneAt, sceneFor } from './lib/dialogue';
   import { loadSettings, saveSettings, TEXT_SPEEDS, type Settings } from './lib/settings';
   import StatusWindow from './StatusWindow.svelte';
-  import { expToNext, maxHp } from './lib/climber';
+  import { expToNext, heroParts, heroPower, maxHp } from './lib/climber';
   import { applyAction, newRun, resumeRun, type Rewards, type RunAction, type RunState } from './lib/run';
   import { readSave, writeSave } from './lib/save';
 
@@ -29,6 +31,7 @@
   let foes = $state<Enemy[] | null>(null);
   let fightMeta = $state<{ winFlag?: string; trial: boolean; after?: string }>({ trial: false });
   let showClear = $state(false);
+  let trackerOpen = $state(false);
   let talk = $state<{ npc?: string; scene: string } | null>(null);
   let creating = $state(false);
   let newName = $state('');
@@ -159,6 +162,10 @@
   <div class="screen">
     <header class="row top">
       <h1>Floor {floor.id} · {floor.name}</h1>
+      <button class="chip" onclick={() => openWindow('Floor rule')}>{floor.rule.label}</button>
+      <span>Rec. Lv {floor.recommendedLevel} / Grade {floor.recommendedGrade}</span>
+      <span>Coins {run.coins}</span>
+      <span>Your grade {heroPower(heroParts(run.level, run.worn, run.skills, run.classId)).grade}</span>
       <button onclick={() => openWindow('Settings')}>Settings</button>
     </header>
 
@@ -166,17 +173,21 @@
       <Portrait index={run.portrait} />
       <span>{run.name}</span>
       <span>Lv {run.level}</span>
-      <span>Coins {run.coins}</span>
       <span>HP {run.hp} / {maxHp(run.level, run.classId)}</span>
-      <progress max={maxHp(run.level, run.classId)} value={run.hp} aria-hidden="true"></progress>
+      <Bar value={run.hp} max={maxHp(run.level, run.classId)} label="HP" />
       <span>EXP {run.exp} / {expToNext(run.level)}</span>
       <progress max={expToNext(run.level)} value={run.exp} aria-hidden="true"></progress>
     </section>
 
-    <section class="tracker" aria-label="Tracked quests">
+    <section class="tracker" class:collapsed={!trackerOpen} aria-label="Tracked quests">
+      {#if trackedQuests.length}
+        <button class="quiet more" aria-expanded={trackerOpen} onclick={() => (trackerOpen = !trackerOpen)}>
+          {trackerOpen ? 'Fewer quests' : `${trackedQuests.length} more`}
+        </button>
+      {/if}
       {#if board?.main}<button class="quiet" onclick={() => openWindow('Quests')}>Main: {board.main.step}</button>{/if}
       {#each trackedQuests as quest (quest.id)}
-        <button class="quiet" onclick={() => openWindow('Quests')}>{quest.title}: {quest.step}</button>
+        <button class="quiet side" onclick={() => openWindow('Quests')}>{quest.title}: {quest.step}</button>
       {/each}
     </section>
 
@@ -184,7 +195,8 @@
       <ClearScreen floorName={`Floor ${floor.id} · ${floor.name}`} endText={floor.clear!.endText} record={run.clears[floor.id]} onClose={() => { showClear = false; focusScene(); }} />
     {/if}
 
-    <main class="scene">
+    {#key location.id}
+    <main class="scene" in:fade={{ duration: 300 }}>
       <h2 bind:this={heading} tabindex="-1">{location.name}</h2>
       <p>{location.description}</p>
       {#if location.enemies && !run.cleared.includes(location.id)}
@@ -192,6 +204,7 @@
         <button onclick={() => startFight(here)}>Fight {groupName(here.map((e) => e.name))}</button>
       {/if}
     </main>
+    {/key}
 
     {#if talk}
       {#key talk.scene}
@@ -250,6 +263,8 @@
     <h2 id="window-title">{windowTitle}</h2>
     {#if windowTitle === 'Status'}
       <StatusWindow {run} {floor} />
+    {:else if windowTitle === 'Floor rule'}
+      <p>{floor.rule.text}</p>
     {:else if windowTitle === 'Settings'}
       <fieldset>
         <legend>Text speed</legend>
@@ -309,6 +324,10 @@
     gap: 0.25rem;
   }
 
+  .more {
+    display: none;
+  }
+
   .quiet {
     min-height: 2rem;
     border-color: transparent;
@@ -319,6 +338,59 @@
 
   .top {
     justify-content: space-between;
+  }
+
+  .chip {
+    min-height: 2rem;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 640px) {
+    .more {
+      display: block;
+    }
+
+    .screen {
+      padding-bottom: 5rem; /* room for the fixed menu */
+    }
+
+    .menu {
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: 1;
+      justify-content: space-around;
+      padding: 0.5rem;
+      background: var(--ink);
+    }
+
+    .menu button {
+      flex: 1;
+      padding: 0 0.25rem;
+      font-size: 0.85rem;
+    }
+
+    .vitals {
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+
+    .tracker.collapsed .side {
+      /* collapsed to the main quest on a phone, still read by screen readers */
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    dialog {
+      width: 100vw;
+      max-width: 100vw;
+      height: 100dvh;
+      max-height: 100dvh;
+      margin: 0;
+    }
   }
 
   input:not([type='radio']) {

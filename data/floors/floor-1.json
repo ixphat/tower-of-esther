@@ -2,6 +2,11 @@
   "id": 1,
   "name": "First Trial",
   "recommendedGrade": "F",
+  "recommendedLevel": 1,
+  "rule": {
+    "label": "No floor rule",
+    "text": "Floor 1 has no special rule. Every floor after it has one, shown here."
+  },
   "start": "square",
   "locations": [
     {

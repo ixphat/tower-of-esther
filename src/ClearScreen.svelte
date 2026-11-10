@@ -27,12 +27,24 @@
 
 <style>
   .clear {
+    animation: clear-flash 1200ms ease-out;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     padding: 1.5rem;
     background: var(--navy);
     border: 1px solid var(--gold);
+  }
+
+  @keyframes clear-flash {
+    from { box-shadow: 0 0 0 100vmax rgb(179 154 99 / 0.35); }
+    to { box-shadow: 0 0 0 100vmax transparent; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clear {
+      animation: none;
+    }
   }
 
   .grade {

@@ -104,9 +104,9 @@ export type Action =
   | { type: 'skill'; skill: string; target: number };
 
 export type FightEvent =
-  | { type: 'hit'; attacker: string; target: string; damage: number; crit: boolean }
+  | { type: 'hit'; attacker: string; target: string; targetId: string; damage: number; crit: boolean }
   | { type: 'miss'; attacker: string; target: string }
-  | { type: 'heal'; target: string; amount: number }
+  | { type: 'heal'; target: string; targetId: string; amount: number }
   | { type: 'skill'; actor: string; skill: string }
   | { type: 'status'; target: string; status: string }
   | { type: 'cleanse'; target: string; status: string }
@@ -229,7 +229,7 @@ function strike(state: FightState, attacker: Combatant, target: Combatant, rng: 
   const damage = holdsOn ? Math.min(rolled, Math.max(0, target.hp - 1)) : rolled;
   target.hp = Math.max(0, target.hp - damage);
   if (target === state.climber) state.hitsTaken += 1;
-  return { type: 'hit', ...names, damage, crit };
+  return { type: 'hit', ...names, targetId: target.id, damage, crit };
 }
 
 // Damage over time, then a stun check. False means the combatant cannot act this turn.
@@ -448,7 +448,7 @@ function perform(state: FightState, action: Action, rng: Rng, events: FightEvent
     const { climber } = state;
     const amount = Math.min(Math.round(climber.maxHp * action.fraction), climber.maxHp - climber.hp);
     climber.hp += amount;
-    events.push({ type: 'heal', target: climber.name, amount });
+    events.push({ type: 'heal', target: climber.name, targetId: climber.id, amount });
     return;
   }
   const target = state.enemies[action.target];
