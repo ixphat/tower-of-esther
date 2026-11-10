@@ -1,28 +1,581 @@
 [
   {
-    "id": "keeper-first",
-    "npc": "keeper",
-    "condition": { "notFlag": "met-keeper" },
+    "id": "tower-wake",
     "start": "a",
     "nodes": {
-      "a": { "speaker": "The Keeper", "text": "Oh. A guest.", "next": "b" },
-      "b": { "speaker": "The Keeper", "text": "Come in. The kettle is still warm. It always is.", "next": "c" },
+      "a": {
+        "speaker": "The Tower",
+        "text": "Climber. You are awake.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Tower",
+        "text": "Floor 1. First Trial.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Tower",
+        "text": "You are a climber. Climbers climb.",
+        "next": "d"
+      },
+      "d": {
+        "speaker": "The Tower",
+        "text": "The Tower offers a gift.",
+        "choices": [
+          {
+            "text": "Accept the gift.",
+            "next": "accept"
+          },
+          {
+            "text": "Refuse.",
+            "next": "refuse"
+          }
+        ]
+      },
+      "accept": {
+        "speaker": "The Tower",
+        "text": "Gift accepted.",
+        "effects": {
+          "setFlag": "gift-accepted"
+        }
+      },
+      "refuse": {
+        "speaker": "The Tower",
+        "text": "Gift refused. The Tower does not ask twice.",
+        "effects": {
+          "setFlag": "gift-refused"
+        }
+      }
+    }
+  },
+  {
+    "id": "tower-basics",
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Tower",
+        "text": "Go to moves you. A sword mark means Remnants are there.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Tower",
+        "text": "In a fight, one action a turn: Weapon attack, Skills or Items.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Tower",
+        "text": "Skills grow with use. Pin the ones you use most.",
+        "next": "d"
+      },
+      "d": {
+        "speaker": "The Tower",
+        "text": "The Status window shows what you are. Open it.",
+        "effects": {
+          "setFlag": "heard-basics"
+        }
+      }
+    }
+  },
+  {
+    "id": "tower-master",
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Tower",
+        "text": "Floor master: present.",
+        "effects": {
+          "setFlag": "tower-named-master"
+        }
+      }
+    }
+  },
+  {
+    "id": "tower-trial",
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Tower",
+        "text": "Floor master trial.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Tower",
+        "text": "Fleeing is not possible."
+      }
+    }
+  },
+  {
+    "id": "tower-clear",
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Tower",
+        "text": "Floor 1 cleared.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Tower",
+        "text": "Clear grade recorded.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Tower",
+        "text": "The gate is open."
+      }
+    }
+  },
+  {
+    "id": "tower-returned",
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Tower",
+        "text": "Returned to the last safe point."
+      }
+    }
+  },
+  {
+    "id": "school-board",
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "Chalk on the board",
+        "text": "Lesson for whoever comes late. What would you keep, if keeping it cost someone else? Do not write your answer on my board. I could not write mine.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "Chalk on the board",
+        "text": "Under the words, a small river is drawn.",
+        "effects": {
+          "setFlag": "found-school-clue"
+        }
+      }
+    }
+  },
+  {
+    "id": "seeker-letter",
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "A letter",
+        "text": "You said no. Nobody here taught you that. I can teach you only how to look. What you do with it, I will not be there to see.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "A letter",
+        "text": "At the bottom, a small river is drawn.",
+        "effects": {
+          "setFlag": "read-seeker-letter"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-first",
+    "npc": "keeper",
+    "condition": {
+      "notFlag": "met-keeper"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "Oh. A guest.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "Come in. The kettle is still warm. It always is.",
+        "next": "c"
+      },
       "c": {
         "speaker": "The Keeper",
         "text": "I keep the house for the people who live here. They will be back.",
         "choices": [
-          { "text": "Who lives here?", "next": "d" },
-          { "text": "It's a good house.", "liked": true, "next": "e" },
-          { "text": "There's no one left.", "next": "f" }
+          {
+            "text": "Who lives here?",
+            "next": "d"
+          },
+          {
+            "text": "It's a good house.",
+            "liked": true,
+            "next": "e"
+          },
+          {
+            "text": "There's no one left.",
+            "next": "f"
+          }
         ]
       },
-      "d": { "speaker": "The Keeper", "text": "Everyone. Each chair has someone.", "next": "g" },
-      "e": { "speaker": "The Keeper", "text": "It is. I sweep it every morning.", "next": "g" },
-      "f": { "speaker": "The Keeper", "text": "Still. Someone might come.", "next": "g" },
+      "d": {
+        "speaker": "The Keeper",
+        "text": "Everyone. Each chair has someone.",
+        "next": "g"
+      },
+      "e": {
+        "speaker": "The Keeper",
+        "text": "It is. I sweep it every morning.",
+        "next": "g"
+      },
+      "f": {
+        "speaker": "The Keeper",
+        "text": "Still. Someone might come.",
+        "next": "g"
+      },
       "g": {
         "speaker": "The Keeper",
         "text": "Rest here when you are tired. The bed is made.",
-        "effects": { "setFlag": "met-keeper", "firstTalk": true }
+        "effects": {
+          "setFlag": "met-keeper",
+          "firstTalk": true
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-master",
+    "npc": "keeper",
+    "condition": {
+      "flag": "tower-named-master",
+      "notFlag": "keeper-denied-master"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "Master? No. There is no master here.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "I only keep the house.",
+        "effects": {
+          "setFlag": "keeper-denied-master"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-chair",
+    "npc": "keeper",
+    "condition": {
+      "flag": "met-keeper",
+      "notFlag": "asked-chair"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "That chair? Leave it, please.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "Someone asked me to keep it ready. A long time ago.",
+        "choices": [
+          {
+            "text": "Ready for whom?",
+            "next": "c"
+          },
+          {
+            "text": "I won't sit there.",
+            "liked": true,
+            "next": "d"
+          }
+        ]
+      },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "For when they come back. That is all he said.",
+        "next": "e"
+      },
+      "d": {
+        "speaker": "The Keeper",
+        "text": "Thank you. Most people want the best seat.",
+        "next": "e"
+      },
+      "e": {
+        "speaker": "The Keeper",
+        "text": "Sit anywhere else. The kettle is warm.",
+        "effects": {
+          "setFlag": "asked-chair"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-tidy",
+    "npc": "keeper",
+    "condition": {
+      "flag": "met-keeper",
+      "notFlag": "offered-tidy"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "The wind has been at the fields again. Straw everywhere.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "The Remnants out there shed it. If you find loose straw, bring it.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "Five bundles would do.",
+        "effects": {
+          "setFlag": "offered-tidy"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-belongings",
+    "npc": "keeper",
+    "condition": {
+      "flag": "offered-tidy",
+      "notFlag": "offered-belongings"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "Things get left where they shouldn't be.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "A toy by the river. Glasses on the school steps. A knife out in the fields.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "Each one belongs to a house on the row. Put them back, would you?",
+        "effects": {
+          "setFlag": "offered-belongings"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-table-done",
+    "npc": "keeper",
+    "condition": {
+      "flag": "table-set",
+      "notFlag": "keeper-told-who"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "Every place laid. It has not looked like this in a long time.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "You asked who wanted the house kept ready.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "A young man. Polite. He never gave his name.",
+        "next": "d"
+      },
+      "d": {
+        "speaker": "The Keeper",
+        "text": "He looked at the empty chair for a long time, then thanked me for the tea.",
+        "next": "e"
+      },
+      "e": {
+        "speaker": "The Keeper",
+        "text": "Take the lamp oil. It burns longer than it should.",
+        "effects": {
+          "setFlag": "keeper-told-who"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-trusted",
+    "npc": "keeper",
+    "condition": {
+      "bondAtLeast": 3,
+      "notFlag": "offered-table"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "Will you help me set the table? Properly. Every place.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "The plates are in the houses on the row. One from each.",
+        "effects": {
+          "setFlag": "offered-table"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-close",
+    "npc": "keeper",
+    "condition": {
+      "bondAtLeast": 4,
+      "notFlag": "keeper-close-done"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "You keep coming back. That is more than most.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "If they don't come back... No. They will.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "Take something. I have too much of everything.",
+        "choices": [
+          {
+            "text": "Show me how you keep things tidy.",
+            "next": "skill"
+          },
+          {
+            "text": "The spare key, if you can part with it.",
+            "next": "key"
+          }
+        ]
+      },
+      "skill": {
+        "speaker": "The Keeper",
+        "text": "Like this. One thing at a time, and never in a hurry.",
+        "effects": {
+          "setFlag": "keeper-close-done"
+        }
+      },
+      "key": {
+        "speaker": "The Keeper",
+        "text": "It opens the house. Come in whenever you like.",
+        "effects": {
+          "setFlag": "keeper-close-done"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-friendly",
+    "npc": "keeper",
+    "condition": {
+      "bondAtLeast": 2,
+      "notFlag": "keeper-friendly-done"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "Sit. Not that chair.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "They used to argue about the kettle. Who would fill it.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "Now I fill it. Nobody argues.",
+        "choices": [
+          {
+            "text": "That sounds lonely.",
+            "next": "d"
+          },
+          {
+            "text": "I'll fill it next time.",
+            "liked": true,
+            "next": "e"
+          },
+          {
+            "text": "Why do you stay?",
+            "next": "f"
+          }
+        ]
+      },
+      "d": {
+        "speaker": "The Keeper",
+        "text": "It is quiet. Quiet is not the same.",
+        "next": "g"
+      },
+      "e": {
+        "speaker": "The Keeper",
+        "text": "Then I will let you. Just this once.",
+        "next": "g"
+      },
+      "f": {
+        "speaker": "The Keeper",
+        "text": "Someone has to be here when they come back.",
+        "next": "g"
+      },
+      "g": {
+        "speaker": "The Keeper",
+        "text": "Drink. It is still warm.",
+        "effects": {
+          "setFlag": "keeper-friendly-done"
+        }
+      }
+    }
+  },
+  {
+    "id": "keeper-trial",
+    "npc": "keeper",
+    "condition": {
+      "flag": "keeper-at-gate",
+      "notFlag": "trial-passed"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "The Tower wants me to test you. I don't like it.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "I won't try to hurt you. Not really.",
+        "next": "c"
+      },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "The kettle can wait."
+      }
+    }
+  },
+  {
+    "id": "keeper-yield",
+    "npc": "keeper",
+    "condition": {
+      "flag": "trial-passed",
+      "notFlag": "keeper-farewell"
+    },
+    "start": "a",
+    "nodes": {
+      "a": {
+        "speaker": "The Keeper",
+        "text": "Enough. Enough. You can go.",
+        "next": "b"
+      },
+      "b": {
+        "speaker": "The Keeper",
+        "text": "The gate is open. Come back if you're tired. The bed is made.",
+        "effects": {
+          "setFlag": "keeper-farewell"
+        }
       }
     }
   },
@@ -35,12 +588,24 @@
         "speaker": "The Keeper",
         "text": "The kettle is warm.",
         "choices": [
-          { "text": "Tell me about the village.", "next": "b" },
-          { "text": "Nothing. Thank you.", "next": "c" }
+          {
+            "text": "Tell me about the village.",
+            "next": "b"
+          },
+          {
+            "text": "Nothing. Thank you.",
+            "next": "c"
+          }
         ]
       },
-      "b": { "speaker": "The Keeper", "text": "Fields, a river, a school. Everyone worked. Everyone came home." },
-      "c": { "speaker": "The Keeper", "text": "Mind the step on your way out." }
+      "b": {
+        "speaker": "The Keeper",
+        "text": "Fields, a river, a school. Everyone worked. Everyone came home."
+      },
+      "c": {
+        "speaker": "The Keeper",
+        "text": "Mind the step on your way out."
+      }
     }
   }
 ]

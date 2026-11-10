@@ -10,6 +10,7 @@
       "description": "Dusk. Tables are still set. No one is here.",
       "exits": [
         "keepers-house",
+        "houses",
         "fields",
         "riverbank",
         "gate"
@@ -20,7 +21,9 @@
       "name": "Keeper's House",
       "description": "Swept floors. A chair stands empty at the head of the table.",
       "rest": true,
-      "npcs": ["keeper"],
+      "npcs": [
+        "keeper"
+      ],
       "shop": [
         "basic-salve",
         "herb-draught",
@@ -32,6 +35,14 @@
         "plain-boots",
         "plain-charm"
       ],
+      "exits": [
+        "square"
+      ]
+    },
+    {
+      "id": "houses",
+      "name": "Row of Houses",
+      "description": "Doors left open. Shoes by every step. Each house waits for someone.",
       "exits": [
         "square"
       ]
@@ -97,7 +108,7 @@
     {
       "id": "gate",
       "name": "Village Gate",
-      "description": "The road ends here. The gate is shut.",
+      "description": "The road ends here. The gate is shut. Something small is scratched into the wood, pale against the grain: an empty chair.",
       "exits": [
         "square"
       ],

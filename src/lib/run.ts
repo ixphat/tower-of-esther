@@ -213,7 +213,7 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
       let next: RunState = { ...state, seen: [...state.seen, id] };
       const { setFlag, firstTalk } = node.effects ?? {};
       if (setFlag && !next.flags.includes(setFlag)) next = { ...next, flags: [...next.flags, setFlag] };
-      if (firstTalk) next = raiseBond(next, scene.npc, balance.bondFirstTalk);
+      if (firstTalk && scene.npc) next = raiseBond(next, scene.npc, balance.bondFirstTalk);
       return next;
     }
     case 'choose': {
@@ -223,7 +223,7 @@ export function applyAction(state: RunState, floor: Floor, action: RunAction): R
       const id = `${lineId(action.scene, action.node)}:${action.choice}`;
       if (state.seen.includes(id)) return state;
       const next = { ...state, seen: [...state.seen, id] };
-      return choice.liked ? raiseBond(next, scene.npc, balance.bondLikedChoice) : next;
+      return choice.liked && scene.npc ? raiseBond(next, scene.npc, balance.bondLikedChoice) : next;
     }
     case 'gift': {
       const npc = npcById(action.npc);
