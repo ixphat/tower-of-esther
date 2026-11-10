@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { floors } from './data';
 import { sceneAt } from './dialogue';
-import { questBoard } from './quests';
+import { questBoard, secretsScore } from './quests';
 import { maxHp } from './climber';
 import { applyAction, newRun, type RunState } from './run';
 
@@ -99,5 +99,27 @@ describe('looking around', () => {
     let state = applyAction(run(), floor, { type: 'fightStart', foes: ['crow', 'crow'] });
     state = applyAction(state, floor, { type: 'fightStart', foes: ['crow', 'straw-remnant'] });
     expect(state.met).toEqual(['crow', 'straw-remnant']);
+  });
+});
+
+describe('refusal path and secrets', () => {
+  it('the Back Lane is only there after refusing', () => {
+    expect(() => applyAction(run({ locationId: 'houses' }), floor, { type: 'move', to: 'back-lane' })).toThrow();
+    const refused = run({ locationId: 'houses', flags: ['gift-refused'] });
+    expect(applyAction(refused, floor, { type: 'move', to: 'back-lane' }).locationId).toBe('back-lane');
+  });
+
+  it("the letter makes a refuser a Seeker with its first skills", () => {
+    const refused = run({ classId: 'none', flags: ['gift-refused'], skills: {} , pins: [null, null, null, null, null, null] });
+    expect(sceneAt('back-lane', refused)?.id).toBe('seeker-letter');
+    const after = applyAction(refused, floor, see('seeker-letter', 'b'));
+    expect(after.classId).toBe('seeker');
+    expect(Object.keys(after.skills)).toEqual(['scan', 'read-the-room', 'keen-strike']);
+    expect(questBoard(after).secrets.map((s) => s.title)).toContain('The gift you refused');
+  });
+
+  it('finding the schoolhouse clue adds its Secrets points', () => {
+    expect(secretsScore(run(), floor)).toBe(0);
+    expect(secretsScore(run({ flags: ['found-school-clue'] }), floor)).toBe(25);
   });
 });

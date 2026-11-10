@@ -69,6 +69,7 @@ export interface Location {
   enemies?: string[];
   rest?: boolean;
   enterFlag?: string; // noticed on arrival
+  condition?: Condition; // hidden until it holds, like a secret path
   shop?: string[];
   npcs?: string[];
 }
@@ -77,6 +78,7 @@ export interface Floor {
   id: number;
   name: string;
   recommendedGrade: string;
+  secrets?: { flag: string; points: number }[]; // Secrets factor of the clear grade
   start: string;
   locations: Location[];
 }
@@ -122,6 +124,7 @@ export interface SceneNode {
     give?: ItemCount[];
     learn?: string[];
     acceptGift?: boolean;
+    setClass?: string;
     refuseGift?: boolean;
   };
 }

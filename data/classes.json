@@ -54,6 +54,16 @@
     "weapon": "worn-cards"
   },
   {
+    "id": "seeker",
+    "name": "Seeker",
+    "hidden": true,
+    "vitality": 4,
+    "power": 4,
+    "agility": 4,
+    "mind": 4,
+    "weapon": "worn-sword"
+  },
+  {
     "id": "none",
     "name": "No class",
     "hidden": true,

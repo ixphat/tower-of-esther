@@ -396,3 +396,38 @@ describe('enemy moves and fleeing', () => {
     expect(() => act(state, { type: 'flee' }, pass)).toThrow('Cannot flee this fight');
   });
 });
+
+describe('Seeker skills', () => {
+  const pass = () => 0.99;
+  const lash = { name: 'Lash', type: 'attack', weight: 1, cooldown: 0, power: 1 } as const;
+  const hide = { name: 'Hide', type: 'guard', weight: 1, cooldown: 0, value: 0.5 } as const;
+  const scan: FightSkill = { id: 'scan', name: 'Scan', cooldown: 3, scale: 1, scan: true };
+  const keen: FightSkill = { id: 'keen', name: 'Keen', cooldown: 2, scale: 1, damage: 1, scannedBonus: 0.3 };
+
+  it('Scan commits the next move, and the enemy uses it', () => {
+    const e = enemy({ moves: [lash, hide] });
+    const step = act(startFight(climber(), [e], pass, { skills: [scan], stance: null }).state, { type: 'skill', skill: 'scan', target: 0 }, script(0.6, 0.1));
+    expect(step.events).toContainEqual({ type: 'skill', actor: 'E', skill: 'Hide' }); // 0.6 picked Hide at the scan
+    expect(step.state.enemies[0].planned?.name).toBe('Lash'); // 0.1 picked its next move after it acted
+  });
+
+  it('a scanned enemy keeps showing its next move after each action', () => {
+    const e = enemy({ moves: [lash, hide] });
+    const scanned = act(startFight(climber(), [e], pass, { skills: [scan], stance: null }).state, { type: 'skill', skill: 'scan', target: 0 }, script(0.6, 0.1)).state;
+    const next = act(scanned, { type: 'attack', target: 0 }, script(0.99, 0.99, 0.5, 0.99, 0.99, 0.5, 0.6));
+    expect(next.events).toContainEqual({ type: 'skill', actor: 'E', skill: 'Lash' }); // used as planned
+    expect(next.state.enemies[0].planned?.type).toBe('guard');
+  });
+
+  it('Keen Strike hits 30% harder on a scanned target', () => {
+    const strikeOn = (scanned: boolean) =>
+      act(startFight(climber(), [enemy({ scanned })], pass, { skills: [keen], stance: null }).state, { type: 'skill', skill: 'keen', target: 0 }, script(0.99, 0.99, 0.5)).events[1];
+    expect(strikeOn(false)).toMatchObject({ damage: 17 }); // 17.48
+    expect(strikeOn(true)).toMatchObject({ damage: 23 }); // 22.72
+  });
+
+  it('a skill for outside fights is dimmed in a fight', () => {
+    const room: FightSkill = { id: 'room', name: 'Room', cooldown: 0, scale: 1, outsideFight: true };
+    expect(skillBlock(startFight(climber(), [enemy()], pass, { skills: [room], stance: null }).state, 'room')).toBe('Not for fights');
+  });
+});

@@ -44,8 +44,20 @@
       "name": "Row of Houses",
       "description": "Doors left open. Shoes by every step. Each house waits for someone.",
       "exits": [
-        "square"
+        "square",
+        "back-lane"
       ]
+    },
+    {
+      "id": "back-lane",
+      "name": "Back Lane",
+      "description": "Behind the houses, a lane the road never mentions. Grass grows down the middle.",
+      "exits": [
+        "houses"
+      ],
+      "condition": {
+        "flag": "gift-refused"
+      }
     },
     {
       "id": "fields",
@@ -116,6 +128,12 @@
         "gate-scarecrow"
       ],
       "enterFlag": "seen-gate-mark"
+    }
+  ],
+  "secrets": [
+    {
+      "flag": "found-school-clue",
+      "points": 25
     }
   ]
 }

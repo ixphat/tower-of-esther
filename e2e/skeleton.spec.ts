@@ -346,6 +346,31 @@ test('a reload before the gift reopens it on Continue', async ({ page }) => {
   await expect(page.getByRole('region', { name: 'Scene' })).toContainText('Climber. You are awake.');
 });
 
+test('refusal path: the Back Lane, the letter, the Seeker and Insight', async ({ page }) => {
+  const goTo = page.getByRole('navigation', { name: 'Go to' });
+  await page.goto('./');
+  await newGame(page, 'Refuse.');
+  await goTo.getByRole('button', { name: 'Row of Houses' }).click();
+  await goTo.getByRole('button', { name: 'Back Lane' }).click();
+  await page.getByRole('button', { name: 'Look around' }).click();
+  await expect(page.getByRole('region', { name: 'Scene' })).toContainText('You said no. Nobody here taught you that.');
+  await playScene(page);
+
+  await page.getByRole('button', { name: 'Status' }).click();
+  await expect(page.getByRole('dialog', { name: 'Status' })).toContainText('Ash · Seeker');
+  await page.getByRole('button', { name: 'Close' }).click();
+  await goTo.getByRole('button', { name: 'Row of Houses' }).click();
+  await goTo.getByRole('button', { name: 'Village Square' }).click();
+  await expect(goTo.getByRole('button', { name: 'Fields, monsters here, something to find' })).toBeVisible();
+});
+
+test('accepting the gift keeps the Back Lane hidden', async ({ page }) => {
+  await page.goto('./');
+  await newGame(page);
+  await page.getByRole('navigation', { name: 'Go to' }).getByRole('button', { name: 'Row of Houses' }).click();
+  await expect(page.getByRole('button', { name: 'Back Lane' })).toHaveCount(0);
+});
+
 test('reloading mid-fight counts as a defeat', async ({ page }) => {
   await page.goto('./');
   await newGame(page);
